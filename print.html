@@ -306,6 +306,54 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 <p>RLE 编码后的关卡通常还会使用 <code>|</code> 来分割行, 而非 <code>\n</code>. 使其看上去更加紧凑:</p>
 <pre><code class="language-txt">3#|#.3#|#*$-#|#--@#|5#
 </code></pre>
+<h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
+<h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
+<p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41" /></p>
+<pre><code class="language-txt">   #####
+   #   #
+ ###   ########
+##  ***    # # #
+ #  * *    ## # #####
+##  ***   ## # ##   ##
+ ###   #### # # #   #
+   #   # # # ####$ $###
+  ##   ## # ##  $...$ ##
+   ##### # ##    .@.  #
+        # # #   $...$ ##
+         ########$ $###
+                #   #
+                #####
+</code></pre>
+<h3 id="存在只有空元素的行"><a class="header" href="#存在只有空元素的行">存在只有空元素的行</a></h3>
+<p><img src="level/../assets/steaming_hot.png" alt="&quot;Steaming Hot&quot; by David Buchweitz" /></p>
+<pre><code class="language-txt">  #      #
+ #   #  #
+  # #  #
+   # #  #
+  #   #  #
+ #   #  #
+  # #  #
+-
+##########
+#........####
+# $$$$$$$#  #
+#.$......#  #
+# $$$$$$ #  #
+#......$+#  #
+#$$$$$$$ #  #
+#        ####
+##########
+</code></pre>
+<h3 id="无完整外墙"><a class="header" href="#无完整外墙">无完整外墙</a></h3>
+<p>部分推箱子程序支持无完整外墙的关卡.<br />
+在本文中, 这种关卡属于无效关卡. 但可以通过为其添加外墙的方式来转换为有效关卡.</p>
+<p><img src="level/../assets/no_walls_level.png" alt="&quot;No walls&quot; by Rincewind" /></p>
+<pre><code class="language-txt">* ** *
+  **
+**@$.*
+  **
+* ** *
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="构建"><a class="header" href="#构建">构建</a></h1>
 <h2 id="从字符串构建单个关卡"><a class="header" href="#从字符串构建单个关卡">从字符串构建单个关卡</a></h2>
 <p>关卡解析可以分为两部分: 地图解析和元数据/注释解析.</p>
@@ -407,6 +455,7 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 <p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 除了存储解析到的注释和元数据, 没有额外的动态内存分配.
 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
 注释被当成了一个键为 "comments" 的元数据.</p>
+<p>TODO: 解析地图数据 <code>Map::from_str</code></p>
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
