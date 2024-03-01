@@ -195,6 +195,11 @@
 <p>RLE 编码后的关卡通常还会使用 <code>|</code> 来分割行, 而非 <code>\n</code>. 使其看上去更加紧凑:</p>
 <pre><code class="language-txt">3#|#.3#|#*$-#|#--@#|5#
 </code></pre>
+<p>只需要对原本的语句进行修改即可提供对 <code>|</code> 分割行的支持:</p>
+<pre><code class="language-rs">for line in str.lines() { ... SKIP ... }
+
+for line in str.split(['\n', '|']) { ... SKIP ... }
+</code></pre>
 <h2 id="编码"><a class="header" href="#编码">编码</a></h2>
 <p>下面是一个简单的 RLE 编码函数的实现:</p>
 <pre><code class="language-rs">pub fn rle_encode(str: &amp;str) -&gt; Result&lt;String, EncodeRleError&gt; {
