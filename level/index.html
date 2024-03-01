@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.2.</strong> 标准化</div></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -176,7 +176,7 @@
                         <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 支持注释和附加元数据.<br />
 以关卡 <code>Boxworld #1</code> 为例:</p>
-<p><img src="../assets/boxworld_1.png" alt="Boxworld #1" /></p>
+<img src="../assets/boxworld_1.png" alt="Boxworld #1" width="70%" style="display: block; margin: 0 auto"/>
 <p>其 XSB 格式关卡的数据如下:</p>
 <pre><code class="language-txt">;Level 1
 __###___
@@ -250,6 +250,25 @@ pub struct Map {
     metadata: HashMap&lt;String, String&gt;,
     // ... SKIP ...
 }
+</code></pre>
+<h2 id="行程编码run-length-encoding"><a class="header" href="#行程编码run-length-encoding">行程编码(Run length encoding)</a></h2>
+<p>行程编码(Run length encoding, RLE)经常被用于压缩推箱子的关卡和解决方案.</p>
+<pre><code class="language-txt">###
+#.###
+#*$ #
+# @ #
+#####
+</code></pre>
+<p>经 RLE 编码后可得:</p>
+<pre><code class="language-txt">3#
+#.3#
+#*$-#
+#--@#
+5#
+</code></pre>
+<p>可以看出, 虽然编码后的关卡有更小的体积, 但不再能直观地看出关卡的结构.</p>
+<p>RLE 编码后的关卡通常还会使用 <code>|</code> 来分割行, 而非 <code>\n</code>. 使其看上去更加紧凑:</p>
+<pre><code class="language-txt">3#|#.3#|#*$-#|#--@#|5#
 </code></pre>
 
                     </main>

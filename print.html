@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.2.</strong> 标准化</div></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -187,7 +187,7 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 支持注释和附加元数据.<br />
 以关卡 <code>Boxworld #1</code> 为例:</p>
-<p><img src="level/../assets/boxworld_1.png" alt="Boxworld #1" /></p>
+<img src="level/../assets/boxworld_1.png" alt="Boxworld #1" width="70%" style="display: block; margin: 0 auto"/>
 <p>其 XSB 格式关卡的数据如下:</p>
 <pre><code class="language-txt">;Level 1
 __###___
@@ -262,7 +262,48 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
+<h2 id="行程编码run-length-encoding"><a class="header" href="#行程编码run-length-encoding">行程编码(Run length encoding)</a></h2>
+<p>行程编码(Run length encoding, RLE)经常被用于压缩推箱子的关卡和解决方案.</p>
+<pre><code class="language-txt">###
+#.###
+#*$ #
+# @ #
+#####
+</code></pre>
+<p>经 RLE 编码后可得:</p>
+<pre><code class="language-txt">3#
+#.3#
+#*$-#
+#--@#
+5#
+</code></pre>
+<p>可以看出, 虽然编码后的关卡有更小的体积, 但不再能直观地看出关卡的结构.</p>
+<p>RLE 编码后的关卡通常还会使用 <code>|</code> 来分割行, 而非 <code>\n</code>. 使其看上去更加紧凑:</p>
+<pre><code class="language-txt">3#|#.3#|#*$-#|#--@#|5#
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="解析"><a class="header" href="#解析">解析</a></h1>
+<h2 id="单个关卡解析"><a class="header" href="#单个关卡解析">单个关卡解析</a></h2>
+<h2 id="多个关卡解析"><a class="header" href="#多个关卡解析">多个关卡解析</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="标准化"><a class="header" href="#标准化">标准化</a></h1>
+<p>TODO</p>
+<h2 id="激进的标准化"><a class="header" href="#激进的标准化">激进的标准化</a></h2>
+<p>激进的标准化可能改变关卡的解.
+以最简单的关卡为例:</p>
+<pre><code class="language-txt">#####
+#@$.#
+#####
+</code></pre>
+<p>因为玩家开始的位置三面有墙, 位于死胡同, 只能向右移动. 得到结果:</p>
+<pre><code class="language-txt">#####
+# @*#
+#####
+</code></pre>
+<p>玩家左侧死胡同属于无用的区域, 使用墙体填充. 玩家右侧位于目标上的箱子处于死锁状态, 属于无用的箱子和目标, 使用墙体填充. 最后去除多余的墙体得到激进的标准化结果:</p>
+<pre><code class="language-txt">###
+#@#
+###
+</code></pre>
+<p>这是一个最简单的非标准关卡, 因为其没有箱子和目标, 解为空.</p>
 
                     </main>
 
