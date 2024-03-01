@@ -179,7 +179,7 @@
                         <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
 以关卡 <code>Boxworld #1</code> 为例:</p>
-<img src="../assets/boxworld_1.png" alt="Boxworld #1" width="70%" style="display: block; margin: 0 auto"/>
+<p><img src="../assets/boxworld_1.png" alt="Boxworld #1" /></p>
 <p>其 XSB 格式关卡的数据如下:</p>
 <pre><code class="language-txt">;Level 1
 __###___
@@ -246,7 +246,7 @@ pub struct Map {
 </code></pre>
 <p>因为只需要操作一个数组(而非 n 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
 而且能确保动态数组的元素是紧密排列的, 根据数据局部性原理, 读取数据的性能通常会更好.</p>
-<p>在访问地图元素时依然可以使用二维坐标.</p>
+<p>重载下标运算符, 以便后续直接通过二维坐标访问地图元素.</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
     type Output = Tiles;
     fn index(&amp;self, position: Vector2&lt;i32&gt;) -&gt; &amp;Tiles {
