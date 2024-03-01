@@ -179,6 +179,7 @@
                         <h1 id="构建"><a class="header" href="#构建">构建</a></h1>
 <h2 id="从字符串构建单个关卡"><a class="header" href="#从字符串构建单个关卡">从字符串构建单个关卡</a></h2>
 <p>关卡解析可以分为两部分: 地图解析和元数据/注释解析.</p>
+<h3 id="解析关卡数据"><a class="header" href="#解析关卡数据">解析关卡数据</a></h3>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -277,7 +278,95 @@
 <p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 除了存储解析到的注释和元数据, 没有额外的动态内存分配.
 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
 注释被当成了一个键为 "comments" 的元数据.</p>
-<p>TODO: 解析地图数据 <code>Map::from_str</code></p>
+<h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
+<p>解析地图数据分为两个部分: 计算地图尺寸和解析地图数据.</p>
+<pre><code class="language-rs">impl Map {
+    pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseMapError&gt; {
+        debug_assert!(!str.trim().is_empty(), "string is empty");
+
+        // Calculate map dimensions and indentation
+        let mut indent = i32::MAX;
+        let mut dimensions = Vector2::&lt;i32&gt;::zeros();
+        let mut buffer = String::with_capacity(str.len());
+        for line in str.split(['\n', '|']) {
+            let mut line = line.trim_end().to_string();
+            if line.is_empty() {
+                continue;
+            }
+            // If the `line` contains digits, perform RLE decoding
+            if line.chars().any(char::is_numeric) {
+                line = rle_decode(&amp;line).unwrap();
+            }
+            dimensions.x = dimensions.x.max(line.len() as i32);
+            dimensions.y += 1;
+            indent = indent.min(line.chars().take_while(char::is_ascii_whitespace).count() as i32);
+            buffer += &amp;(line + "\n");
+        }
+        dimensions.x -= indent;
+
+        let mut instance = Map::with_dimensions(dimensions);
+
+        // Parse map data
+        let mut player_position: Option&lt;Vector2&lt;_&gt;&gt; = None;
+        for (y, line) in buffer.lines().enumerate() {
+            // Trim map indentation
+            let line = &amp;line[indent as usize..];
+            for (x, char) in line.chars().enumerate() {
+                let position = Vector2::new(x as i32, y as i32);
+                instance[position] = match char {
+                    ' ' | '-' | '_' =&gt; Tiles::empty(),
+                    '#' =&gt; Tiles::Wall,
+                    '$' =&gt; {
+                        instance.box_positions.insert(position);
+                        Tiles::Box
+                    }
+                    '.' =&gt; {
+                        instance.goal_positions.insert(position);
+                        Tiles::Goal
+                    }
+                    '@' =&gt; {
+                        if player_position.is_some() {
+                            return Err(ParseMapError::MoreThanOnePlayer);
+                        }
+                        player_position = Some(position);
+                        Tiles::Player
+                    }
+                    '*' =&gt; {
+                        instance.box_positions.insert(position);
+                        instance.goal_positions.insert(position);
+                        Tiles::Box | Tiles::Goal
+                    }
+                    '+' =&gt; {
+                        if player_position.is_some() {
+                            return Err(ParseMapError::MoreThanOnePlayer);
+                        }
+                        player_position = Some(position);
+                        instance.goal_positions.insert(position);
+                        Tiles::Player | Tiles::Goal
+                    }
+                    _ =&gt; return Err(ParseMapError::InvalidCharacter(char)),
+                };
+            }
+        }
+        if instance.box_positions.len() != instance.goal_positions.len() {
+            return Err(ParseMapError::BoxGoalMismatch);
+        }
+        if instance.box_positions.is_empty() {
+            return Err(ParseMapError::NoBoxOrGoal);
+        }
+        if let Some(player_position) = player_position {
+            instance.player_position = player_position;
+        } else {
+            return Err(ParseMapError::NoPlayer);
+        }
+
+        instance.add_floors(instance.player_position);
+
+        Ok(instance)
+    }
+    // ... SKIP ...
+}
+</code></pre>
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
