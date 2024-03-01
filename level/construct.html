@@ -376,17 +376,7 @@
 </code></pre>
 <h3 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h3>
 <p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
-错误包括:</p>
-<pre><code class="language-rs">pub enum ParseMapError {
-    NoPlayer,
-    MoreThanOnePlayer,
-    BoxGoalMismatch,
-    NoBoxOrGoal,
-    InvalidCharacter(char),
-    // ... SKIP ...
-}
-</code></pre>
-<p>这些错误均可以在解析关卡数据的时候顺带检查, 不会带来太大的额外开销.</p>
+许多错误均可以在解析数据的时候顺带检查, 只会带来很小的额外开销.</p>
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
@@ -447,7 +437,7 @@
     }
 }
 </code></pre>
-<p><code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
+<p>关联函数 <code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
 <li>稍加修改便可以支持从大文件中流式读取关卡.</li>
