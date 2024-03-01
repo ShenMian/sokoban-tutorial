@@ -185,7 +185,7 @@
 </ul>
 <p>本文将由浅入深的介绍上面功能并提供实现的思路.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
-<p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 支持注释和附加元数据.<br />
+<p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
 以关卡 <code>Boxworld #1</code> 为例:</p>
 <img src="level/../assets/boxworld_1.png" alt="Boxworld #1" width="70%" style="display: block; margin: 0 auto"/>
 <p>其 XSB 格式关卡的数据如下:</p>
@@ -217,7 +217,7 @@ Author: Thinking Rabbit
 </tbody></table>
 </div>
 <h2 id="表示地图"><a class="header" href="#表示地图">表示地图</a></h2>
-<p>地图共包含 5 种元素, 其中部分元素可能叠加(比如玩家位于目标上). 因此可以使用比特位来表示地图中的每个格子包含哪些元素.
+<p>地图共包含 5 种元素, 这些元素可能在一个格子内叠加(比如玩家位于目标上). 因此可以使用比特位来表示地图中的每个格子包含哪些元素.
 创建用于表示地图元素的比特位:</p>
 <pre><code class="language-rs">use bitflags::bitflags;
 
@@ -231,7 +231,7 @@ bitflags! {
     }
 }
 </code></pre>
-<p>使用一维数组来存储地图数据并使用二维向量存储地图尺寸.</p>
+<p>使用一维数组来存储地图数据, 使用二维向量(数学)存储地图尺寸.</p>
 <pre><code class="language-rs">use nalgebra::Vector2;
 
 pub struct Map {
@@ -240,7 +240,7 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组而非二维数组是因为一维数组更平坦, 进行部分操作时更简单高效:</p>
+<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效:</p>
 <pre><code class="language-rs">impl Map {
     pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
         Self {
@@ -252,6 +252,8 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
+<p>因为只需要操作一个数组(而非 n 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
+而且能确保动态数组的元素是紧密排列的, 根据数据局部性原理, 读取数据的性能通常会更好.</p>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
 元数据是一个键值对的集合, 因此可以使用 HashMap 来存储.
@@ -323,7 +325,7 @@ pub struct Map {
 <li>
 <p>对旋转和翻转进行标准化.</p>
 <p>将经过不同旋转和翻转的关卡标准化为同一个关卡.
-一个简单的方法是对不同旋转和翻转的地图求哈希值, 然后选择哈希值最小的地图.</p>
+一个简单的方法是计算不同旋转和翻转后地图的哈希值，选择哈希值最小的版本.</p>
 </li>
 <li>
 <p>玩家初始位置标准化.</p>
