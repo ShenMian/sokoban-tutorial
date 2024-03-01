@@ -368,8 +368,9 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="构建"><a class="header" href="#构建">构建</a></h1>
 <h2 id="从字符串构建单个关卡"><a class="header" href="#从字符串构建单个关卡">从字符串构建单个关卡</a></h2>
-<p>关卡解析可以分为两部分: 地图解析和元数据/注释解析.</p>
+<p>关卡解析可以分为两部分: 地图解析/元数据和注释解析.</p>
 <h3 id="解析关卡数据"><a class="header" href="#解析关卡数据">解析关卡数据</a></h3>
+<p>关联函数 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -466,7 +467,6 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 }
 </code></pre>
 <p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 在此过程中, 除了存储解析得到的注释和元数据外, 不涉及额外的动态内存分配.
-关联函数 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责.
 解析得到的注释将被视作键为 "comments" 的元数据.</p>
 <h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
 <p>解析地图数据可以分为以下几个部分:</p>
