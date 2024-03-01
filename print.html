@@ -250,7 +250,7 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效:</p>
+<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效. 如:</p>
 <pre><code class="language-rs">impl Map {
     pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
         Self {
@@ -458,17 +458,17 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 除了存储解析到的注释和元数据, 没有额外的动态内存分配.
-<code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
-注释被当成了一个键为 "comments" 的元数据.</p>
+<p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 在此过程中, 除了存储解析得到的注释和元数据外, 不涉及额外的动态内存分配.
+关联函数 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责.
+解析得到的注释将被视作键为 "comments" 的元数据.</p>
 <h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
-<li>裁剪空白部分. 单行右侧的空白字符可以剔除, 左侧则需要统计地图左侧的缩进有几个字符(每行左侧空白字符的最小数), 之后再剔除.</li>
-<li>计算地图尺寸.</li>
-<li>如果数据经过 RLE 编码, 进行解码.</li>
-<li>解析地图数据, 将转换后的数据写入缓冲区中.</li>
-<li>填充地板. 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
+<li><strong>裁剪空白部分</strong>: 首先, 移除每行右侧的空白字符. 随后, 确定地图左侧的最小缩进量(即每行左侧空白字符的最小数量), 并据此剔除左侧的多余空白.</li>
+<li><strong>计算地图尺寸</strong>.</li>
+<li><strong>RLE 解码</strong>: 如果地图数据经过 RLE 编码, 进行解码操作.</li>
+<li><strong>解析地图数据</strong>: 将转换后的数据写入缓冲区中.</li>
+<li><strong>填充地板</strong>. 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
 </ol>
 <pre><code class="language-rs">impl Map {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseMapError&gt; {
@@ -559,7 +559,7 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 </code></pre>
 <h3 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h3>
 <p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
-<code>ParseMapError</code> 错误包括:</p>
+错误包括:</p>
 <pre><code class="language-rs">pub enum ParseMapError {
     NoPlayer,
     MoreThanOnePlayer,
@@ -640,19 +640,19 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
 <li>
-<p>计算地图尺寸. 等于通过玩家移动范围加 1 (外墙).</p>
+<p><strong>计算地图尺寸</strong>: 等于通过玩家移动范围加 1 (外墙).</p>
 </li>
 <li>
-<p>模拟玩家移动. 记录三组数据, 分别是: 当前箱子位置和箱子初始位置.</p>
+<p><strong>模拟玩家移动</strong>: 记录三组数据, 分别是: 当前箱子位置和箱子初始位置.</p>
 <p>玩家移动到的位置设为地板.
 若玩家推动了箱子, 且该箱子的位置不再当前箱子位置中, 添加到箱子位置中.
 箱子当前位置在模拟结束后, 当前箱子位置即最终箱子位置. 若解决方案正确, 那么最终箱子位置与目标位置相同.</p>
 </li>
 <li>
-<p>在地板周围添加墙.</p>
+<p><strong>在地板周围添加墙</strong>.</p>
 </li>
 <li>
-<p>在构建的关卡里验证解决方案. 若验证不通过, 则表示解决方案不正确.</p>
+<p><strong>在构建的关卡里验证解决方案</strong>: 若验证不通过, 则表示解决方案不正确.</p>
 </li>
 </ol>
 <pre><code class="language-rs">impl Map {

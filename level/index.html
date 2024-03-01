@@ -233,7 +233,7 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效:</p>
+<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效. 如:</p>
 <pre><code class="language-rs">impl Map {
     pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
         Self {
