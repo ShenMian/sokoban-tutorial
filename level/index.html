@@ -271,6 +271,8 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     // ... SKIP ...
 }
 </code></pre>
+<p>将地图从关卡中拆分是因为地图涉及大量的关联函数, 如果都放在 <code>Level</code> 里会导致其变得过于庞大.<br />
+为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并将 <code>Level</code> 的 Deref 操作指向 <code>Map</code>. 并通过实现 <a href="https://doc.rust-lang.org/std/ops/trait.Deref.html">Deref trait</a>, 使得用户能够透明地引用到 <code>Level</code> 内部的 Map.</p>
 <h2 id="行程编码run-length-encoding"><a class="header" href="#行程编码run-length-encoding">行程编码(Run-length encoding)</a></h2>
 <p><a href="https://en.wikipedia.org/wiki/Run-length_encoding">行程编码</a>(run-length encoding, RLE)经常被用于压缩推箱子的关卡和解决方案.</p>
 <pre><code class="language-txt">###
