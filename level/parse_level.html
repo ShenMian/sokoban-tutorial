@@ -178,11 +178,16 @@
 <p>关卡解析可以分为两部分: 地图解析和元数据/注释解析.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
-        let mut map_string = String::new();
+        let mut map_offset = 0;
+        let mut map_len = 0;
         let mut metadata = HashMap::new();
         let mut comments = String::new();
         let mut in_block_comment = false;
-        for line in str.split(['\n', '|']) {
+        for line in str.split_inclusive(['\n', '|']) {
+            if map_len == 0 {
+                map_offset += line.len();
+            }
+
             let trimmed_end_line = line.trim_end();
             let trimmed_line = trimmed_end_line.trim_start();
             if trimmed_line.is_empty() {
@@ -230,7 +235,7 @@
 
             // Discard line that are not map data (with RLE)
             if !is_xsb_string(trimmed_end_line) {
-                if !map_string.is_empty() {
+                if map_len != 0 {
                     return Err(ParseMapError::InvalidCharacter(
                         trimmed_end_line
                             .chars()
@@ -242,8 +247,10 @@
                 continue;
             }
 
-            map_string += &amp;trimmed_end_line;
-            map_string.push('\n');
+            if map_len == 0 {
+                map_offset -= line.len();
+            }
+            map_len += line.len();
         }
         if !comments.is_empty() {
             debug_assert!(!metadata.contains_key("comments"));
@@ -252,12 +259,12 @@
         if in_block_comment {
             return Err(ParseLevelError::UnterminatedBlockComment);
         }
-        if map_string.is_empty() {
+        if map_len == 0 {
             return Err(ParseLevelError::NoMap);
         }
 
         Ok(Self {
-            map: Map::from_str(&amp;map_string)?,
+            map: Map::from_str(&amp;str[map_offset..map_offset + map_len])?,
             metadata,
             // ... SKIP ...
         })
