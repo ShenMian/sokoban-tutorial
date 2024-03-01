@@ -461,7 +461,14 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
 注释被当成了一个键为 "comments" 的元数据.</p>
 <h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
-<p>解析地图数据分为两个部分: 计算地图尺寸和解析地图数据.</p>
+<p>解析地图数据分为以下几个部分:</p>
+<ol>
+<li>裁剪空白部分. 单行右侧的空白字符可以剔除, 左侧则需要统计地图左侧的缩进有几个字符(每行左侧空白字符的最小数), 之后再剔除.</li>
+<li>计算地图尺寸.</li>
+<li>如果数据经过 RLE 编码, 进行解码.</li>
+<li>解析地图数据, 将转换后的数据写入缓冲区中.</li>
+<li>填充地板. 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
+</ol>
 <pre><code class="language-rs">impl Map {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseMapError&gt; {
         debug_assert!(!str.trim().is_empty(), "string is empty");
@@ -549,6 +556,19 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     // ... SKIP ...
 }
 </code></pre>
+<h3 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h3>
+<p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
+<code>ParseMapError</code> 错误包括:</p>
+<pre><code class="language-rs">pub enum ParseMapError {
+    NoPlayer,
+    MoreThanOnePlayer,
+    BoxGoalMismatch,
+    NoBoxOrGoal,
+    InvalidCharacter(char),
+    // ... SKIP ...
+}
+</code></pre>
+<p>这些错误均可以在解析关卡数据的时候顺带检查, 不会带来太大的额外开销.</p>
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
