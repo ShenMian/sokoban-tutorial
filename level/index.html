@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><a href="../glossary.html"><strong aria-hidden="true">2.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse_level.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../glossary.html"><strong aria-hidden="true">3.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -243,6 +243,20 @@ pub struct Map {
 </code></pre>
 <p>因为只需要操作一个数组(而非 n 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
 而且能确保动态数组的元素是紧密排列的, 根据数据局部性原理, 读取数据的性能通常会更好.</p>
+<p>在访问地图元素时依然可以使用二维坐标.</p>
+<pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
+    type Output = Tiles;
+    fn index(&amp;self, position: Vector2&lt;i32&gt;) -&gt; &amp;Tiles {
+        &amp;self.data[(position.y * self.dimensions.x + position.x) as usize]
+    }
+}
+
+impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
+    fn index_mut(&amp;mut self, position: Vector2&lt;i32&gt;) -&gt; &amp;mut Tiles {
+        &amp;mut self.data[(position.y * self.dimensions.x + position.x) as usize]
+    }
+}
+</code></pre>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
 元数据是一个键值对的集合, 因此可以使用 HashMap 来存储.
@@ -281,7 +295,7 @@ pub struct Map {
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../level/parse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../level/parse_level.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -295,7 +309,7 @@ pub struct Map {
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../level/parse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../level/parse_level.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

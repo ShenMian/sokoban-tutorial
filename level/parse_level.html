@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html" class="active"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><a href="../glossary.html"><strong aria-hidden="true">2.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse_level.html" class="active"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.2.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../glossary.html"><strong aria-hidden="true">3.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -175,7 +175,102 @@
                     <main>
                         <h1 id="解析"><a class="header" href="#解析">解析</a></h1>
 <h2 id="单个关卡解析"><a class="header" href="#单个关卡解析">单个关卡解析</a></h2>
+<p>关卡解析可以分为两部分: 地图解析和元数据/注释解析.</p>
+<pre><code class="language-rs">impl Level {
+    pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
+        let mut map_string = String::new();
+        let mut metadata = HashMap::new();
+        let mut comments = String::new();
+        let mut in_block_comment = false;
+        for line in str.split(['\n', '|']) {
+            let trimmed_end_line = line.trim_end();
+            let trimmed_line = trimmed_end_line.trim_start();
+            if trimmed_line.is_empty() {
+                continue;
+            }
+
+            // Parse comments
+            if in_block_comment {
+                if trimmed_line.to_lowercase().starts_with("comment-end") {
+                    // Exit block comment
+                    in_block_comment = false;
+                    continue;
+                }
+                comments += trimmed_line;
+                comments.push('\n');
+                continue;
+            }
+            if let Some(comment) = trimmed_line.strip_prefix(';') {
+                comments += comment.trim_start();
+                comments.push('\n');
+                continue;
+            }
+
+            // Parse metadata
+            if let Some((key, value)) = trimmed_line.split_once(':') {
+                let key = key.trim().to_lowercase();
+                let value = value.trim();
+
+                if key == "comment" {
+                    if value.is_empty() {
+                        // Enter block comment
+                        in_block_comment = true;
+                    } else {
+                        comments += value;
+                        comments.push('\n');
+                    }
+                    continue;
+                }
+
+                if metadata.insert(key.clone(), value.to_string()).is_some() {
+                    return Err(ParseLevelError::DuplicateMetadata(key));
+                }
+                continue;
+            }
+
+            // Discard line that are not map data (with RLE)
+            if !is_xsb_string(trimmed_end_line) {
+                if !map_string.is_empty() {
+                    return Err(ParseMapError::InvalidCharacter(
+                        trimmed_end_line
+                            .chars()
+                            .find(|&amp;c| !is_xsb_symbol_with_rle(c))
+                            .unwrap(),
+                    )
+                    .into());
+                }
+                continue;
+            }
+
+            map_string += &amp;trimmed_end_line;
+            map_string.push('\n');
+        }
+        if !comments.is_empty() {
+            debug_assert!(!metadata.contains_key("comments"));
+            metadata.insert("comments".to_string(), comments);
+        }
+        if in_block_comment {
+            return Err(ParseLevelError::UnterminatedBlockComment);
+        }
+        if map_string.is_empty() {
+            return Err(ParseLevelError::NoMap);
+        }
+
+        Ok(Self {
+            map: Map::from_str(&amp;map_string)?,
+            metadata,
+            actions: Actions::default(),
+            undone_actions: Actions::default(),
+        })
+    }
+    // ... SKIP ...
+}
+</code></pre>
+<p><code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
+注释被当成了一个键为 "comments" 的元数据.</p>
 <h2 id="多个关卡解析"><a class="header" href="#多个关卡解析">多个关卡解析</a></h2>
+<p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
+这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 
                     </main>
