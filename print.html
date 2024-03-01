@@ -572,7 +572,69 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
-<p>TODO</p>
+<pre><code class="language-rs">impl Map {
+    pub fn load(str: &amp;str) -&gt; impl Iterator&lt;Item = Result&lt;Self, ParseLevelError&gt;&gt; + '_ {
+        Self::to_groups(str).map(Self::from_str)
+    }
+
+    pub fn load_nth(str: &amp;str, id: usize) -&gt; Result&lt;Self, ParseLevelError&gt; {
+        let group = Self::to_groups(str).nth(id - 1).unwrap();
+        Self::from_str(group)
+    }
+
+    fn to_groups(str: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; + '_ {
+        str.split_inclusive(['\n', '|']).filter_map({
+            let mut offset = 0;
+            let mut len = 0;
+            let mut in_block_comment = false;
+            let mut has_map_data = false;
+            move |line| {
+                len += line.len();
+
+                let trimmed_line = line.trim();
+                if !in_block_comment &amp;&amp; (trimmed_line.is_empty() || !line.ends_with(['\n', '|'])) {
+                    let group = &amp;str[offset..offset + len - 1];
+                    offset += len;
+                    len = 0;
+                    if group.is_empty() || !has_map_data {
+                        return None;
+                    }
+                    has_map_data = false;
+                    Some(group)
+                } else {
+                    if in_block_comment {
+                        if trimmed_line.to_lowercase().starts_with("comment-end") {
+                            // Exit block comment
+                            in_block_comment = false;
+                        }
+                        return None;
+                    }
+                    if let Some(value) = trimmed_line.to_lowercase().strip_prefix("comment:") {
+                        if value.trim_start().is_empty() {
+                            // Enter block comment
+                            in_block_comment = true;
+                        }
+                        return None;
+                    }
+                    if has_map_data || !is_xsb_string(trimmed_line) {
+                        return None;
+                    }
+
+                    has_map_data = true;
+
+                    None
+                }
+            }
+        })
+    }
+}
+</code></pre>
+<p><code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
+<p>这种实现方式有以下有点:</p>
+<ul>
+<li>稍加修改便可以支持从大文件中流式读取关卡.</li>
+<li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析.</li>
+</ul>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
