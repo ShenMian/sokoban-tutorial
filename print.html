@@ -312,8 +312,7 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
                 map_offset += line.len();
             }
 
-            let trimmed_end_line = line.trim_end();
-            let trimmed_line = trimmed_end_line.trim_start();
+            let trimmed_line = line.trim();
             if trimmed_line.is_empty() {
                 continue;
             }
@@ -358,10 +357,10 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
             }
 
             // Discard line that are not map data (with RLE)
-            if !is_xsb_string(trimmed_end_line) {
+            if !is_xsb_string(trimmed_line) {
                 if map_len != 0 {
                     return Err(ParseMapError::InvalidCharacter(
-                        trimmed_end_line
+                        trimmed_line
                             .chars()
                             .find(|&amp;c| !is_xsb_symbol_with_rle(c))
                             .unwrap(),
