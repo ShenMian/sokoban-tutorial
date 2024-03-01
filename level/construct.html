@@ -279,7 +279,7 @@
 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
 注释被当成了一个键为 "comments" 的元数据.</p>
 <h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
-<p>解析地图数据分为以下几个部分:</p>
+<p>解析地图数据可以分为以下几个部分:</p>
 <ol>
 <li>裁剪空白部分. 单行右侧的空白字符可以剔除, 左侧则需要统计地图左侧的缩进有几个字符(每行左侧空白字符的最小数), 之后再剔除.</li>
 <li>计算地图尺寸.</li>
@@ -392,7 +392,105 @@
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
 <p>TODO</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
-<p>TODO</p>
+<p>解析地图数据可以分为以下几个部分:</p>
+<ol>
+<li>
+<p>计算地图尺寸. 等于通过玩家移动范围加 1 (外墙).</p>
+</li>
+<li>
+<p>模拟玩家移动. 记录三组数据, 分别是: 当前箱子位置和箱子初始位置.</p>
+<p>玩家移动到的位置设为地板.
+若玩家推动了箱子, 且该箱子的位置不再当前箱子位置中, 添加到箱子位置中.
+箱子当前位置在模拟结束后, 当前箱子位置即最终箱子位置. 若解决方案正确, 那么最终箱子位置与目标位置相同.</p>
+</li>
+<li>
+<p>在地板周围添加墙.</p>
+</li>
+<li>
+<p>在构建的关卡里验证解决方案. 若验证不通过, 则表示解决方案不正确.</p>
+</li>
+</ol>
+<pre><code class="language-rs">impl Map {
+    pub fn from_actions(actions: &amp;Actions) -&gt; Result&lt;Self, ParseMapError&gt; {
+        let mut min_position = Vector2::&lt;i32&gt;::zeros();
+        let mut max_position = Vector2::&lt;i32&gt;::zeros();
+
+        // Calculate the dimensions of the player's movement range
+        let mut player_position = Vector2::zeros();
+        for action in &amp;**actions {
+            player_position += &amp;action.direction().into();
+            min_position = min_position.zip_map(&amp;player_position, |a, b| a.min(b));
+            max_position = max_position.zip_map(&amp;player_position, |a, b| a.max(b));
+        }
+
+        // Reserve space for walls
+        min_position -= Vector2::new(1, 1);
+        max_position += Vector2::new(1, 1);
+
+        if min_position.x &lt; 0 {
+            player_position.x = min_position.x.abs();
+        }
+        if min_position.y &lt; 0 {
+            player_position.y = min_position.y.abs();
+        }
+
+        let dimensions = min_position.abs() + max_position.abs() + Vector2::new(1, 1);
+        let mut instance = Map::with_dimensions(dimensions);
+
+        // The initial position of boxes are the box positions, and the final position
+        // of boxes are the goal positions
+        let mut initial_box_positions = HashSet::new();
+        let mut final_box_positions = HashSet::new();
+
+        let mut final_player_position = player_position;
+        for action in &amp;**actions {
+            instance[final_player_position] = Tiles::Floor;
+            final_player_position += &amp;action.direction().into();
+            if action.is_push() {
+                // The player pushed the box when moving, which means there is a box at the
+                // player's current location
+                if !final_box_positions.contains(&amp;final_player_position) {
+                    final_box_positions.insert(final_player_position);
+                    initial_box_positions.insert(final_player_position);
+                }
+                final_box_positions.remove(&amp;final_player_position);
+                final_box_positions.insert(final_player_position + &amp;action.direction().into());
+            }
+        }
+        instance[final_player_position] = Tiles::Floor;
+
+        let box_positions = initial_box_positions;
+        let goal_positions = final_box_positions;
+        if box_positions.is_empty() {
+            return Err(ParseMapError::NoBoxOrGoal);
+        }
+
+        instance[player_position].insert(Tiles::Player);
+        for box_position in &amp;box_positions {
+            instance[*box_position].insert(Tiles::Box);
+        }
+        for goal_position in &amp;goal_positions {
+            instance[*goal_position].insert(Tiles::Goal);
+        }
+
+        instance.add_walls_around_floors();
+
+        instance.player_position = player_position;
+        instance.box_positions = box_positions;
+        instance.goal_positions = goal_positions;
+
+        // Verify solution
+        let mut level = Level::from_map(instance.clone());
+        for action in &amp;**actions {
+            level
+                .do_move(action.direction())
+                .map_err(|_| ParseMapError::InvalidActions)?;
+        }
+
+        Ok(instance)
+    }
+}
+</code></pre>
 
                     </main>
 
