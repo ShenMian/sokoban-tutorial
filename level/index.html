@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>介绍 - Sokoban Tutorial</title>
+        <title>关卡 - Sokoban Tutorial</title>
 
 
         <!-- Custom HTML head -->
@@ -12,21 +12,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon.svg">
-        <link rel="shortcut icon" href="favicon.png">
-        <link rel="stylesheet" href="css/variables.css">
-        <link rel="stylesheet" href="css/general.css">
-        <link rel="stylesheet" href="css/chrome.css">
-        <link rel="stylesheet" href="css/print.css" media="print">
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="fonts/fonts.css">
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
 
@@ -35,7 +35,7 @@
     <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
-            var path_to_root = "";
+            var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -144,7 +144,7 @@
                     <h1 class="menu-title">Sokoban Tutorial</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -173,23 +173,55 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
-<p>本文将描述如何实现一个推箱子游戏, 代码示例使用 Rust 语言编写.
-推箱子游戏具有以下特点:</p>
+                        <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
+<p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 支持注释和附加元数据.<br />
+以关卡 <code>Boxworld #1</code> 为例, 其 XSB 格式关卡的数据如下:</p>
+<pre><code class="language-txt">;Level 1
+__###___
+__#.#___
+__#-####
+###$-$.#
+#.-$@###
+####$#__
+___#.#__
+___###__
+Title: Boxworld 1
+Author: Thinking Rabbit
+</code></pre>
 <ul>
-<li>规则简单. 可以专注于实现功能, 而非理解复杂的游戏规则和机制.</li>
-<li>基本功能易于实现.</li>
-<li>有具有挑战的高级功能. 比如纯鼠标控制(也称为点推), 逆推等.</li>
-<li>有需要深入钻研的求解器, 用于自动求解推箱子关卡.</li>
+<li>第 1 行, 以 <code>;</code> 开头的单行注释.</li>
+<li>第 2-9 行, 使用 ASCII 字符表示的地图数据.</li>
+<li>第 10-11 行, 包括关卡标题和作者的元数据.</li>
 </ul>
-<p>本文将由浅入深的介绍上面功能并提供实现的思路.</p>
+<div class="table-wrapper"><table><thead><tr><th>ASCII 符号</th><th>描述</th></tr></thead><tbody>
+<tr><td><code>&lt;SPACE&gt;</code>/<code>-</code>/<code>_</code></td><td>Floor</td></tr>
+<tr><td><code>#</code></td><td>Wall</td></tr>
+<tr><td><code>$</code></td><td>Box</td></tr>
+<tr><td><code>.</code></td><td>Goal</td></tr>
+<tr><td><code>@</code></td><td>Player</td></tr>
+<tr><td><code>+</code></td><td>Player on goal</td></tr>
+<tr><td><code>*</code></td><td>Box on goal</td></tr>
+</tbody></table>
+</div>
+<p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
+元数据是一个键值对的集合, 因此可以使用 HashMap 来存储.
+可以使用下面的结构体存储关卡数据:</p>
+<pre><code class="language-rs">pub struct Level {
+    map: Map,
+    metadata: HashMap&lt;String, String&gt;,
+    ... SKIP ...
+}
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="level/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../level/parse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -199,8 +231,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="level/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../level/parse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -215,13 +250,13 @@
         </script>
 
 
-        <script src="elasticlunr.min.js"></script>
-        <script src="mark.min.js"></script>
-        <script src="searcher.js"></script>
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
 
-        <script src="clipboard.min.js"></script>
-        <script src="highlight.js"></script>
-        <script src="book.js"></script>
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
 
         <!-- Custom JS scripts -->
 
