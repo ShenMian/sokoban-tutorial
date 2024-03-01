@@ -88,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html" class="active"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/parse.html"><strong aria-hidden="true">1.1.</strong> 解析</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">1.2.</strong> 标准化</div></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -175,7 +175,9 @@
                     <main>
                         <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 支持注释和附加元数据.<br />
-以关卡 <code>Boxworld #1</code> 为例, 其 XSB 格式关卡的数据如下:</p>
+以关卡 <code>Boxworld #1</code> 为例:</p>
+<p><img src="../assets/boxworld_1.png" alt="Boxworld #1" /></p>
+<p>其 XSB 格式关卡的数据如下:</p>
 <pre><code class="language-txt">;Level 1
 __###___
 __#.#___
@@ -203,13 +205,50 @@ Author: Thinking Rabbit
 <tr><td><code>*</code></td><td>Box on goal</td></tr>
 </tbody></table>
 </div>
+<h2 id="表示地图"><a class="header" href="#表示地图">表示地图</a></h2>
+<p>地图共包含 5 种元素, 其中部分元素可能叠加(比如玩家位于目标上). 因此可以使用比特位来表示地图中的每个格子包含哪些元素.
+创建用于表示地图元素的比特位:</p>
+<pre><code class="language-rs">use bitflags::bitflags;
+
+bitflags! {
+    pub struct Tiles: u8 {
+        const Floor = 1 &lt;&lt; 0;
+        const Wall = 1 &lt;&lt; 1;
+        const Box = 1 &lt;&lt; 2;
+        const Goal = 1 &lt;&lt; 3;
+        const Player = 1 &lt;&lt; 4;
+    }
+}
+</code></pre>
+<p>使用一维数组来存储地图数据并使用二维向量存储地图尺寸.</p>
+<pre><code class="language-rs">use nalgebra::Vector2;
+
+pub struct Map {
+    data: Vec&lt;Tiles&gt;,
+    dimensions: Vector2&lt;i32&gt;,
+    // ... SKIP ...
+}
+</code></pre>
+<p>使用一维数组而非二维数组是因为一维数组更平坦, 进行部分操作时更简单高效:</p>
+<pre><code class="language-rs">impl Map {
+    pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
+        Self {
+            data: vec![Tiles::empty(); (dimensions.x * dimensions.y) as usize],
+            dimensions,
+            // ... SKIP ...
+        }
+    }
+    // ... SKIP ...
+}
+</code></pre>
+<h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
 元数据是一个键值对的集合, 因此可以使用 HashMap 来存储.
 可以使用下面的结构体存储关卡数据:</p>
 <pre><code class="language-rs">pub struct Level {
     map: Map,
     metadata: HashMap&lt;String, String&gt;,
-    ... SKIP ...
+    // ... SKIP ...
 }
 </code></pre>
 
