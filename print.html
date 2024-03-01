@@ -396,7 +396,8 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     // ... SKIP ...
 }
 </code></pre>
-<p><code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
+<p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 除了存储解析到的注释和元数据, 没有额外的动态内存分配.
+<code>Level::from_str</code> 只负责解析元数据和注释, 地图数据将交给 <code>Map::from_str</code> 进一步解析.
 注释被当成了一个键为 "comments" 的元数据.</p>
 <h2 id="多个关卡解析"><a class="header" href="#多个关卡解析">多个关卡解析</a></h2>
 <p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
