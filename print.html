@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/run_length.html"><strong aria-hidden="true">1.1.</strong> 行程编码</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 求解器</div></li><li class="chapter-item expanded "><a href="glossary.html"><strong aria-hidden="true">4.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/run_length_encoding.html"><strong aria-hidden="true">1.2.</strong> 行程编码</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.3.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.4.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 求解器</div></li><li class="chapter-item expanded "><a href="glossary.html"><strong aria-hidden="true">4.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -231,6 +231,60 @@ Author: Thinking Rabbit
 </tbody></table>
 </div>
 <p>除了上面的元数据, 还有一种用于多行注释的特殊元数据. 内容通过 <code>comment:</code> 和 <code>comment-end:</code> 包裹.</p>
+<p>关卡可能通过行程编码压缩, 详情请参见<a href="level/run_length.html">行程编码</a>.</p>
+<h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
+<h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
+<p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41" /></p>
+<pre><code class="language-txt">   #####
+   #   #
+ ###   ########
+##  ***    # # #
+ #  * *    ## # #####
+##  ***   ## # ##   ##
+ ###   #### # # #   #
+   #   # # # ####$ $###
+  ##   ## # ##  $...$ ##
+   ##### # ##    .@.  #
+        # # #   $...$ ##
+         ########$ $###
+                #   #
+                #####
+</code></pre>
+<h3 id="存在只有空元素的行"><a class="header" href="#存在只有空元素的行">存在只有空元素的行</a></h3>
+<p><img src="level/../assets/steaming_hot.png" alt="&quot;Steaming Hot&quot; by David Buchweitz" /></p>
+<pre><code class="language-txt">  #      #
+ #   #  #
+  # #  #
+   # #  #
+  #   #  #
+ #   #  #
+  # #  #
+-
+##########
+#........####
+# $$$$$$$#  #
+#.$......#  #
+# $$$$$$ #  #
+#......$+#  #
+#$$$$$$$ #  #
+#        ####
+##########
+</code></pre>
+<h3 id="无完整外墙"><a class="header" href="#无完整外墙">无完整外墙</a></h3>
+<p>部分推箱子程序支持无完整外墙的关卡.<br />
+在本文中, 这种关卡属于无效关卡. 但可以通过为其添加外墙的方式来转换为有效关卡.</p>
+<p><img src="level/../assets/no_walls_level.png" alt="&quot;No walls&quot; by Rincewind" /></p>
+<pre><code class="language-txt">* ** *
+  **
+**@$.*
+  **
+* ** *
+</code></pre>
+<h2 id="参考"><a class="header" href="#参考">参考</a></h2>
+<ul>
+<li><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图"><a class="header" href="#表示地图">表示地图</a></h2>
 <p>地图共包含 5 种元素, 这些元素可能在一个格子内叠加(比如玩家位于目标上).<br />
 最小的数据存储单元字节包含 8 个比特, 足以表示 5 种元素. 因此可以使用一个字节的空间来存储单个地图格子, 其中的每个比特表示一种地图元素.<br />
@@ -296,59 +350,6 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 </code></pre>
 <p>将地图从关卡中拆分是因为地图涉及大量的关联函数, 如果都放在 <code>Level</code> 里会导致其变得过于庞大.<br />
 为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并将 <code>Level</code> 的 Deref 操作指向 <code>Map</code>. 并通过实现 <a href="https://doc.rust-lang.org/std/ops/trait.Deref.html">Deref trait</a>, 使得用户能够透明地引用到 <code>Level</code> 内部的 Map.</p>
-<p>关卡可能通过行程编码压缩, 详情请参见<a href="level/run_length.html">行程编码</a>.</p>
-<h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
-<h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
-<p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41" /></p>
-<pre><code class="language-txt">   #####
-   #   #
- ###   ########
-##  ***    # # #
- #  * *    ## # #####
-##  ***   ## # ##   ##
- ###   #### # # #   #
-   #   # # # ####$ $###
-  ##   ## # ##  $...$ ##
-   ##### # ##    .@.  #
-        # # #   $...$ ##
-         ########$ $###
-                #   #
-                #####
-</code></pre>
-<h3 id="存在只有空元素的行"><a class="header" href="#存在只有空元素的行">存在只有空元素的行</a></h3>
-<p><img src="level/../assets/steaming_hot.png" alt="&quot;Steaming Hot&quot; by David Buchweitz" /></p>
-<pre><code class="language-txt">  #      #
- #   #  #
-  # #  #
-   # #  #
-  #   #  #
- #   #  #
-  # #  #
--
-##########
-#........####
-# $$$$$$$#  #
-#.$......#  #
-# $$$$$$ #  #
-#......$+#  #
-#$$$$$$$ #  #
-#        ####
-##########
-</code></pre>
-<h3 id="无完整外墙"><a class="header" href="#无完整外墙">无完整外墙</a></h3>
-<p>部分推箱子程序支持无完整外墙的关卡.<br />
-在本文中, 这种关卡属于无效关卡. 但可以通过为其添加外墙的方式来转换为有效关卡.</p>
-<p><img src="level/../assets/no_walls_level.png" alt="&quot;No walls&quot; by Rincewind" /></p>
-<pre><code class="language-txt">* ** *
-  **
-**@$.*
-  **
-* ** *
-</code></pre>
-<h2 id="参考"><a class="header" href="#参考">参考</a></h2>
-<ul>
-<li><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a></li>
-</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="行程编码run-length-encoding"><a class="header" href="#行程编码run-length-encoding">行程编码(Run-length encoding)</a></h1>
 <p><a href="https://en.wikipedia.org/wiki/Run-length_encoding">行程编码</a>(run-length encoding, RLE)经常被用于压缩推箱子的关卡和解决方案.</p>
 <pre><code class="language-txt">###
