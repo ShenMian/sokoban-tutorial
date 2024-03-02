@@ -881,7 +881,7 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <p>顾名思义, 求解器是用于自动求解推箱子关卡的程序.</p>
 <p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>最终位置</strong>的路径.
 求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>最终状态</strong>的路径.</p>
-<p>本文将描述如何创建一个基于 A* 算法的求解器.</p>
+<p>本文将描述如何创建一个基于 <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* 搜索算法</a>的求解器.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>顾名思义, 状态用于表示关卡的状态.</p>
 <pre><code class="language-rs">pub struct State {
@@ -901,7 +901,7 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <p>通过启发式算法优先探索最接近最终状态的节点.</p>
 <p>TODO</p>
 <h2 id="优化器"><a class="header" href="#优化器">优化器</a></h2>
-<p>对已知的路径进行本地搜索, 以寻找更佳的路径.</p>
+<p>对已知的路径进行<a href="https://en.wikipedia.org/wiki/Local_search_(optimization)">局部搜索</a>, 以寻找更佳的路径.</p>
 <p>TODO</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="术语表"><a class="header" href="#术语表">术语表</a></h1>
 <div class="table-wrapper"><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody>
