@@ -920,6 +920,10 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <hr />
 <h2 id="启发式函数heuristic-function"><a class="header" href="#启发式函数heuristic-function">启发式函数(Heuristic function)</a></h2>
 <p>启发式函数用于指导搜索算法的搜索方向.</p>
+<h3 id="下界lower-bounds"><a class="header" href="#下界lower-bounds">下界(Lower bounds)</a></h3>
+<h3 id="特征"><a class="header" href="#特征">特征</a></h3>
+<p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
+还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值 <a href="https://en.wikipedia.org/wiki/Admissible_heuristic">Admissible</a> 的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
 <hr />
 <h2 id="优化器optimizer"><a class="header" href="#优化器optimizer">优化器(Optimizer)</a></h2>
 <p>对已知的路径进行<a href="https://en.wikipedia.org/wiki/Local_search_(optimization)">局部搜索</a>, 以寻找更佳的路径.</p>
