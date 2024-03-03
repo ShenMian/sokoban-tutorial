@@ -89,7 +89,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/run_length_encoding.html"><strong aria-hidden="true">1.2.</strong> 行程编码</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.3.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.4.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">3.</strong> 求解器</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.1.</strong> 优化</div></li></ol></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">4.</strong> 资源</a></li><li class="chapter-item expanded "><a href="glossary.html"><strong aria-hidden="true">5.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/run_length_encoding.html"><strong aria-hidden="true">1.2.</strong> 行程编码</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.3.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.4.</strong> 标准化</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">3.</strong> 求解器</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/heuristic_function.html"><strong aria-hidden="true">3.1.</strong> 启发式函数</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.2.</strong> 优化</div></li></ol></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">4.</strong> 资源</a></li><li class="chapter-item expanded "><a href="glossary.html"><strong aria-hidden="true">5.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -918,16 +918,19 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <p>通过启发式算法优先探索最接近最终状态的节点.</p>
 <p>TODO</p>
 <hr />
-<h2 id="启发式函数heuristic-function"><a class="header" href="#启发式函数heuristic-function">启发式函数(Heuristic function)</a></h2>
-<p>启发式函数用于指导搜索算法的搜索方向.</p>
-<h3 id="下界lower-bounds"><a class="header" href="#下界lower-bounds">下界(Lower bounds)</a></h3>
-<h3 id="特征"><a class="header" href="#特征">特征</a></h3>
-<p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
-还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其<a href="https://en.wikipedia.org/wiki/Admissible_heuristic">容许性(Admissible)</a>的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
-<hr />
 <h2 id="优化器optimizer"><a class="header" href="#优化器optimizer">优化器(Optimizer)</a></h2>
 <p>对已知的路径进行<a href="https://en.wikipedia.org/wiki/Local_search_(optimization)">局部搜索(local search)</a>, 以寻找更佳的路径.</p>
 <p>TODO: 速度优先的求解策略 + 优化器优化 = 快速得到一个不那么差的解决方案.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="启发式函数heuristic-function"><a class="header" href="#启发式函数heuristic-function">启发式函数(Heuristic function)</a></h1>
+<p>启发式函数用于指导搜索算法的搜索方向.</p>
+<h2 id="下界lower-bounds"><a class="header" href="#下界lower-bounds">下界(Lower bounds)</a></h2>
+<h2 id="特征"><a class="header" href="#特征">特征</a></h2>
+<p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
+还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其[容许性(Admissible)]的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
+<h3 id="连接性特征"><a class="header" href="#连接性特征">连接性特征</a></h3>
+<p>玩家全部可达区域可能会被箱子分割为多个区域. 这些区域的数量越少意味着玩家可以移动的范围越大.</p>
+<p>因为区域是被箱子分割的, 因此只需要检测箱子周围的点所属的区域即可获得独立的区域数.
+通过判断箱子在割点上的情况快速判断独立区域的数量.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="资源"><a class="header" href="#资源">资源</a></h1>
 <ul>
 <li><a href="http://sokobano.de/wiki/">http://sokobano.de/wiki/</a></li>
