@@ -255,7 +255,7 @@
 返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
-<li>支持流式读取并构建关卡. 比如利用 <code>BufReader</code> 支持从大文件中流式的加载关卡.</li>
+<li>支持流式读取并构建关卡. 比如利用 <code>BufReader</code> <sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中流式的加载关卡.</li>
 <li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
 </ul>
 <pre><code class="language-rs">impl Level {
@@ -493,7 +493,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 }
 </code></pre>
 <p>重载 <code>ParseMapError</code> 到 <code>ParseLevelError</code> 的转换, 以便 <code>Level::from_str</code> 直接返回 <code>Map::from_str</code> 中的错误.<br />
-根据 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">1</a></sup>, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 Trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#2">2</a></sup> 来自动完成这一步骤.</p>
+根据 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup>, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 Trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
@@ -594,10 +594,13 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     }
 }
 </code></pre>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err">https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err</a></p>
 </div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://doc.rust-lang.org/std/io/struct.BufReader.html">https://doc.rust-lang.org/std/io/struct.BufReader.html</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
 <p><a href="https://docs.rs/thiserror/latest/thiserror/">https://docs.rs/thiserror/latest/thiserror/</a></p>
 </div>
 
