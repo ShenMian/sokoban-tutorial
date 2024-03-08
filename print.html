@@ -386,7 +386,7 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>因为只需要操作一个数组(而非 n 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
+<p>因为只需要操作一个数组(而非 $n$ 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
 而且能确保动态数组的元素是紧密排列的, 根据数据局部性原理, 读取数据的性能通常会更好.</p>
 <p>重载下标运算符, 以便后续直接通过二维坐标访问地图元素.</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
@@ -571,11 +571,17 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
     }
 }
 </code></pre>
+<p>出于性能方面的考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>:</p>
+<ul>
+<li>由于 <code>Level::to_groups</code> 函数仅对输入字符串进行解析, 不涉及修改操作, 因此其参数类型为字符串切片 <code>&amp;str</code>, 类似 C++ 中的 <code>std::string_view</code>.</li>
+<li>单个关卡的数据是连续的, 因此可以使用字符串切片来表示, 无需再使用 <code>String</code> 来存储地图数据.</li>
+</ul>
+<p>以上方法通过直接引用原始字符串避免了内存分配, 减少内存占用的同时提高了执行效率. 而且还使得对内存的访问更加局部化.</p>
 <p>返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
-<li>支持流式读取并构建关卡. 比如利用 <code>BufReader</code> <sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中流式的加载关卡.</li>
-<li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
+<li>支持流式读取并构建关卡. 例如, 通过利用 <code>BufReader</code> <sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中逐步地加载关卡数据, 避免了内存的大量占用和性能瓶颈.</li>
+<li>读取第 $n$ 个关卡. 跳过前 $n-1$ 个关卡, 只对第 $n$ 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
 </ul>
 <pre><code class="language-rs">impl Level {
     pub fn load(str: &amp;str) -&gt; impl Iterator&lt;Item = Result&lt;Self, ParseLevelError&gt;&gt; + '_ {
@@ -596,8 +602,8 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>若循环体在循环的过程中提前结束 (通过 <code>break</code> 语句退出循环), 未被循环到的关卡将不会被解析, 从而减少不必要的计算.</p>
-<p>值得注意的是 <code>Level::load_nth</code> 的实现在部分语言看来是多余的, 但在 Rust 中, 迭代器先 <code>map</code> 后 <code>nth</code> 与先 <code>nth</code> 后 <code>map</code> 并不等价, 前者会执行 n 次 <code>map</code>, 而后者只会执行一次 <code>map</code>.</p>
+<p>若循环体在循环的过程中通过 <code>break</code> 语句提前退出循环, 未被循环到的关卡将不会被解析, 从而减少不必要的计算.</p>
+<p>值得注意的是, 虽然在一些编程语言中 <code>Level::load_nth</code> 的实现是多余的, 但在 Rust 中, 迭代器先 <code>map</code> 后 <code>nth</code> 与先 <code>nth</code> 后 <code>map</code> 并<strong>不等价</strong>, 前者会执行 $n$ 次 <code>map</code>, 而后者只会执行一次 <code>map</code>, 显著提高了效率.</p>
 <h3 id="单个关卡的解析"><a class="header" href="#单个关卡的解析">单个关卡的解析</a></h3>
 <h4 id="解析元数据和注释"><a class="header" href="#解析元数据和注释">解析元数据和注释</a></h4>
 <p>定义一个关联函数 <code>Level::from_str</code>, 作为 <code>Level</code> 的构造函数. 该函数只负责解析关卡的元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责:</p>
@@ -613,10 +619,8 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>因为只需要对字符串进行解析, 不会对字符串进行修改, 所以 <code>Level::from_str</code> 的参数类型为 <code>&amp;str</code> (字符串切片, 类似 C++ 中的 <code>std::string_view</code>).<br />
-出于性能考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>.</p>
-<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 还需要提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
-由于地图数据是连续的, 所以也可以使用字符串切片表示, 无需再使用 <code>String</code> 来存储地图数据.</p>
+<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 同时提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
+由于地图数据是连续的, 所以也可以使用字符串切片表示.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -712,15 +716,15 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>其中注释将被视作键为 <code>comments</code> 的元数据, 也存储到 <code>Level::metadata</code> 中.</p>
+<p>在处理过程中, 注释内容被特别识别, 并作为键为 <code>comments</code> 的元数据, 一同存储到 <code>Level::metadata</code> 中.</p>
 <h4 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h4>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
-<li><strong>裁剪空白部分</strong>: 首先, 移除每行右侧的空白字符. 随后, 确定地图左侧的最小缩进量(即每行左侧空白字符的最小数量), 并据此剔除左侧的多余空白.</li>
-<li><strong>计算地图尺寸</strong>: 与 MF8 格式不同, XSB 格式并不直接附带关卡大小数据, 因此需要通过解析关卡地图数据来计算地图尺寸.</li>
+<li><strong>去除多余空白</strong>: 首先, 移除每行右侧的空白字符. 随后, 确定地图左侧的最小缩进量(即每行左侧空白字符的最小数量), 并据此剔除左侧的多余空白.</li>
+<li><strong>确定地图尺寸</strong>: 与 MF8 格式不同, XSB 格式并不直接附带地图尺寸数据, 因此需要通过解析关卡地图数据来确定地图尺寸.</li>
 <li><strong>RLE 解码</strong>: 如果地图数据经过 RLE 编码, 进行解码操作.</li>
-<li><strong>解析地图数据</strong>: 将转换后的数据写入缓冲区中.</li>
-<li><strong>填充地板</strong>: 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
+<li><strong>解析地图数据</strong>: 地图数据使用 <code>Tiles</code> 表示, 写入缓冲区中.</li>
+<li><strong>填充地板</strong>: 使用洪水填充算法从玩家位置开始, 以墙为边界填充地板.</li>
 </ol>
 <pre><code class="language-rs">impl Map {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseMapError&gt; {
@@ -810,8 +814,8 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
 }
 </code></pre>
 <h4 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h4>
-<p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
-许多错误均可以在解析数据的时候顺带检查, 只会带来很小的额外开销.</p>
+<p>在解析地图数据的过程中, 应该关注可能发生的错误, 并进行相应的检查.<br />
+幸运的是, 许多常见的错误都可以在解析数据的同时顺便进行排查, 这样只会带来极小的额外开销, 从而确保地图的正确性和完整性.</p>
 <pre><code class="language-rs">#[derive(Error, Clone, Eq, PartialEq, Debug)]
 pub enum ParseLevelError {
     // ... SKIP ...
@@ -829,24 +833,24 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 }
 </code></pre>
 <p>重载 <code>ParseMapError</code> 到 <code>ParseLevelError</code> 的转换, 以便 <code>Level::from_str</code> 直接返回 <code>Map::from_str</code> 中的错误.<br />
-根据 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup>, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 Trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
+遵循 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup> 的建议, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
 <li>
-<p><strong>计算地图尺寸</strong>: 地图的尺寸等于玩家移动范围加上 1, 以包含外墙.</p>
+<p><strong>确定地图尺寸</strong>: 地图的尺寸等于玩家移动范围加上 1, 以包含外墙.</p>
 </li>
 <li>
-<p><strong>模拟玩家移动</strong>: 记录三组数据, 分别是: <em>当前箱子位置</em>和箱子初始位置.</p>
+<p><strong>模拟玩家移动</strong>: 模拟玩家的移动, 并记录三组数据, 分别是: <em>当前箱子位置</em>和箱子初始位置.</p>
 <p>玩家移动到的位置设为地板.
 若玩家推动了箱子, 且该箱子移动前的位置不再<em>当前箱子位置</em>中, 添加到箱子位置中.
 箱子当前位置在模拟结束后, <em>当前箱子位置</em>即最终箱子位置. 若解决方案正确, 那么最终箱子位置与目标位置相同.</p>
 </li>
 <li>
-<p><strong>在地板周围添加墙壁</strong>: 在地板周围添加墙壁, 形成完整的关卡结构.</p>
+<p><strong>添加墙壁</strong>: 在地板周围添加墙壁, 以形成完整的关卡结构.</p>
 </li>
 <li>
-<p><strong>验证解决方案</strong>: 在构建的关卡里验证解决方案. 若验证不通过, 则表示解决方案不正确.</p>
+<p><strong>验证解决方案</strong>: 在构建的关卡里验证解决方案的有效性. 若验证失败, 则表示解决方案不正确.</p>
 </li>
 </ol>
 <pre><code class="language-rs">impl Map {
