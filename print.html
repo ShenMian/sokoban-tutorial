@@ -248,15 +248,16 @@ Author: Thinking Rabbit
 <li>第 10-11 行, 元数据, 包括关卡标题和作者的信息.</li>
 </ul>
 <div class="table-wrapper"><table><thead><tr><th>ASCII 符号</th><th>描述</th></tr></thead><tbody>
-<tr><td><code>&lt;SPACE&gt;</code>/<code>-</code>/<code>_</code></td><td>Floor</td></tr>
-<tr><td><code>#</code></td><td>Wall</td></tr>
-<tr><td><code>$</code></td><td>Box</td></tr>
-<tr><td><code>.</code></td><td>Goal</td></tr>
-<tr><td><code>@</code></td><td>Player</td></tr>
-<tr><td><code>+</code></td><td>Player on goal</td></tr>
-<tr><td><code>*</code></td><td>Box on goal</td></tr>
+<tr><td><code>&lt;SPACE&gt;</code>/<code>-</code>/<code>_</code></td><td>地板</td></tr>
+<tr><td><code>#</code></td><td>墙体</td></tr>
+<tr><td><code>$</code></td><td>箱子</td></tr>
+<tr><td><code>.</code></td><td>目标</td></tr>
+<tr><td><code>@</code></td><td>玩家</td></tr>
+<tr><td><code>+</code></td><td>位于目标上的玩家</td></tr>
+<tr><td><code>*</code></td><td>位于目标上的箱子</td></tr>
 </tbody></table>
 </div>
+<p>其中地板一共使用了三种符号表示, 是因为连续的空格在某些在线论坛或邮件中可能被截断, 因此使用连字符(<code>-</code>)和下划线(<code>_</code>)来替代.</p>
 <p>除了上面的元数据, 还有一种用于多行注释的特殊元数据. 内容通过 <code>comment:</code> 和 <code>comment-end:</code> 包裹.</p>
 <p>!!! info
 多行注释还存在一种以 <code>comment:</code> 和 <code>comment_end:</code> 包裹的写法, 与之前提到的多行注释不同，这种多行注释使用下划线(<code>_</code>)来替代连字符(<code>-</code>)分割单词.<br />
