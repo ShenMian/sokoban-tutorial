@@ -180,8 +180,11 @@
                         <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子游戏 📦, 代码示例使用 Rust 语言 🦀 编写.</p>
 <h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
-<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员". 截至 2024 年, 最新版本于 2019 年 8 月发行于  PlayStation 4 平台.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
-<p>英文名为: Sokoban 或 Soukoban.</p>
+<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员".<sup class="footnote-reference"><a href="#1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
+<p><img src="assets/first_sokoban_15.png" alt="First Sokoban #15" /></p>
+<p>截至 2024 年, 最新版本推箱子(The Sokoban, みんなの倉庫番)于 2019 年 8 月发行于 PlayStation 4 平台.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
+<p><img src="assets/the_sokoban.jpg" alt="The Sokoban" /></p>
+<p>可惜是最新版本的推箱在角色控制方面相较于其最初的版本并未见明显改进. 本文后续将介绍一种纯鼠标控制的角色控制方法.</p>
 <p>推荐视频: <a href="https://www.bilibili.com/video/BV1Ph41117YT%3E">【GM】火遍全球的推箱子，那些你所不知道的故事！· Bilibili</a>.</p>
 <h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
 <p>本文以 "推箱子" 游戏为案例, 深入浅出的描述软件开发过程. 通过案例讲解有以下目的:</p>
@@ -216,7 +219,8 @@
 <p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a></p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
-<p>推箱子关卡使用最广泛的格式为 XSB, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
+<h2 id="xsb-格式"><a class="header" href="#xsb-格式">XSB 格式</a></h2>
+<p>推箱子关卡所使用的 XSB 格式因其简洁和直观而受到了广泛的认可和应用, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
 以关卡 <code>Boxworld #1</code> 为例:</p>
 <p><img src="level/../assets/boxworld_1.png" alt="Boxworld #1" /></p>
 <p>其 XSB 格式关卡的数据如下:</p>
@@ -232,10 +236,11 @@ ___###__
 Title: Boxworld 1
 Author: Thinking Rabbit
 </code></pre>
+<p>上面的关卡数据大致可分为以下几种:</p>
 <ul>
-<li>第 1 行, 以 <code>;</code> 开头的单行注释.</li>
-<li>第 2-9 行, 使用 ASCII 字符表示的地图数据.</li>
-<li>第 10-11 行, 包括关卡标题和作者的元数据.</li>
+<li>第 1 行, 单行注释, 以 <code>;</code> 开头.</li>
+<li>第 2-9 行, 地图数据, 使用 ASCII 字符表示.</li>
+<li>第 10-11 行, 元数据, 包括关卡标题和作者的信息.</li>
 </ul>
 <div class="table-wrapper"><table><thead><tr><th>ASCII 符号</th><th>描述</th></tr></thead><tbody>
 <tr><td><code>&lt;SPACE&gt;</code>/<code>-</code>/<code>_</code></td><td>Floor</td></tr>
@@ -248,7 +253,23 @@ Author: Thinking Rabbit
 </tbody></table>
 </div>
 <p>除了上面的元数据, 还有一种用于多行注释的特殊元数据. 内容通过 <code>comment:</code> 和 <code>comment-end:</code> 包裹.</p>
+<p>!!! info
+多行注释还存在一种以 <code>comment:</code> 和 <code>comment_end:</code> 包裹的写法, 与之前提到的多行注释不同，这种多行注释使用下划线(<code>_</code>)来替代连字符(<code>-</code>)分割单词.<br />
+本文将这种格式视为<strong>无效格式</strong>, 其可能是在批量替换 <code>_</code> 和 <code>-</code> 字符时意外产生的.</p>
 <p>关卡可能通过行程编码压缩, 详情请参见<a href="level/run_length.html">行程编码</a>.</p>
+<h2 id="其他格式"><a class="header" href="#其他格式">其他格式</a></h2>
+<p>中文论坛 "魔法吧" 使用 MF8 格式:</p>
+<pre><code class="language-txt">[soko=8,8]
+__HHH___
+__H.H___
+__H_HHHH
+HHH$_$.H
+H._$aHHH
+HHHH$H__
+___H.H__
+___HHH__
+[/soko]
+</code></pre>
 <h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
 <h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
 <p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41 by David W. Skinner" /></p>
