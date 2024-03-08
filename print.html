@@ -259,7 +259,8 @@ Author: Thinking Rabbit
 本文将这种格式视为<strong>无效格式</strong>, 其可能是在批量替换 <code>_</code> 和 <code>-</code> 字符时意外产生的.</p>
 <p>关卡可能通过行程编码压缩, 请参见<a href="level/run_length.html">行程编码</a>.</p>
 <h2 id="其他格式"><a class="header" href="#其他格式">其他格式</a></h2>
-<p>中文论坛 "魔方吧" 使用 MF8 格式:</p>
+<h3 id="mf8"><a class="header" href="#mf8">MF8</a></h3>
+<p>中文论坛魔方吧<sup class="footnote-reference"><a href="#1">1</a></sup>使用 MF8 格式:</p>
 <pre><code class="language-txt">[soko=8,8]
 __HHH___
 __H.H___
@@ -271,6 +272,22 @@ ___H.H__
 ___HHH__
 [/soko]
 </code></pre>
+<h3 id="sok"><a class="header" href="#sok">Sok</a></h3>
+<p>推箱子程序 Sokoban YASC 专用格式:</p>
+<pre><code class="language-txt">Boxworld 1
+
+__###___
+__#.#___
+__#-####
+###b-b.#
+#.-bp###
+####b#__
+___#.#__
+___###__
+
+Author: Thinking Rabbit
+</code></pre>
+<p>请参见 <a href="http://sokobano.de/wiki/index.php?title=Sok_format">Sok format · Sokoban Wiki</a></p>
 <h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
 <h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
 <p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41 by David W. Skinner" /></p>
@@ -323,6 +340,9 @@ ___HHH__
 <ul>
 <li><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a></li>
 </ul>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="http://www.mf8-china.com/forum.php">http://www.mf8-china.com/forum.php</a></p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图"><a class="header" href="#表示地图">表示地图</a></h2>
 <p>地图共包含 5 种元素, 这些元素可能在一个格子内叠加(比如玩家位于目标上).<br />
