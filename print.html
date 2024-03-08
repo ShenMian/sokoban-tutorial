@@ -178,16 +178,25 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
-<p>本文将描述如何实现一个推箱子游戏 📦, 代码示例使用 Rust 语言 🦀 编写.<br />
-推箱子游戏具有以下特点:</p>
+<p>本文将描述如何实现一个推箱子游戏 📦, 代码示例使用 Rust 语言 🦀 编写.</p>
+<h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
+<p>本文以 "推箱子" 游戏为案例, 深入浅出的描述软件开发过程. 通过案例讲解有以下目的:</p>
+<ul>
+<li>结合实例的学习可以将<strong>知识</strong>和<strong>应用</strong>结合在一起, 使读者无需被 "学这个有什么用?" 所困扰.</li>
+<li>提供丰富的实例. 推箱子问题本身还附带了许多子问题, 很适合作为例子使用.</li>
+</ul>
+<h2 id="为什么选择推箱子作为案例"><a class="header" href="#为什么选择推箱子作为案例">为什么选择推箱子作为案例</a></h2>
+<p>之所以选择推箱子游戏, 是因为它具有以下特点:</p>
 <ul>
 <li>规则简单. 可以专注于实现功能, 而非理解复杂的游戏规则和机制.</li>
-<li>基本功能易于实现.</li>
+<li>基本功能易于实现, 如推箱子和通关判断.</li>
 <li>有具有挑战的高级功能. 比如纯鼠标控制, 逆推等.</li>
 <li>有需要深入钻研的求解器, 用于自动求解推箱子关卡.</li>
 </ul>
-<p>本文将由浅入深的介绍上面功能并提供实现的思路.</p>
-<p>本文不会探讨的内容有:</p>
+<p>推箱子的实现既可以简单也可以复杂，读者可以根据自身的情况选择学习的深度。</p>
+<h2 id="范围"><a class="header" href="#范围">范围</a></h2>
+<p>本文将描述基本功能的具体实现方法, 高级功能的实现方法以及求解器的实现思路.</p>
+<p>本文<strong>不会</strong>探讨的内容有:</p>
 <ul>
 <li>推箱子的其他变种. 感兴趣的读者可以自行了解, 可以作为一种拓展.</li>
 <li>Rust 语言本身. 本文中出现的算法适用于其他编程语言. 因为示例代码使用了 Rust 语言, 可能会探讨 Rust 实现该算法的细节, 但不会专门介绍 Rust 语言的特性.</li>
@@ -234,7 +243,7 @@ Author: Thinking Rabbit
 <p>关卡可能通过行程编码压缩, 详情请参见<a href="level/run_length.html">行程编码</a>.</p>
 <h2 id="特殊关卡"><a class="header" href="#特殊关卡">特殊关卡</a></h2>
 <h3 id="玩家不可达区域存在箱子"><a class="header" href="#玩家不可达区域存在箱子">玩家不可达区域存在箱子</a></h3>
-<p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41" /></p>
+<p><img src="level/../assets/sasquatch_41.png" alt="Sasquatch #41 by David W. Skinner" /></p>
 <pre><code class="language-txt">   #####
    #   #
  ###   ########
@@ -656,16 +665,16 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
     }
 
     fn to_groups(str: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; + '_ {
-        str.split_inclusive(['\n', '|']).filter_map({
+        str.split(['\n', '|']).filter_map({
             let mut offset = 0;
             let mut len = 0;
             let mut in_block_comment = false;
             let mut has_map_data = false;
             move |line| {
-                len += line.len();
+                len += line.len() + 1;
 
                 let trimmed_line = line.trim();
-                if !in_block_comment &amp;&amp; (trimmed_line.is_empty() || !line.ends_with(['\n', '|'])) {
+                if !in_block_comment &amp;&amp; (trimmed_line.is_empty() || offset + len == str.len() + 1) {
                     let group = &amp;str[offset..offset + len - 1];
                     offset += len;
                     len = 0;
@@ -933,9 +942,10 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 通过判断箱子在割点上的情况快速判断独立区域的数量.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="资源"><a class="header" href="#资源">资源</a></h1>
 <ul>
-<li><a href="http://sokobano.de/wiki/">http://sokobano.de/wiki/</a></li>
-<li><a href="https://www.sokoban-online.de/">https://www.sokoban-online.de/</a></li>
-<li><a href="https://sokoban.cn/">https://sokoban.cn/</a></li>
+<li><a href="http://sokobano.de/wiki/">http://sokobano.de/wiki/</a>: 德国推箱子 Wiki.</li>
+<li><a href="https://www.sokoban-online.de/">https://www.sokoban-online.de/</a>: 推箱子软件 JSoko.</li>
+<li><a href="https://sourceforge.net/projects/sokobanyasc/">https://sourceforge.net/projects/sokobanyasc/</a> 推箱子软件 SokobanYASC.</li>
+<li><a href="https://sokoban.cn/">https://sokoban.cn/</a>: 中国推箱子在线平台.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="术语表"><a class="header" href="#术语表">术语表</a></h1>
 <div class="table-wrapper"><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody>
