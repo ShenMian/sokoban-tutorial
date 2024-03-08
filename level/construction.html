@@ -177,6 +177,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="构建"><a class="header" href="#构建">构建</a></h1>
+<h2 id="从-xsb-格式字符串构建关卡"><a class="header" href="#从-xsb-格式字符串构建关卡">从 XSB 格式字符串构建关卡</a></h2>
 <p>关卡解析可以分为两部分: 地图解析, 元数据和注释解析.</p>
 <p>关联函数 <code>Level::from_str</code> 只负责解析关卡的元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责:</p>
 <pre><code class="language-rs">impl Level {
@@ -199,8 +200,87 @@
 <li>多个关卡之间的分割.</li>
 <li>单个关卡的解析.</li>
 </ol>
-<h2 id="从字符串构建单个关卡"><a class="header" href="#从字符串构建单个关卡">从字符串构建单个关卡</a></h2>
-<h3 id="解析关卡数据"><a class="header" href="#解析关卡数据">解析关卡数据</a></h3>
+<h3 id="多个关卡之间的分割"><a class="header" href="#多个关卡之间的分割">多个关卡之间的分割</a></h3>
+<pre><code class="language-rs">impl Level {
+    // ... SKIP ...
+
+    fn to_groups(str: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; + '_ {
+        str.split(['\n', '|']).filter_map({
+            let mut offset = 0;
+            let mut len = 0;
+            let mut in_block_comment = false;
+            let mut has_map_data = false;
+            move |line| {
+                len += line.len() + 1;
+
+                let trimmed_line = line.trim();
+                if !in_block_comment &amp;&amp; (trimmed_line.is_empty() || offset + len == str.len() + 1) {
+                    let group = &amp;str[offset..offset + len - 1];
+                    offset += len;
+                    len = 0;
+                    if group.is_empty() || !has_map_data {
+                        return None;
+                    }
+                    has_map_data = false;
+                    Some(group)
+                } else {
+                    if in_block_comment {
+                        if trimmed_line.to_lowercase().starts_with("comment-end") {
+                            // Exit block comment
+                            in_block_comment = false;
+                        }
+                        return None;
+                    }
+                    if let Some(value) = trimmed_line.to_lowercase().strip_prefix("comment:") {
+                        if value.trim_start().is_empty() {
+                            // Enter block comment
+                            in_block_comment = true;
+                        }
+                        return None;
+                    }
+                    if has_map_data || !is_xsb_string(trimmed_line) {
+                        return None;
+                    }
+
+                    has_map_data = true;
+
+                    None
+                }
+            }
+        })
+    }
+}
+</code></pre>
+<p>关联函数 <code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.<br />
+返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
+<p>这种实现方式有以下优点:</p>
+<ul>
+<li>支持流式读取并构建关卡. 比如利用 <code>BufReader</code> 支持从大文件中流式的加载关卡.</li>
+<li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
+</ul>
+<pre><code class="language-rs">impl Level {
+    pub fn load(str: &amp;str) -&gt; impl Iterator&lt;Item = Result&lt;Self, ParseLevelError&gt;&gt; + '_ {
+        Self::to_groups(str).map(Self::from_str)
+    }
+
+    pub fn load_nth(str: &amp;str, id: usize) -&gt; Result&lt;Self, ParseLevelError&gt; {
+        let group = Self::to_groups(str).nth(id - 1).unwrap();
+        Self::from_str(group)
+    }
+    
+    // ... SKIP ...
+}
+</code></pre>
+<p>这样便实现的关卡的惰性解析. 比如搜索完全一致的关卡:</p>
+<pre><code class="language-rs">let str = "..."; // 海量关卡
+for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| x.ok()) {
+    // ... SKIP ...
+}
+</code></pre>
+<p>若循环体在循环的过程中提前结束 (通过 <code>break</code> 语句退出循环), 未被循环到的关卡将不会被解析, 从而减少不必要的计算.</p>
+<p>值得注意的是 <code>Level::load_nth</code> 的实现在部分语言看来是多余的, 但在 Rust 中, 迭代器先 <code>map</code> 后 <code>nth</code> 与先 <code>nth</code> 后 <code>map</code> 并不等价, 前者会执行 n 次 <code>map</code>, 而后者只会执行一次 <code>map</code>.</p>
+<h3 id="单个关卡的解析"><a class="header" href="#单个关卡的解析">单个关卡的解析</a></h3>
+<h4 id="解析元数据和注释"><a class="header" href="#解析元数据和注释">解析元数据和注释</a></h4>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -297,7 +377,7 @@
 }
 </code></pre>
 <p>解析得到的注释将被视作键为 "comments" 的元数据.</p>
-<h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
+<h4 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h4>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
 <li><strong>裁剪空白部分</strong>: 首先, 移除每行右侧的空白字符. 随后, 确定地图左侧的最小缩进量(即每行左侧空白字符的最小数量), 并据此剔除左侧的多余空白.</li>
@@ -393,75 +473,10 @@
     // ... SKIP ...
 }
 </code></pre>
-<h3 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h3>
+<h4 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h4>
 <p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
 许多错误均可以在解析数据的时候顺带检查, 只会带来很小的额外开销.</p>
-<h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
-<p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.<br />
-这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
-<pre><code class="language-rs">impl Map {
-    pub fn load(str: &amp;str) -&gt; impl Iterator&lt;Item = Result&lt;Self, ParseLevelError&gt;&gt; + '_ {
-        Self::to_groups(str).map(Self::from_str)
-    }
-
-    pub fn load_nth(str: &amp;str, id: usize) -&gt; Result&lt;Self, ParseLevelError&gt; {
-        let group = Self::to_groups(str).nth(id - 1).unwrap();
-        Self::from_str(group)
-    }
-
-    fn to_groups(str: &amp;str) -&gt; impl Iterator&lt;Item = &amp;str&gt; + '_ {
-        str.split(['\n', '|']).filter_map({
-            let mut offset = 0;
-            let mut len = 0;
-            let mut in_block_comment = false;
-            let mut has_map_data = false;
-            move |line| {
-                len += line.len() + 1;
-
-                let trimmed_line = line.trim();
-                if !in_block_comment &amp;&amp; (trimmed_line.is_empty() || offset + len == str.len() + 1) {
-                    let group = &amp;str[offset..offset + len - 1];
-                    offset += len;
-                    len = 0;
-                    if group.is_empty() || !has_map_data {
-                        return None;
-                    }
-                    has_map_data = false;
-                    Some(group)
-                } else {
-                    if in_block_comment {
-                        if trimmed_line.to_lowercase().starts_with("comment-end") {
-                            // Exit block comment
-                            in_block_comment = false;
-                        }
-                        return None;
-                    }
-                    if let Some(value) = trimmed_line.to_lowercase().strip_prefix("comment:") {
-                        if value.trim_start().is_empty() {
-                            // Enter block comment
-                            in_block_comment = true;
-                        }
-                        return None;
-                    }
-                    if has_map_data || !is_xsb_string(trimmed_line) {
-                        return None;
-                    }
-
-                    has_map_data = true;
-
-                    None
-                }
-            }
-        })
-    }
-}
-</code></pre>
-<p>关联函数 <code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
-<p>这种实现方式有以下优点:</p>
-<ul>
-<li>可以支持从大文件中流式读取关卡, 需要稍加修改以支持 <a href="https://doc.rust-lang.org/std/io/struct.BufReader.html">BufReader</a>.</li>
-<li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析.</li>
-</ul>
+<p>TODO</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
