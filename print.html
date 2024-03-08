@@ -615,10 +615,10 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
 <li><strong>裁剪空白部分</strong>: 首先, 移除每行右侧的空白字符. 随后, 确定地图左侧的最小缩进量(即每行左侧空白字符的最小数量), 并据此剔除左侧的多余空白.</li>
-<li><strong>计算地图尺寸</strong>.</li>
+<li><strong>计算地图尺寸</strong>: 与 MF8 格式不同, XSB 格式并不直接附带关卡大小数据, 因此需要通过解析关卡地图数据来计算地图尺寸.</li>
 <li><strong>RLE 解码</strong>: 如果地图数据经过 RLE 编码, 进行解码操作.</li>
 <li><strong>解析地图数据</strong>: 将转换后的数据写入缓冲区中.</li>
-<li><strong>填充地板</strong>. 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
+<li><strong>填充地板</strong>: 从玩家位置开始, 以墙为边界, 使用洪水填充算法填充地板.</li>
 </ol>
 <pre><code class="language-rs">impl Map {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseMapError&gt; {
@@ -711,7 +711,7 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
 许多错误均可以在解析数据的时候顺带检查, 只会带来很小的额外开销.</p>
 <h2 id="从字符串构建多个关卡"><a class="header" href="#从字符串构建多个关卡">从字符串构建多个关卡</a></h2>
-<p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.
+<p>多个关卡解析就是将字符串以关卡为单位进行切片, 然后再使用单个关卡解析方法逐个解析.<br />
 这种方法将单个关卡的解析和多个关卡之间的分割进行了解耦, 有利于后续实现惰性关卡解析.</p>
 <pre><code class="language-rs">impl Map {
     pub fn load(str: &amp;str) -&gt; impl Iterator&lt;Item = Result&lt;Self, ParseLevelError&gt;&gt; + '_ {
