@@ -514,28 +514,13 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <div style="break-before: page; page-break-before: always;"></div><h1 id="构建-"><a class="header" href="#构建-">构建 🏗️</a></h1>
 <h2 id="从-xsb-格式字符串构建关卡"><a class="header" href="#从-xsb-格式字符串构建关卡">从 XSB 格式字符串构建关卡</a></h2>
 <p>关卡解析可以分为两部分: 地图解析, 元数据和注释解析.</p>
-<p>关联函数 <code>Level::from_str</code> 只负责解析关卡的元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责:</p>
-<pre><code class="language-rs">impl Level {
-    pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
-        // ... SKIP ...
-        Ok(Self {
-            map: Map::from_str(/* ... SKIP ... */)?,
-            metadata,
-            // ... SKIP ...
-        })
-    }
-}
-</code></pre>
-<p>因为只需要对字符串进行解析, 不会对字符串进行修改, 所以 <code>Level::from_str</code> 的参数类型为 <code>&amp;str</code> (字符串切片, 类似 C++ 中的 <code>std::string_view</code>).<br />
-出于性能考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>.</p>
-<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 还需要提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
-由于地图数据是连续的, 所以也可以使用字符串切片表示, 无需再使用 <code>String</code> 来存储地图数据.</p>
 <p>一个 XSB 格式的关卡文件中通常包含多个关卡, 不同关卡之间通过空行分割. 因此解析 XSB 格式的数据大致可分为两个步骤:</p>
 <ol>
 <li>多个关卡之间的分割.</li>
 <li>单个关卡的解析.</li>
 </ol>
 <h3 id="多个关卡之间的分割"><a class="header" href="#多个关卡之间的分割">多个关卡之间的分割</a></h3>
+<p>定义关联函数 <code>to_groups</code>, 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
 <pre><code class="language-rs">impl Level {
     // ... SKIP ...
 
@@ -586,8 +571,7 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
     }
 }
 </code></pre>
-<p>关联函数 <code>to_groups</code> 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.<br />
-返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
+<p>返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
 <li>支持流式读取并构建关卡. 比如利用 <code>BufReader</code> <sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中流式的加载关卡.</li>
@@ -616,6 +600,23 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
 <p>值得注意的是 <code>Level::load_nth</code> 的实现在部分语言看来是多余的, 但在 Rust 中, 迭代器先 <code>map</code> 后 <code>nth</code> 与先 <code>nth</code> 后 <code>map</code> 并不等价, 前者会执行 n 次 <code>map</code>, 而后者只会执行一次 <code>map</code>.</p>
 <h3 id="单个关卡的解析"><a class="header" href="#单个关卡的解析">单个关卡的解析</a></h3>
 <h4 id="解析元数据和注释"><a class="header" href="#解析元数据和注释">解析元数据和注释</a></h4>
+<p>定义一个关联函数 <code>Level::from_str</code>, 作为 <code>Level</code> 的构造函数. 该函数只负责解析关卡的元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责:</p>
+<pre><code class="language-rs">impl Level {
+    pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
+        // ... SKIP ...
+        Ok(Self {
+            map: Map::from_str(/* ... SKIP ... */)?,
+            metadata,
+            // ... SKIP ...
+        })
+    }
+    // ... SKIP ...
+}
+</code></pre>
+<p>因为只需要对字符串进行解析, 不会对字符串进行修改, 所以 <code>Level::from_str</code> 的参数类型为 <code>&amp;str</code> (字符串切片, 类似 C++ 中的 <code>std::string_view</code>).<br />
+出于性能考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>.</p>
+<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 还需要提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
+由于地图数据是连续的, 所以也可以使用字符串切片表示, 无需再使用 <code>String</code> 来存储地图数据.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -711,7 +712,7 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>解析得到的注释将被视作键为 <code>comments</code> 的元数据.</p>
+<p>其中注释将被视作键为 <code>comments</code> 的元数据, 也存储到 <code>Level::metadata</code> 中.</p>
 <h4 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h4>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
