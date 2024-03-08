@@ -178,6 +178,10 @@
                     <main>
                         <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子游戏 📦, 代码示例使用 Rust 语言 🦀 编写.</p>
+<h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
+<p>推箱子在 1981 年由今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em><sup class="footnote-reference"><a href="#1">1</a></sup>. 截至2024年, 最新版本于 2019 年 8 月发行于  PlayStation 4 平台.</p>
+<p>英文名为: Sokoban 或 Soukoban.</p>
+<p>推荐视频: <a href="https://www.bilibili.com/video/BV1Ph41117YT%3E">【GM】火遍全球的推箱子，那些你所不知道的故事！· Bilibili</a>.</p>
 <h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
 <p>本文以 "推箱子" 游戏为案例, 深入浅出的描述软件开发过程. 通过案例讲解有以下目的:</p>
 <ul>
@@ -193,19 +197,23 @@
 <li>有需要深入钻研的求解器, 用于自动求解推箱子关卡.</li>
 </ul>
 <p>推箱子的实现既可以简单也可以复杂，读者可以根据自身的情况选择学习的深度。</p>
-<h2 id="范围"><a class="header" href="#范围">范围</a></h2>
-<p>本文将描述基本功能的具体实现方法, 高级功能的实现方法以及求解器的实现思路.</p>
-<p>本文<strong>不会</strong>探讨的内容有:</p>
+<h2 id="内容范围"><a class="header" href="#内容范围">内容范围</a></h2>
+<p>本文将描述基本功能的具体实现方法, 高级功能的实现方法以及求解器的实现思路.<br />
+但本文<strong>不涉及</strong>以下内容</p>
 <ul>
-<li>推箱子的其他变种. 感兴趣的读者可以自行了解, 可以作为一种拓展.</li>
-<li>Rust 语言本身. 本文中出现的算法适用于其他编程语言. 因为示例代码使用了 Rust 语言, 可能会探讨 Rust 实现该算法的细节, 但不会专门介绍 Rust 语言的特性.</li>
+<li>Rust 语言本身. 本文中出现的算法适用于其他编程语言, 不会专门介绍 Rust 语言的特性.</li>
 <li>游戏引擎.</li>
+<li>推箱子的其他变种. 感兴趣的读者可以自行了解, 可以作为一种拓展.</li>
 </ul>
+<h2 id="项目代码"><a class="header" href="#项目代码">项目代码</a></h2>
 <p>完整的项目代码位于:</p>
 <ul>
 <li><a href="https://github.com/shenmian/soukoban">ShenMian/soukoban</a>: 推箱子相关算法实现.</li>
-<li><a href="https://github.com/shenmian/sokoban-rs">ShenMian/sokoban-rs</a>: 推箱子游戏实现, 使用 <a href="https://github.com/bevyengine/bevy">Bevy</a> 引擎.</li>
+<li><a href="https://github.com/shenmian/sokoban-rs">ShenMian/sokoban-rs</a>: 推箱子游戏实现, 使用 Bevy 引擎.</li>
 </ul>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a></p>
+</div>
 
                     </main>
 
