@@ -711,7 +711,7 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>解析得到的注释将被视作键为 "comments" 的元数据.</p>
+<p>解析得到的注释将被视作键为 <code>comments</code> 的元数据.</p>
 <h4 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h4>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
@@ -811,7 +811,24 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
 <h4 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h4>
 <p>在解析地图数据的过程中, 还需要检查可能发生的错误.<br />
 许多错误均可以在解析数据的时候顺带检查, 只会带来很小的额外开销.</p>
-<p>TODO</p>
+<pre><code class="language-rs">#[derive(Error, Clone, Eq, PartialEq, Debug)]
+pub enum ParseLevelError {
+    // ... SKIP ...
+}
+
+#[derive(Error, Clone, Eq, PartialEq, Debug)]
+pub enum ParseMapError {
+    // ... SKIP ...
+}
+
+impl From&lt;ParseMapError&gt; for ParseLevelError {
+    fn from(error: ParseMapError) -&gt; Self {
+        ParseLevelError::ParseMapError(error)
+    }
+}
+</code></pre>
+<p>重载 <code>ParseMapError</code> 到 <code>ParseLevelError</code> 的转换, 以便 <code>Level::from_str</code> 直接返回 <code>Map::from_str</code> 中的错误.<br />
+根据 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">1</a></sup>, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 Trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#2">2</a></sup> 来自动完成这一步骤.</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
@@ -912,6 +929,12 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     }
 }
 </code></pre>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err">https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a href="https://docs.rs/thiserror/latest/thiserror/">https://docs.rs/thiserror/latest/thiserror/</a></p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="标准化"><a class="header" href="#标准化">标准化</a></h1>
 <p>有些关卡为了美观会在原关卡的基础上添加一些装饰, 这些装饰性的元素在本质上并不影响关卡的解法.<br />
 标准化的目的是移除这些与求解无关或冗余的元素.</p>
