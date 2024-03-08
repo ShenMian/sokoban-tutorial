@@ -404,9 +404,11 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 </code></pre>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
-元数据是一个键值对的集合, 因此可以使用 HashMap 来存储.
+元数据是一个键值对的集合, 且键不重复, 因此可以使用哈希表(<code>HashMap</code>)来存储.
 可以使用下面的结构体存储关卡数据:</p>
-<pre><code class="language-rs">pub struct Level {
+<pre><code class="language-rs">use std::collections::HashMap;
+
+pub struct Level {
     map: Map,
     metadata: HashMap&lt;String, String&gt;,
     // ... SKIP ...
@@ -510,10 +512,30 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
 <li><a href="https://en.wikipedia.org/wiki/Run-length_encoding">https://en.wikipedia.org/wiki/Run-length_encoding</a>.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="构建"><a class="header" href="#构建">构建</a></h1>
+<p>关卡解析可以分为两部分: 地图解析, 元数据和注释解析.</p>
+<p>关联函数 <code>Level::from_str</code> 只负责解析关卡的元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责:</p>
+<pre><code class="language-rs">impl Level {
+    pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
+        // ... SKIP ...
+        Ok(Self {
+            map: Map::from_str(/* ... SKIP ... */)?,
+            metadata,
+            // ... SKIP ...
+        })
+    }
+}
+</code></pre>
+<p>因为只需要对字符串进行解析, 不会对字符串进行修改, 所以 <code>Level::from_str</code> 的参数类型为 <code>&amp;str</code> (字符串切片, 类似 C++ 中的 <code>std::string_view</code>).<br />
+出于性能考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>.</p>
+<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 还需要提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
+由于地图数据是连续的, 所以也可以使用字符串切片表示, 无需再使用 <code>String</code> 来存储地图数据.</p>
+<p>一个 XSB 格式的关卡文件中通常包含多个关卡, 不同关卡之间通过空行分割. 因此解析 XSB 格式的数据大致可分为两个步骤:</p>
+<ol>
+<li>多个关卡之间的分割.</li>
+<li>单个关卡的解析.</li>
+</ol>
 <h2 id="从字符串构建单个关卡"><a class="header" href="#从字符串构建单个关卡">从字符串构建单个关卡</a></h2>
-<p>关卡解析可以分为两部分: 地图解析/元数据和注释解析.</p>
 <h3 id="解析关卡数据"><a class="header" href="#解析关卡数据">解析关卡数据</a></h3>
-<p>关联函数 <code>Level::from_str</code> 只负责解析元数据和注释, 地图数据的进一步解析则由 <code>Map::from_str</code> 负责.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
         let mut map_offset = 0;
@@ -609,8 +631,7 @@ for line in str.split(['\n', '|']) { ... SKIP ... }
     // ... SKIP ...
 }
 </code></pre>
-<p>因为只需要对字符串进行解析, 所以参数类型为 <code>&amp;str</code>. 在此过程中, 除了存储解析得到的注释和元数据外, 不涉及额外的动态内存分配.
-解析得到的注释将被视作键为 "comments" 的元数据.</p>
+<p>解析得到的注释将被视作键为 "comments" 的元数据.</p>
 <h3 id="解析地图数据"><a class="header" href="#解析地图数据">解析地图数据</a></h3>
 <p>解析地图数据可以分为以下几个部分:</p>
 <ol>
