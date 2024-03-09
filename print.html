@@ -1095,6 +1095,15 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <div style="break-before: page; page-break-before: always;"></div><h1 id="启发式函数heuristic-function"><a class="header" href="#启发式函数heuristic-function">启发式函数(Heuristic function)</a></h1>
 <p>启发式函数用于指导搜索算法的搜索方向.</p>
 <p>与代价函数一样, 启发式函数的实现取决于搜索策略.</p>
+<h2 id="容许性admissible"><a class="header" href="#容许性admissible">容许性(Admissible)</a></h2>
+<p>启发式函数满足容许性(Admissible)<sup class="footnote-reference"><a href="#2">1</a></sup>, 才能确保结果是最优的.</p>
+<p>$$
+\forall n,h(h) \leq h^*(h)
+$$</p>
+<p>其中 $h(n)$ 是启发式函数估计的 $n$ 到最终状态的代价, $h^*(n)$ 是 $n$ 到最终状态的代价.</p>
+<p>可以看出, 要确保启发式函数的估计值始终小于或等于实际的最小值才满足容许性, 否则最优的路径可能会被排除.</p>
+<p>假设 $h(n) = 0$, 此时函数 $h$ 满足容许性. 但代价估计值被严重低估, 虽然可以得到最优解, 但没有任何的优化.<br />
+因此函数 $h$ 应该在满足容许性的前提下, 尽可能的接近 $h^*(n)$.</p>
 <h2 id="预计算"><a class="header" href="#预计算">预计算</a></h2>
 <p>启发式函数计算的适合通常会假设地图上只有一个箱子, 因为这样计算出的结果与箱子的位置无关. 在搜索状态的时候箱子的位置会不断发生改变, 但是启发式函数的值不变.<br />
 因此可以提前计启发式函数的值, 供后续搜索时使用.</p>
@@ -1106,7 +1115,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <li>移动下界.</li>
 </ul>
 <p>其中推动下界可以用于搜索最优移动数解决方案, 反之则不行. 因为推动下界一定小于移动下界.</p>
-<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#1">1</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
+<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#1">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
 <p>TODO: 使用二维数组而非 HashMap 来存储下界.</p>
 <pre><code class="language-rs">fn manhattan_distance(a: Vector2&lt;i32&gt;, b: Vector2&lt;i32&gt;) -&gt; u32 {
     (a.x - b.x).abs() + (a.y - b.y).abs()
@@ -1153,15 +1162,15 @@ lower_bounds
 </code></pre>
 <h2 id="特征"><a class="header" href="#特征">特征</a></h2>
 <p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
-还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性(Admissible)<sup class="footnote-reference"><a href="#2">2</a></sup>的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
+还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
 <h3 id="连接性特征"><a class="header" href="#连接性特征">连接性特征</a></h3>
 <p>玩家全部可达区域可能会被箱子分割为多个区域. 这些区域的数量越少意味着玩家可以移动的范围越大.</p>
 <p>因为区域是被箱子分割的, 因此只需要检测箱子周围的点所属的区域即可获得独立的区域数.
 通过判断箱子在割点上的情况快速判断独立区域的数量.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a></p>
 </div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a></p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="资源"><a class="header" href="#资源">资源</a></h1>
