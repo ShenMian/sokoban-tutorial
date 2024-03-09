@@ -1139,7 +1139,8 @@ lower_bounds
 其中函数 <code>manhattan_distance</code> 的时间复杂度为 $O(1)$.</p>
 <p>该方法的有点是计算十分快速, 缺点是其忽视了墙体对玩家和箱子的阻碍, 可能严重低估了推动下界.</p>
 <h2 id="实现"><a class="header" href="#实现">实现</a></h2>
-<p>启发式函数需要计算当前状态到最终状态的下界.</p>
+<p>启发式函数需要计算当前状态到最终状态的下界.<br />
+所有箱子所在位置的下界之和.</p>
 <pre><code class="language-rs">impl State {
     fn calculate_lower_bound(&amp;self, solver: &amp;Solver) -&gt; usize {
         self.box_positions
