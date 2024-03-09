@@ -466,7 +466,7 @@ bitflags! {
     }
 }
 </code></pre>
-<p>这样便可以使用 <code>Tiles::Floor | Tiles::Goal | Tiles::Player</code> 来表示玩家位于目标上, 而目标位于地板上的情况.</p>
+<p>这样可以很方便的表示多种地图元素叠加的情况, 如使用 <code>Tiles::Floor | Tiles::Goal | Tiles::Player</code> 来表示玩家位于目标上, 而目标位于地板上的情况.</p>
 <p>使用一维数组来存储地图数据, 使用二维向量(数学)存储地图尺寸.</p>
 <pre><code class="language-rs">use nalgebra::Vector2;
 
