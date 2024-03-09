@@ -180,15 +180,15 @@
                         <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写.</p>
 <h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
-<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员".<sup class="footnote-reference"><a href="#1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
+<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员" 👷.<sup class="footnote-reference"><a href="#1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
 <p><img src="assets/first_sokoban_15.png" alt="First Sokoban #15" /></p>
 <p>截至 2024 年, 最新版本推箱子(The Sokoban, みんなの倉庫番)于 2019 年 8 月发行于 PlayStation 4 平台.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
 <p><img src="assets/the_sokoban.jpg" alt="The Sokoban" /></p>
-<p>可惜是最新版本的推箱在角色控制方面相较于其最初的版本并未见明显改进, 本文后续将介绍一种纯鼠标控制的角色控制方法 🖱️.</p>
+<p>最新版本的推箱在角色控制方面相较于其最初的版本并未见明显改进, 本文后续将介绍一种纯鼠标控制的角色控制方法 🖱️.</p>
 <h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
 <p>本文以推箱子为案例, 深入浅出的描述软件开发过程. 通过案例讲解有以下目的:</p>
 <ul>
-<li>结合实例的学习可以将<strong>知识</strong>和<strong>应用</strong>结合在一起, 使读者无需被 "学这个有什么用?" 所困扰.</li>
+<li>结合实例的学习可以将<strong>知识</strong>和<strong>应用</strong>结合在一起, 使读者无需被 "学这个有什么用?" 所困扰 🤔.</li>
 <li>提供丰富的实例. 推箱子问题本身还附带了许多子问题, 很适合作为例子使用.</li>
 <li>众多读者对游戏有浓厚的兴趣 🎮.</li>
 </ul>
@@ -417,8 +417,8 @@ pub struct Level {
 </code></pre>
 <p>将地图从关卡中拆分是因为地图涉及大量的关联函数, 如果都放在 <code>Level</code> 里会导致其变得过于庞大.<br />
 为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并将 <code>Level</code> 的 Deref 操作指向 <code>Map</code>. 并通过实现 <a href="https://doc.rust-lang.org/std/ops/trait.Deref.html">Deref trait</a>, 使得用户能够透明地引用到 <code>Level</code> 内部的 Map.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="游程编码"><a class="header" href="#游程编码">游程编码</a></h1>
-<p>游程编码(run-length encoding, RLE)经常被用于压缩推箱子的关卡和解决方案.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="游程编码-"><a class="header" href="#游程编码-">游程编码 🗜️</a></h1>
+<p>游程编码(Run-length encoding, RLE)是无损数据压缩的一种形式, 常被应用于推箱子关卡和解决方案的压缩.</p>
 <pre><code class="language-txt">###
 #.###
 #*$ #
