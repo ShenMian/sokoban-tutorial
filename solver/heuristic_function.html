@@ -203,6 +203,14 @@ $$</p>
 <h2 id="设计的方向"><a class="header" href="#设计的方向">设计的方向</a></h2>
 <p>假设 $h(n) = 0$, 此时函数 $h$ 满足容许性, 但代价估计值被严重低估. 下一个搜索节点的优先级 $f(n) = g(n)$. 虽然可以得到最优解, 但无法得到 "启发式" 带来的任何的优化.<br />
 理想状态下 $h(n) = h^<em>(n)$, 但这<strong>不可能</strong>. 因此函数 $h$ 应该在满足容许性的前提下, 尽可能的接近 $h^</em>(n)$.</p>
+<hr />
+<p>对于网格上的寻路算法, 一种启发式函数的实现是计算当前位置和目标位置之间的曼哈顿距离. 相比之下, 推箱子的启发式函数实现并不那么显而易见.<br />
+理想状态下, 对于任意关卡的解决方案 $n_1, n_2, ... , n_k$:</p>
+<ul>
+<li>$h(n_i) &gt; h(n_{i+1})$</li>
+<li>$h(n_1) = 0$</li>
+<li>$h(n_k) = h^*(n_k)$</li>
+</ul>
 <h2 id="预计算"><a class="header" href="#预计算">预计算</a></h2>
 <p>启发式函数计算的适合通常会假设地图上只有一个箱子, 因为这样计算出的结果与箱子的位置无关. 在搜索状态的时候箱子的位置会不断发生改变, 但是启发式函数的值不变.<br />
 因此可以提前计启发式函数的值, 供后续搜索时使用.</p>
@@ -237,7 +245,7 @@ for x in 1..self.map.dimensions().x - 1 {
             .iter()
             .map(|box_position| manhattan_distance(*box_position, &amp;position))
             .min()
-            .unwrap(); // 地图上的目标不可能为空 -&gt; 迭代器不可能为空 -&gt; `Iterator::min` 不可能返回 `None`
+            .unwrap(); // 地图上的目标不可能为空 =&gt; 迭代器不可能为空 =&gt; `Iterator::min` 不可能返回 `None`
         lower_bounds.insert(position, lower_bound);
     }
 }
