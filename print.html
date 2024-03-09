@@ -1127,7 +1127,7 @@ for x in 1..self.map.dimensions().x - 1 {
             .map
             .goal_positions()
             .iter()
-            .map(|crate_pos| manhattan_distance(*crate_pos, &amp;position))
+            .map(|box_position| manhattan_distance(*box_position, &amp;position))
             .min()
             .unwrap(); // 地图上的目标不可能为空 -&gt; 迭代器不可能为空 -&gt; `Iterator::min` 不可能返回 `None`
         lower_bounds.insert(position, lower_bound);
@@ -1138,6 +1138,18 @@ lower_bounds
 <p>上面算法的时间复杂度为 $O(n * m  * k)$, 其中 $n$, $m$ 为地图尺寸, $k$ 为目标数量.<br />
 其中函数 <code>manhattan_distance</code> 的时间复杂度为 $O(1)$.</p>
 <p>该方法的有点是计算十分快速, 缺点是其忽视了墙体对玩家和箱子的阻碍, 可能严重低估了推动下界.</p>
+<h2 id="实现"><a class="header" href="#实现">实现</a></h2>
+<p>启发式函数需要计算当前状态到最终状态的下界.</p>
+<pre><code class="language-rs">impl State {
+    fn calculate_lower_bound(&amp;self, solver: &amp;Solver) -&gt; usize {
+        self.box_positions
+            .iter()
+            .map(|box_position| solver.lower_bounds()[&amp;box_position])
+            .sum()
+    }
+    // ... SKIP ...
+}
+</code></pre>
 <h2 id="特征"><a class="header" href="#特征">特征</a></h2>
 <p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
 还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性(Admissible)的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
