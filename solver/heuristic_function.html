@@ -215,7 +215,7 @@ for x in 1..self.map.dimensions().x - 1 {
             .iter()
             .map(|crate_pos| manhattan_distance(*crate_pos, &amp;position))
             .min()
-            .unwrap(); // 地图上的目标不可能为空 -&gt; 迭代器不可能为空 -&gt; Iterator::min() 不可能返回 `None`
+            .unwrap(); // 地图上的目标不可能为空 -&gt; 迭代器不可能为空 -&gt; `Iterator::min` 不可能返回 `None`
         lower_bounds.insert(position, lower_bound);
     }
 }
