@@ -177,10 +177,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="标准化"><a class="header" href="#标准化">标准化</a></h1>
-<p>有些关卡为了美观会在原关卡的基础上添加一些装饰, 这些装饰性的元素在本质上并不影响关卡的解法.<br />
-标准化的目的是移除这些与求解无关或冗余的元素.</p>
+<p>有些关卡为了美观会在原关卡的基础上添加一些装饰, 这些装饰性的元素在本质上并<strong>不影响关卡的解法</strong>.<br />
+标准化的目的是移除这些与求解<strong>无关或冗余</strong>的元素.</p>
 <p>理想状态下, 任何具有相同步数最优解的关卡都可以被标准化为同一个关卡. 理论上可以先对关卡解析自动求解, 获得最优解决方案后再<a href="parse_level.html#%E4%BB%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%9E%84%E5%BB%BA%E5%85%B3%E5%8D%A1">从解决方案构建关卡</a>来得到标准化后的关卡.<br />
-但对于 NP 难的推箱子问题来说, 自动求解最优解决方案通常是耗时且困难的, 因此还需要一种不依赖于关卡解决方案的高效(多项式时间内得出结果)标准化方法. 尽管该方法得到的标准化结果并不完美.</p>
+但对于 NP 难<sup class="footnote-reference"><a href="#1">1</a></sup>的推箱子问题来说, 自动求解最优解决方案通常是耗时且困难的, 因此还需要一种不依赖于关卡解决方案的高效(多项式时间内得出结果)标准化方法. 尽管该方法得到的标准化结果并不完美.</p>
 <p>关卡的标准化可以分为以下几个步骤:</p>
 <ol>
 <li>
@@ -196,7 +196,7 @@
 <p>部分墙无法与玩家产生交互, 因此移除这部分墙不影响关卡的解决方案.</p>
 </li>
 <li>
-<p>标准化外墙.</p>
+<p>统一外墙形式.</p>
 <p>外墙有不同的包围类型, 如:</p>
 <pre><code class="language-txt"> ###
 #@$.#
@@ -245,6 +245,9 @@
 ###
 </code></pre>
 <p>这是一个最简单的非标准关卡, 因为其没有箱子和目标, 解为空.</p>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://www.sciencedirect.com/science/article/pii/S0925772199000176">https://www.sciencedirect.com/science/article/pii/S0925772199000176</a></p>
+</div>
 
                     </main>
 
