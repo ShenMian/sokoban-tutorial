@@ -1107,6 +1107,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 </ul>
 <p>其中推动下界可以用于搜索最优移动数解决方案, 反之则不行. 因为推动下界一定小于移动下界.</p>
 <p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#1">1</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
+<p>TODO: 使用二维数组而非 HashMap 来存储下界.</p>
 <pre><code class="language-rs">fn manhattan_distance(a: Vector2&lt;i32&gt;, b: Vector2&lt;i32&gt;) -&gt; u32 {
     (a.x - b.x).abs() + (a.y - b.y).abs()
 }
@@ -1134,6 +1135,8 @@ for x in 1..self.map.dimensions().x - 1 {
 }
 lower_bounds
 </code></pre>
+<p>上面算法的时间复杂度为 $O(n * m  * k)$, 其中 $n$, $m$ 为地图尺寸, $k$ 为目标数量.<br />
+其中函数 <code>manhattan_distance</code> 的时间复杂度为 $O(1)$.</p>
 <p>该方法的有点是计算十分快速, 缺点是其忽视了墙体对玩家和箱子的阻碍, 可能严重低估了推动下界.</p>
 <h2 id="特征"><a class="header" href="#特征">特征</a></h2>
 <p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
