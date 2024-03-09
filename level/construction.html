@@ -238,7 +238,7 @@
 </code></pre>
 <p>出于性能方面的考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>:</p>
 <ul>
-<li>由于 <code>Level::to_groups</code> 函数仅对输入字符串进行解析, 不涉及修改操作, 因此其参数类型为字符串切片 <code>&amp;str</code>, 类似 C++ 中的 <code>std::string_view</code>.</li>
+<li>由于函数 <code>to_groups</code> 仅对输入字符串进行解析, 不涉及修改操作, 因此其参数类型为字符串切片 <code>&amp;str</code>, 类似 C++ 中的 <code>std::string_view</code>.</li>
 <li>单个关卡的数据是连续的, 因此可以使用字符串切片来表示, 无需再使用 <code>String</code> 来存储地图数据.</li>
 </ul>
 <p>以上方法通过直接引用原始字符串避免了内存分配, 减少内存占用的同时提高了执行效率. 而且还使得对内存的访问更加局部化.</p>
