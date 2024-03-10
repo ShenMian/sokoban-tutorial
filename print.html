@@ -1047,32 +1047,34 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     C--&gt;|L| A
 </code></pre>
 <p>这是一个以<strong>状态</strong>(State)为节点(Vertex), <strong>动作</strong>(Action)为边(Edge)的有向图.<br />
-其中 $A$ 为初始状态, $C$ 为最终状态, <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
-<p>理论上, 状态 $C$ 还可以衍生出更多子状态, 但因为其是最终状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
-<p>求解器的工作原理是首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到最终状态的路径. 以上图为例, 就是寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
+其中 $A$ 为初始状态(Initial state, IS), $C$ 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
+<p>理论上, 状态 $C$ 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
+<p>求解器的工作原理是首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
 <p>下面将详细探讨如何利用搜索算法来找到这条路径.</p>
 <h2 id="搜索算法"><a class="header" href="#搜索算法">搜索算法</a></h2>
 <ul>
 <li>
-<p>广度优先搜索算法.</p>
+<p>广度优先搜索算法(BFS)<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+<p>该算法可以由于搜索最短路径.</p>
 </li>
 <li>
-<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* 搜索算法</a>.</p>
+<p>A* 搜索算法<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
+<p>A* 与 BFS 在最坏情况下的时间复杂度均为 $O(b^d)$. 但 A* 算法是一种最佳优先搜索(Best-first search)算法, 会优先探索最有希望的节点.</p>
 </li>
 <li>
-<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A*">IDA* 搜索算法</a>.</p>
+<p>IDA* 搜索算法<sup class="footnote-reference"><a href="#3">3</a></sup>.</p>
+<p>相比空间复杂度为 $O(b^d)$ 的 A* 算法, IDA* 算法的空间复杂度为 $O(d)$.</p>
 </li>
 <li>
-<p><a href="https://ieeexplore.ieee.org/document/9231929">FESS 搜索算法</a>: 该算法被推箱子求解器 <a href="https://festival-solver.site/">Festival</a> 所使用.</p>
-<p>A* 和 IDA* 只通过单个启发式函数值值来选择下一个探索的节点.<br />
-可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数.
-这种方法简单有效, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势.</p>
+<p>FESS 搜索算法<sup class="footnote-reference"><a href="#4">4</a></sup></p>
+<p>A* 和 IDA* 算法只通过单个启发式函数值值来选择下一个探索的节点.<br />
+虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 本文第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference"><a href="#5">5</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
 </li>
 </ul>
-<p>本文将描述如何创建一个基于 <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* 搜索算法</a>的求解器.</p>
+<p>本文将描述如何创建一个基于 A* 搜索算法<sup class="footnote-reference"><a href="#2">2</a></sup>的求解器.</p>
 <p>TODO: 说明为什么不使用广度优先搜索算法. 和 A* 算法进行简单的对比.</p>
-<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>最终位置</strong>的路径.<br />
-求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>最终状态</strong>的路径, 即移动箱子的顺序.</p>
+<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>目标位置</strong>的路径.<br />
+求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>目标状态</strong>的路径, 即移动箱子的顺序.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>顾名思义, 状态用于表示关卡的状态.</p>
 <pre><code class="language-rs">pub struct State {
@@ -1091,8 +1093,11 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     }
 }
 </code></pre>
-<p>通过启发式算法优先探索最接近最终状态的节点.</p>
+<p>通过启发式算法优先探索最接近目标状态的节点.</p>
 <p>TODO</p>
+<hr />
+<p>记录已探索过的节点.</p>
+<p>复杂推箱子关卡的图可能存在环(Loop).</p>
 <hr />
 <h2 id="割点"><a class="header" href="#割点">割点</a></h2>
 <p>通过割点可以在常量时间内判断两点是否是连通的.</p>
@@ -1100,6 +1105,24 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <h2 id="优化器optimizer"><a class="header" href="#优化器optimizer">优化器(Optimizer)</a></h2>
 <p>对已知的路径进行<a href="https://en.wikipedia.org/wiki/Local_search_(optimization)">局部搜索(local search)</a>, 以寻找更佳的路径.</p>
 <p>TODO: 速度优先的搜索策略 + 优化器优化 = 快速得到一个不那么差的解决方案.</p>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://en.wikipedia.org/wiki/Breadth-first_search">https://en.wikipedia.org/wiki/Breadth-first_search</a></p>
+</div>
+<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
+<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">https://en.wikipedia.org/wiki/A*_search_algorithm</a></p>
+</div>
+<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
+<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A">https://en.wikipedia.org/wiki/Iterative_deepening_A</a>*</p>
+</div>
+<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
+<p><a href="https://ieeexplore.ieee.org/document/9231929">https://ieeexplore.ieee.org/document/9231929</a></p>
+</div>
+<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
+<p><a href="https://festival-solver.site/">https://festival-solver.site/</a></p>
+</div>
+<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><a href="http://sokobano.de/wiki/index.php?title=Solver_Statistics">http://sokobano.de/wiki/index.php?title=Solver_Statistics</a></p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="搜索策略"><a class="header" href="#搜索策略">搜索策略</a></h1>
 <h2 id="什么是最短路径"><a class="header" href="#什么是最短路径">什么是最短路径?</a></h2>
 <p>在常见的寻路算法中, <strong>最短</strong>可能是指距离最短, 也可能是指时间最短.<br />
@@ -1131,7 +1154,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <ul>
 <li>$n$ 是某个状态.</li>
 <li>$g(n)$ 为从初始状态到 $n$ 状态的<strong>实际</strong>代价.</li>
-<li>$h(n)$ 为从 $n$ 状态到最终状态的代价的<strong>估计</strong>代价.</li>
+<li>$h(n)$ 为从 $n$ 状态到目标状态的代价的<strong>估计</strong>代价.</li>
 </ul>
 <p>搜索最短路径就是指搜索总代价(即 $f$ 的函数值)最小的路径. 以推箱子为例:</p>
 <ul>
@@ -1144,11 +1167,11 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <p>$$
 \forall n,h(n) \leq h^*(n)
 $$</p>
-<p>其中 $h^*(n)$ 是从 $n$ 状态到最终状态的<strong>实际</strong>代价.</p>
-<p>对于最优路径上的任意状态 $m$, 到最终状态的<strong>实际</strong>代价总是为 $h^<em>(m)$. 若 $h(n) &gt; h^</em>(n)$, 在搜索 $g$ 函数值相同的节点时, 一定会跳过最优路径, 进而返回非最优路径.<br />
+<p>其中 $h^*(n)$ 是从 $n$ 状态到目标状态的<strong>实际</strong>代价.</p>
+<p>对于最优路径上的任意状态 $m$, 到目标状态的<strong>实际</strong>代价总是为 $h^<em>(m)$. 若 $h(n) &gt; h^</em>(n)$, 在搜索 $g$ 函数值相同的节点时, 一定会跳过最优路径, 进而返回非最优路径.<br />
 函数 $h$ 不满足容许性也可能返回最优路径, 因为 $h(n) &gt; h^*(n)$ 不一定恒成立.</p>
 <h2 id="设计的方向"><a class="header" href="#设计的方向">设计的方向</a></h2>
-<p>假设 $h(n) = 0$, 此时函数 $h$ 满足容许性, 但代价估计值被严重低估. 下一个搜索节点的优先级 $f(n) = g(n)$. 虽然可以得到最优解, 但无法得到 "启发式" 带来的任何的优化.<br />
+<p>假设 $h(n) = 0$, 此时函数 $h$ 满足容许性, 但不再能启发搜索方向, 该情况下的 A* 算法也被称之为相同代价搜索(Uniform-cost search, UCS), 下一个搜索节点的优先级为 $f(n) = g(n)$, 行为与 BFS <strong>类似</strong>. 虽然可以得到最优解, 但无法得到 "启发式" 带来的任何的优化.<br />
 理想状态下 $h(n) = h^<em>(n)$, 但这<strong>不可能</strong>. 因此函数 $h$ 应该在满足容许性的前提下, 尽可能的接近 $h^</em>(n)$.</p>
 <hr />
 <p>对于网格上的寻路算法, 一种启发式函数的实现是计算当前位置和目标位置之间的曼哈顿距离. 相比之下, 推箱子的启发式函数实现并不那么显而易见.<br />
@@ -1202,7 +1225,7 @@ lower_bounds
 其中函数 <code>manhattan_distance</code> 的时间复杂度为 $O(1)$.</p>
 <p>该方法的有点是计算十分快速, 缺点是其忽视了墙体对玩家和箱子的阻碍, 可能严重低估了推动下界.</p>
 <h2 id="实现"><a class="header" href="#实现">实现</a></h2>
-<p>启发式函数需要计算当前状态到最终状态的下界.<br />
+<p>启发式函数需要计算当前状态到目标状态的下界.<br />
 所有箱子所在位置的下界之和.</p>
 <pre><code class="language-rs">impl State {
     fn calculate_lower_bound(&amp;self, solver: &amp;Solver) -&gt; usize {
@@ -1216,7 +1239,7 @@ lower_bounds
 </code></pre>
 <h2 id="特征"><a class="header" href="#特征">特征</a></h2>
 <p>除了通过下界计算得到的启发式函数值, 还有一些特征可以帮助在<br />
-还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性的前提下, 优先搜索有相同启发式函数值的状态中选择更接近最终状态的节点.</p>
+还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性的前提下, 优先搜索有相同启发式函数值的状态中选择更接近目标状态的节点.</p>
 <h3 id="连接性特征"><a class="header" href="#连接性特征">连接性特征</a></h3>
 <p>玩家全部可达区域可能会被箱子分割为多个区域. 这些区域的数量越少意味着玩家可以移动的范围越大.</p>
 <p>因为区域是被箱子分割的, 因此只需要检测箱子周围的点所属的区域即可获得独立的区域数.
