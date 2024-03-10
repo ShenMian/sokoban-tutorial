@@ -224,20 +224,20 @@
 <p>FESS 搜索算法<sup class="footnote-reference"><a href="#5">5</a></sup></p>
 <p>A* 和 IDA* 算法只通过单个启发式函数值值来选择下一个探索的节点.<br />
 虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 本文第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference"><a href="#6">6</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference"><a href="#7">7</a></sup>.</p>
-<p>本文不会进一步探讨该算法, 感兴趣的读者可以阅读相关论文.</p>
 </li>
 </ul>
 <p>BSF/A*/IDA* 算法均可以用于搜索最短路径, 即最佳解决方案.<br />
 由于推箱子问题是PSPACE完全(PSPACE-complete)的, 使用 BSF 这种非启发式算法是难以搜索到解决方案的.<br />
 而 IDA* 算法则是基于 A* 算法的改进, 所以本文将描述如何创建一个基于 A* 搜索算法的求解器.</p>
+<p>本文不会进一步探讨 FESS 算法, 感兴趣的读者可以阅读相关论文.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
-<p>顾名思义, 状态用于表示关卡的状态.</p>
+<p>状态只需要包含了玩家的位置和箱子的位置, 因为玩家和箱子是关卡中可移动对象. 保存它们的位置足以描述整个关卡的状态.<br />
+其他元素, 如墙壁/目标位置等是静态的，它们的位置不会随状态的改变而改变, 因此只需要从关卡的初始状态中获取它们的位置.</p>
 <pre><code class="language-rs">pub struct State {
     pub player_position: Vector2&lt;i32&gt;,
     pub box_positions: HashSet&lt;Vector2&lt;i32&gt;&gt;,
 }
 </code></pre>
-<p>可以看出状态仅包含了玩家的位置和箱子的位置, 因为玩家和箱子是关卡中可移动对象. 保存它们的位置足以描述整个关卡的状态. 其他元素, 如墙壁/目标位置等是静态的，它们的位置不会改变, 因此只需要从关卡的初始状态中获取它们的位置.</p>
 <hr />
 <p>TODO: 启发式函数 -&gt; 只关心箱子位置 -&gt; 仅当箱子位置改变时产生新的状态.</p>
 <p>状态是图里的节点, 从初始状态开始探索其相邻的节点, 即<a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">邻域</a>.</p>
