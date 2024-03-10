@@ -181,8 +181,28 @@
                         <h1 id="求解器solver"><a class="header" href="#求解器solver">求解器(Solver)</a></h1>
 <p>顾名思义, 求解器是用于自动求解推箱子关卡的程序.</p>
 <p>本文不会详细介绍搜索算法的工作原理和实现细节, 相比推箱子求解, 一般的寻路算法更适合读者理解搜索算法.</p>
-<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>最终位置</strong>的路径.<br />
-求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>最终状态</strong>的路径, 即移动箱子的顺序.</p>
+<h2 id="图graph"><a class="header" href="#图graph">图(Graph)</a></h2>
+<p>以下面关卡为例:</p>
+<pre><code class="language-txt">######
+# @$.#
+######
+</code></pre>
+<p>该关卡仅存在三种状态, 分别为:</p>
+<pre><code class="language-txt">A:     B:     C:
+###### ###### ######
+# @$.# #@ $.# #  @*#
+###### ###### ######
+</code></pre>
+<p>用图的方式可以表示为:</p>
+<pre><code class="language-mermaid">graph TD;
+    A--&gt;|l| B;
+    B--&gt;|r| A;
+    A--&gt;|R| C;
+    C--&gt;|L| A;
+</code></pre>
+<p>其中 $A$ 为初始状态, $C$ 为最终状态, <code>l</code> 和 <code>r</code> 分别表示向左和向右移动, <code>L</code> 和 <code>R</code> 分别表示向左和向右推动或拉动.</p>
+<p>求解器的工作是通过初始状态生成推箱子关卡的图, 然后寻找到最终状态的路径. 以上图为例, 寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
+<p>下面将描述如何使用搜索算法来搜索这条路径.</p>
 <h2 id="搜索算法"><a class="header" href="#搜索算法">搜索算法</a></h2>
 <ul>
 <li>
@@ -203,6 +223,8 @@
 </ul>
 <p>本文将描述如何创建一个基于 <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* 搜索算法</a>的求解器.</p>
 <p>TODO: 说明为什么不使用广度优先搜索算法. 和 A* 算法进行简单的对比.</p>
+<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>最终位置</strong>的路径.<br />
+求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>最终状态</strong>的路径, 即移动箱子的顺序.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>顾名思义, 状态用于表示关卡的状态.</p>
 <pre><code class="language-rs">pub struct State {
