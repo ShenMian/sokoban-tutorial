@@ -1026,7 +1026,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="求解器solver"><a class="header" href="#求解器solver">求解器(Solver)</a></h1>
 <p>顾名思义, 求解器是用于自动求解推箱子关卡的程序.</p>
-<p>本文不会详细介绍搜索算法的工作原理和实现细节, 相比推箱子求解, 一般的寻路算法更适合读者理解搜索算法.</p>
+<p>阅读本文前, 读者需要自行了解搜索算法的工作原理. 因为相比推箱子求解, 一般的寻路算法更适合读者理解搜索算法.</p>
 <h2 id="图graph"><a class="header" href="#图graph">图(Graph)</a></h2>
 <p>以下面关卡为例:</p>
 <pre><code class="language-txt">######
@@ -1073,8 +1073,9 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <p>本文不会进一步探讨该算法, 感兴趣的读者可以阅读相关论文.</p>
 </li>
 </ul>
-<p>BSF/A*/IDA* 算法均可以用于搜索最短路径, 即最佳解决方案. 推箱子问题是PSPACE完全(PSPACE-complete)的, 使用 BSF 这种非启发式算法是难以搜索到解决方案的.<br />
-本文将描述如何创建一个基于 A* 搜索算法的求解器.</p>
+<p>BSF/A*/IDA* 算法均可以用于搜索最短路径, 即最佳解决方案.<br />
+由于推箱子问题是PSPACE完全(PSPACE-complete)的, 使用 BSF 这种非启发式算法是难以搜索到解决方案的.<br />
+而 IDA* 算法则是基于 A* 算法的改进, 所以本文将描述如何创建一个基于 A* 搜索算法的求解器.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>顾名思义, 状态用于表示关卡的状态.</p>
 <pre><code class="language-rs">pub struct State {
