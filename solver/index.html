@@ -203,32 +203,32 @@
 <p>这是一个以<strong>状态</strong>(State)为节点(Vertex), <strong>动作</strong>(Action)为边(Edge)的有向图.<br />
 其中 $A$ 为初始状态(Initial state, IS), $C$ 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
 <p>理论上, 状态 $C$ 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
-<p>求解器的工作原理是首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
+<p>求解器的工作是进行空间状态搜索<sup class="footnote-reference"><a href="#1">1</a></sup>, 即首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
+<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>目标位置</strong>的路径.<br />
+求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>目标状态</strong>的路径, 即移动箱子的顺序.</p>
 <p>下面将详细探讨如何利用搜索算法来找到这条路径.</p>
 <h2 id="搜索算法"><a class="header" href="#搜索算法">搜索算法</a></h2>
 <ul>
 <li>
-<p>广度优先搜索算法(BFS)<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
-<p>该算法可以由于搜索最短路径.</p>
+<p>广度优先搜索算法(Breadth-first search, BFS)<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
 </li>
 <li>
-<p>A* 搜索算法<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
+<p>A* 搜索算法<sup class="footnote-reference"><a href="#3">3</a></sup>.</p>
 <p>A* 与 BFS 在最坏情况下的时间复杂度均为 $O(b^d)$. 但 A* 算法是一种最佳优先搜索(Best-first search)算法, 会优先探索最有希望的节点.</p>
 </li>
 <li>
-<p>IDA* 搜索算法<sup class="footnote-reference"><a href="#3">3</a></sup>.</p>
+<p>IDA* 搜索算法<sup class="footnote-reference"><a href="#4">4</a></sup>.</p>
 <p>相比空间复杂度为 $O(b^d)$ 的 A* 算法, IDA* 算法的空间复杂度为 $O(d)$.</p>
 </li>
 <li>
-<p>FESS 搜索算法<sup class="footnote-reference"><a href="#4">4</a></sup></p>
+<p>FESS 搜索算法<sup class="footnote-reference"><a href="#5">5</a></sup></p>
 <p>A* 和 IDA* 算法只通过单个启发式函数值值来选择下一个探索的节点.<br />
-虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 本文第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference"><a href="#5">5</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference"><a href="#6">6</a></sup>.</p>
+虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 本文第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference"><a href="#6">6</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference"><a href="#7">7</a></sup>.</p>
+<p>本文不会进一步探讨该算法, 感兴趣的读者可以阅读相关论文.</p>
 </li>
 </ul>
-<p>本文将描述如何创建一个基于 A* 搜索算法<sup class="footnote-reference"><a href="#2">2</a></sup>的求解器.</p>
-<p>TODO: 说明为什么不使用广度优先搜索算法. 和 A* 算法进行简单的对比.</p>
-<p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>目标位置</strong>的路径.<br />
-求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>目标状态</strong>的路径, 即移动箱子的顺序.</p>
+<p>BSF/A*/IDA* 算法均可以用于搜索最短路径, 即最佳解决方案. 推箱子问题是PSPACE完全(PSPACE-complete)的, 使用 BSF 这种非启发式算法是难以搜索到解决方案的.<br />
+本文将描述如何创建一个基于 A* 搜索算法的求解器.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>顾名思义, 状态用于表示关卡的状态.</p>
 <pre><code class="language-rs">pub struct State {
@@ -251,7 +251,7 @@
 <p>TODO</p>
 <hr />
 <p>记录已探索过的节点.</p>
-<p>复杂推箱子关卡的图可能存在环(Loop).</p>
+<p>复杂推箱子关卡的图可能存在环(Loop), 这也是为什么推箱子关卡的状态可以用图表示, 却无法用树(Tree)表示的原因.</p>
 <hr />
 <h2 id="割点"><a class="header" href="#割点">割点</a></h2>
 <p>通过割点可以在常量时间内判断两点是否是连通的.</p>
@@ -260,21 +260,24 @@
 <p>对已知的路径进行<a href="https://en.wikipedia.org/wiki/Local_search_(optimization)">局部搜索(local search)</a>, 以寻找更佳的路径.</p>
 <p>TODO: 速度优先的搜索策略 + 优化器优化 = 快速得到一个不那么差的解决方案.</p>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/Breadth-first_search">https://en.wikipedia.org/wiki/Breadth-first_search</a></p>
+<p><a href="https://en.wikipedia.org/wiki/State_space_search">https://en.wikipedia.org/wiki/State_space_search</a></p>
 </div>
 <div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">https://en.wikipedia.org/wiki/A*_search_algorithm</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Breadth-first_search">https://en.wikipedia.org/wiki/Breadth-first_search</a></p>
 </div>
 <div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A">https://en.wikipedia.org/wiki/Iterative_deepening_A</a>*</p>
+<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">https://en.wikipedia.org/wiki/A*_search_algorithm</a></p>
 </div>
 <div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><a href="https://ieeexplore.ieee.org/document/9231929">https://ieeexplore.ieee.org/document/9231929</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A">https://en.wikipedia.org/wiki/Iterative_deepening_A</a>*</p>
 </div>
 <div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
-<p><a href="https://festival-solver.site/">https://festival-solver.site/</a></p>
+<p><a href="https://ieeexplore.ieee.org/document/9231929">https://ieeexplore.ieee.org/document/9231929</a></p>
 </div>
 <div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
+<p><a href="https://festival-solver.site/">https://festival-solver.site/</a></p>
+</div>
+<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
 <p><a href="http://sokobano.de/wiki/index.php?title=Solver_Statistics">http://sokobano.de/wiki/index.php?title=Solver_Statistics</a></p>
 </div>
 
