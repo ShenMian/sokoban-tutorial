@@ -454,6 +454,7 @@ ___HHH__
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图-"><a class="header" href="#表示地图-">表示地图 🗺️</a></h2>
+<h3 id="元素的表示"><a class="header" href="#元素的表示">元素的表示</a></h3>
 <p>地图共包含 5 种元素, 这些元素可能在一个格子内叠加(比如玩家位于目标上).<br />
 最小的数据存储单元字节包含 8 个比特, 足以表示 5 种元素. 因此可以使用一个字节的空间来存储单个地图格子, 其中的每个比特表示一种地图元素.<br />
 创建用于表示地图元素的比特位:</p>
@@ -470,6 +471,7 @@ bitflags! {
 }
 </code></pre>
 <p>这样可以很方便的表示多种地图元素叠加的情况, 如使用 <code>Tiles::Floor | Tiles::Goal | Tiles::Player</code> 来表示玩家位于目标上, 而目标位于地板上的情况.</p>
+<h3 id="地图的存储"><a class="header" href="#地图的存储">地图的存储</a></h3>
 <p>使用一维数组来存储地图数据, 使用二维向量(数学)存储地图尺寸.</p>
 <pre><code class="language-rs">use nalgebra::Vector2;
 
@@ -953,6 +955,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     }
 }
 </code></pre>
+<p>其中部分<em>验证解决方案</em>步骤能发现的错误也可以在<em>模拟玩家移动</em>的步骤中提前发现, 但为了保持代码的简洁, 这里不做检查.</p>
 <h2 id="性能测试"><a class="header" href="#性能测试">性能测试</a></h2>
 <p>TODO: 附上性能基准测试结果.</p>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
