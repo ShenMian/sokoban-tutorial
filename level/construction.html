@@ -509,16 +509,16 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 }
 </code></pre>
 <p>重载 <code>ParseMapError</code> 到 <code>ParseLevelError</code> 的转换, 以便 <code>Level::from_str</code> 直接返回 <code>Map::from_str</code> 中的错误.<br />
-遵循 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup> 的建议, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 trait. 本文使用库 <code>thiserror</code> <sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
+遵循 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup> 的建议, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 trait. 本文使用库 <code>thiserror</code><sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
 <h2 id="从解决方案构建关卡"><a class="header" href="#从解决方案构建关卡">从解决方案构建关卡</a></h2>
-<p>解析地图数据可以分为以下几个部分:</p>
+<p>从解决方案构建关卡可以分为以下几个部分:</p>
 <ol>
 <li>
 <p><strong>确定地图尺寸</strong>: 地图的尺寸等于玩家移动范围加上 1, 以包含外墙.</p>
 </li>
 <li>
 <p><strong>模拟玩家移动</strong>: 模拟玩家的移动, 并记录三组数据, 分别是: <em>当前箱子位置</em>和箱子初始位置.</p>
-<p>玩家移动到的位置设为地板.
+<p>玩家只能在地板上移动, 因此将玩家移动到的位置设为地板.
 若玩家推动了箱子, 且该箱子移动前的位置不再<em>当前箱子位置</em>中, 添加到箱子位置中.
 箱子当前位置在模拟结束后, <em>当前箱子位置</em>即最终箱子位置. 若解决方案正确, 那么最终箱子位置与目标位置相同.</p>
 </li>
