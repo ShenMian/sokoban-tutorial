@@ -239,8 +239,7 @@
 }
 </code></pre>
 <hr />
-<p>TODO: 启发式函数 -&gt; 只关心箱子位置 -&gt; 仅当箱子位置改变时产生新的状态.</p>
-<p>状态是图里的节点, 从初始状态开始探索其相邻的节点, 即<a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">邻域</a>.</p>
+<p>状态是图里的节点, 从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference"><a href="#8">8</a></sup>.</p>
 <p>通过下面函数来生成当前状态的派生状态, 即相邻的状态:</p>
 <pre><code class="language-rs">impl State {
     pub fn successors(&amp;self, solver: &amp;Solver) -&gt; Vec&lt;State&gt; {
@@ -283,6 +282,9 @@
 </div>
 <div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
 <p><a href="http://sokobano.de/wiki/index.php?title=Solver_Statistics">http://sokobano.de/wiki/index.php?title=Solver_Statistics</a></p>
+</div>
+<div class="footnote-definition" id="8"><sup class="footnote-definition-label">8</sup>
+<p><a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)</a></p>
 </div>
 
                     </main>
