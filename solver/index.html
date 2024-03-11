@@ -178,7 +178,8 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="求解器solver"><a class="header" href="#求解器solver">求解器(Solver)</a></h1>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="求解器solver"><a class="header" href="#求解器solver">求解器(Solver)</a></h1>
 <p>顾名思义, 求解器是用于自动求解推箱子关卡的程序.</p>
 <p>阅读本文前, 读者需要自行了解搜索算法的工作原理. 因为相比推箱子求解, 一般的寻路算法更适合读者理解搜索算法.</p>
 <h2 id="图graph"><a class="header" href="#图graph">图(Graph)</a></h2>
@@ -201,9 +202,9 @@
     C--&gt;|L| A
 </pre>
 <p>这是一个以状态(State)为节点(Vertex), 动作(Action)为边(Edge)的有向图.<br />
-其中 $A$ 为初始状态(Initial state, IS), $C$ 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
-<p>理论上, 状态 $C$ 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
-<p>求解器的工作是进行空间状态搜索<sup class="footnote-reference"><a href="#1">1</a></sup>, 即首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 $A$ 到状态 $C$ 的路径, 即 <code>R</code>.</p>
+其中 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 为初始状态(Initial state, IS), <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
+<p>理论上, 状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
+<p>求解器的工作是进行空间状态搜索<sup class="footnote-reference"><a href="#1">1</a></sup>, 即首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 到状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 的路径, 即 <code>R</code>.</p>
 <p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>目标位置</strong>的路径.<br />
 求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>目标状态</strong>的路径, 即移动箱子的顺序.</p>
 <p>下面将详细探讨如何利用搜索算法来找到这条路径.</p>
@@ -214,11 +215,11 @@
 </li>
 <li>
 <p>A* 搜索算法<sup class="footnote-reference"><a href="#3">3</a></sup></p>
-<p>A* 与 BFS 在最坏情况下的时间复杂度均为 $O(b^d)$. 但 A* 算法是一种最佳优先搜索(Best-first search)算法, 会优先探索最有希望的节点.</p>
+<p>A* 与 BFS 在最坏情况下的时间复杂度均为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>. 但 A* 算法是一种最佳优先搜索(Best-first search)算法, 会优先探索最有希望的节点.</p>
 </li>
 <li>
 <p>IDA* 搜索算法<sup class="footnote-reference"><a href="#4">4</a></sup></p>
-<p>相比空间复杂度为 $O(b^d)$ 的 A* 算法, IDA* 算法的空间复杂度为 $O(d)$.</p>
+<p>相比空间复杂度为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> 的 A* 算法, IDA* 算法的空间复杂度为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mclose">)</span></span></span></span>.</p>
 </li>
 <li>
 <p>FESS 搜索算法<sup class="footnote-reference"><a href="#5">5</a></sup></p>
