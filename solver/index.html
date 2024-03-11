@@ -194,12 +194,12 @@
 ######    ######    ######
 </code></pre>
 <p>为了更直观地展示这些状态之间的转换关系, 可以用图的形式表示为:</p>
-<pre><code class="language-mermaid">graph TD
+<pre class="mermaid">graph TD
     A--&gt;|l| B
     B--&gt;|r| A
     A--&gt;|R| C
     C--&gt;|L| A
-</code></pre>
+</pre>
 <p>这是一个以状态(State)为节点(Vertex), 动作(Action)为边(Edge)的有向图.<br />
 其中 $A$ 为初始状态(Initial state, IS), $C$ 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
 <p>理论上, 状态 $C$ 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>

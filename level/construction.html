@@ -186,14 +186,14 @@
 <li>多个关卡之间的分割.</li>
 <li>单个关卡的解析.</li>
 </ol>
-<pre><code class="language-mermaid">flowchart LR
+<pre class="mermaid">flowchart LR
     A[包含多个关卡的字符串] --&gt;|Level::to_group| B
     B[包含单个关卡的字符串] --&gt; C{是否经过\n RLE 压缩?}
     C --&gt;|是| D[RLE 压缩字符串]
     C --&gt;|否| E
     D --&gt;|rle_decode| E
     E[非 RLE 压缩字符串]
-</code></pre>
+</pre>
 <h3 id="多个关卡之间的分割"><a class="header" href="#多个关卡之间的分割">多个关卡之间的分割</a></h3>
 <p>定义关联函数 <code>to_groups</code>, 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
 <pre><code class="language-rs">impl Level {
