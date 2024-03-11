@@ -489,6 +489,18 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
+<p>其中部分<em>验证解决方案</em>步骤能发现的错误也可以在<em>模拟玩家移动</em>的步骤中提前发现, 但为了保持代码的简洁, 这里不做检查.</p>
+<h4 id="性能测试"><a class="header" href="#性能测试">性能测试</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>项目</th><th>平均耗时</th></tr></thead><tbody>
+<tr><td>加载 3371 个关卡</td><td>23.714 ms</td></tr>
+<tr><td>加载第 3371 个关卡</td><td>3.2700 ms</td></tr>
+</tbody></table>
+</div>
+<p>根据数据, 可以得出以下结论:</p>
+<ol>
+<li>加载单个关卡的平均耗时为 0.007 ms, 即 7 μs.</li>
+<li>加载 n 个关卡和加载第 n 个关卡的耗时存在显著差异, 说明后者确实有性能的提升.</li>
+</ol>
 <h4 id="错误处理"><a class="header" href="#错误处理">错误处理</a></h4>
 <p>在解析地图数据的过程中, 应该关注可能发生的错误, 并进行相应的检查.<br />
 幸运的是, 许多常见的错误都可以在解析数据的同时顺便进行排查, 这样只会带来极小的额外开销, 从而确保地图的正确性和完整性.</p>
@@ -610,13 +622,6 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     }
 }
 </code></pre>
-<p>其中部分<em>验证解决方案</em>步骤能发现的错误也可以在<em>模拟玩家移动</em>的步骤中提前发现, 但为了保持代码的简洁, 这里不做检查.</p>
-<h2 id="性能测试"><a class="header" href="#性能测试">性能测试</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>项目</th><th>平均耗时</th></tr></thead><tbody>
-<tr><td>加载共 3371 个关卡</td><td>23.714 ms</td></tr>
-<tr><td>加载第 3371 个关卡</td><td>3.2700 ms</td></tr>
-</tbody></table>
-</div>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err">https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err</a></p>
 </div>
