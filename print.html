@@ -214,7 +214,7 @@
 </ul>
 <h2 id="需要具备的知识"><a class="header" href="#需要具备的知识">需要具备的知识</a></h2>
 <ul>
-<li>具备 Rust 语言的语法基础或熟悉一门编程语言.</li>
+<li>具备 Rust 语言的语法基础, 或熟悉一门编程语言.</li>
 <li>具备数据结构与算法的基础知识, 如 A* 搜索算法的工作原理.</li>
 </ul>
 <h2 id="项目代码"><a class="header" href="#项目代码">项目代码</a></h2>
@@ -1113,6 +1113,17 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     pub box_positions: HashSet&lt;Vector2&lt;i32&gt;&gt;,
 }
 </code></pre>
+<p>实现从 <code>Map</code> 到 <code>State</code> 的转换:</p>
+<pre><code class="language-rs">impl From&lt;Map&gt; for State {
+    fn from(map: Map) -&gt; Self {
+        Self {
+            player_position: map.player_position(),
+            box_positions: map.box_positions().clone(),
+        }
+    }
+}
+</code></pre>
+<p>这样就可以将地图转为初始状态, 然后作为搜索起点开始搜索.</p>
 <hr />
 <p>从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference"><a href="#8">8</a></sup>.</p>
 <p>通过下面函数来生成当前状态的派生状态, 即相邻的状态:</p>
