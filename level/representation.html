@@ -197,7 +197,8 @@ bitflags! {
     }
 }
 </code></pre>
-<p>这样可以很方便的表示多种地图元素叠加的情况, 如使用 <code>Tiles::Floor | Tiles::Goal | Tiles::Player</code> 来表示玩家位于目标上, 而目标位于地板上的情况.</p>
+<p>这样可以很方便的表示多种地图元素叠加的情况, 如使用 <code>Tiles::Floor | Tiles::Goal | Tiles::Player</code> 来表示玩家位于目标上, 而目标位于地板上的情况.<br />
+利用比特位表示元素不仅使得判断元素是否存在、添加或移除某个元素等操作变得非常便捷, 而且还带来了性能上的优势.</p>
 <h3 id="地图的存储"><a class="header" href="#地图的存储">地图的存储</a></h3>
 <p>使用一维数组来存储地图数据, 使用二维向量(数学)存储地图尺寸.</p>
 <pre><code class="language-rs">use nalgebra::Vector2;
@@ -208,22 +209,8 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 即元素在内存中更连续, 根据数据局部性原理, 这通常能提高内存的读取效率.<br />
-因为结构简单, 使部分操作的代码更简单高效, 比如对地图数据进行批量操作时:</p>
-<pre><code class="language-rs">impl Map {
-    pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
-        Self {
-            data: vec![Tiles::empty(); (dimensions.x * dimensions.y) as usize],
-            dimensions,
-            // ... SKIP ...
-        }
-    }
-    // ... SKIP ...
-}
-</code></pre>
-<p>因为只需要操作一个数组(而非 n 个数组), 进行调整地图尺寸等操作的代码会更简单高效.
-而且能确保动态数组的元素是紧密排列的, 根据数据局部性原理, 读取数据的性能通常会更好.</p>
-<p>重载下标运算符, 以便后续直接通过二维坐标访问地图元素.</p>
+<p>使用一维数组 <code>Vec&lt;Tiles&gt;</code> 而非二维数组 <code>Vec&lt;Vec&lt;Tiles&gt;&gt;</code> 是因为一维数组更平坦(flatten), 能确保动态数组的元素在内存中是紧密排列的, 根据数据局部性原理, 这通常能提高内存的读取效率. 而且因为结构简单, 使部分操作的代码更简单高效, 比如调整地图尺寸.</p>
+<p>但这也意味着通过二维坐标访问地图元素需要手动计算一维数组中对应的下标, 可以通过以下方式实现:</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
     type Output = Tiles;
     fn index(&amp;self, position: Vector2&lt;i32&gt;) -&gt; &amp;Tiles {
@@ -237,6 +224,12 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     }
 }
 </code></pre>
+<p>这样便可以直接通过二维坐标访问地图元素:</p>
+<pre><code class="language-rs">let map = ...;
+let position = Vector2::new(1, 1);
+assert_eq!(map[position], Tiles::Floor | Tiles::Player);
+</code></pre>
+<p>这样的设计不仅可以享受了二维数组访问方式的便捷性, 还能保留了一维数组带来的性能优势.</p>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
 元数据是一个键值对的集合, 且键不重复, 因此可以使用哈希表(<code>HashMap</code>)来存储.
