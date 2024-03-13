@@ -208,7 +208,8 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 进行部分操作时更简单高效. 如:</p>
+<p>使用一维数组而非二维数组是因为一维数组更平坦(flatten), 即元素在内存中更连续, 根据数据局部性原理, 这通常能提高内存的读取效率.<br />
+因为结构简单, 使部分操作的代码更简单高效, 比如对地图数据进行批量操作时:</p>
 <pre><code class="language-rs">impl Map {
     pub fn with_dimensions(dimensions: Vector2&lt;i32&gt;) -&gt; Self {
         Self {
