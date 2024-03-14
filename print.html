@@ -1173,7 +1173,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <li>需要记录已探索过的节点, 避免进入环中导致死循环.</li>
 <li>推箱子关卡的状态可以用图表示, 却无法用树(Tree)表示.</li>
 </ol>
-<p>已被探索的节点通常会被存储在一个闭集(Closed set)中, 为了通俗易懂使用了变量名 <code>visited</code>.</p>
+<p>已被探索的节点通常会被存储在一个闭集(Closed set)中, 为了通俗易懂, 使用变量名 <code>visited</code> 表示这个闭集.</p>
 <p>复杂推箱子关卡的图非常大, 难以提前生成并存储在内存中. 因此可以在搜索的过程中逐步拓展图.</p>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/State_space_search">https://en.wikipedia.org/wiki/State_space_search</a></p>
