@@ -30,8 +30,6 @@
 
         <!-- Custom theme stylesheets -->
 
-        <!-- MathJax -->
-        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     </head>
     <body class="sidebar-visible no-js">
     <div id="body-container">
@@ -90,7 +88,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html" class="active"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 (WIP)</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 (WIP)</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 (WIP)</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 (WIP)</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.</strong> 优化</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 割点</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.2.</strong> 隧道</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.3.</strong> 死锁</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.4.</strong> 双向搜索</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">5.</strong> 资源 (WIP)</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 (WIP)</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html" class="active"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.</strong> 优化</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 割点</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.2.</strong> 隧道</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.3.</strong> 死锁</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.4.</strong> 双向搜索</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">5.</strong> 资源 🚧</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 🚧</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -209,7 +207,7 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组 <code>Vec&lt;Tiles&gt;</code> 而非二维数组 <code>Vec&lt;Vec&lt;Tiles&gt;&gt;</code> 是因为一维数组更平坦(flatten), 能确保动态数组的元素在内存中是紧密排列的, 根据数据局部性原理, 这通常能提高内存的读取效率. 而且因为结构简单, 使部分操作的代码更简单高效, 比如调整地图尺寸.</p>
+<p>使用一维数组 <code>Vec&lt;Tiles&gt;</code> 而非二维数组 <code>Vec&lt;Vec&lt;Tiles&gt;&gt;</code> 是因为一维数组更平坦(flatten), 能确保动态数组的元素在内存中是紧密排列的, 根据数据局部性原理, 这通常能提高内存读取效率. 此外, 由于结构更为简单, 使得部分操作的代码更为简洁高效, 比如调整地图尺寸.</p>
 <p>但这也意味着通过二维坐标访问地图元素需要手动计算一维数组中对应的下标, 可以通过以下方式实现:</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
     type Output = Tiles;
