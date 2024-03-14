@@ -248,6 +248,17 @@
 }
 </code></pre>
 <p>这样就可以将地图转为初始状态, 然后作为搜索起点开始搜索.</p>
+<pre class="mermaid">flowchart LR
+    A{是否有\n未探索的状态} --&gt;|是| B
+    A --&gt;|否| H[返回无解]
+    B[取出优先级\n最高的未探索状态] --&gt; C{是目标状态?}
+    C --&gt;|是| D[返回解决方案]
+    C --&gt;|否| E[产生其子状态]
+    E --&gt; F{是否已访问过?}
+    F --&gt;|是| E
+    F --&gt;|否| G[将子状态加入 heap]
+    G --&gt; A
+</pre>
 <hr />
 <p>从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference"><a href="#8">8</a></sup>.</p>
 <p>通过下面函数来生成当前状态的派生状态, 即相邻的状态:</p>
@@ -259,15 +270,6 @@
 </code></pre>
 <p>TODO</p>
 <hr />
-<pre class="mermaid">flowchart LR
-    A[从 heap 中取出\n优先级最高的状态] --&gt; B{是目标状态?}
-    B --&gt;|是| C[返回路径]
-    B --&gt;|否| D[产生其子状态]
-    D --&gt; E{是否已访问过?}
-    E --&gt;|是| D
-    E --&gt;|否| F[将子状态加入 heap]
-    F --&gt; A
-</pre>
 <pre><code class="language-rs">impl Solver {
     pub fn a_star_search(&amp;self, map: &amp;Map) -&gt; Result&lt;(), SearchError&gt; {
         let mut heap = BinaryHeap::new();
@@ -294,6 +296,7 @@
     // ... SKIP ...
 }
 </code></pre>
+<p>TODO: 代码需要更新</p>
 <p>复杂推箱子关卡的图可能存在环(Loop), 这意味着:</p>
 <ol>
 <li>需要记录已探索过的节点, 避免进入环中导致死循环.</li>
