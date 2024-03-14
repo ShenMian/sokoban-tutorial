@@ -207,7 +207,7 @@
 <h2 id="需要具备的知识"><a class="header" href="#需要具备的知识">需要具备的知识</a></h2>
 <ul>
 <li>具备 Rust 语言的语法基础, 或熟悉一门编程语言.</li>
-<li>具备数据结构与算法的基础知识, 如 A* 搜索算法的工作原理.</li>
+<li>有关高级功能和求解器的章节: 具备数据结构与算法的基础知识, 如 A* 搜索算法的工作原理.</li>
 </ul>
 <h2 id="内容范围"><a class="header" href="#内容范围">内容范围</a></h2>
 <p>本文将描述基本功能的具体实现方法, 高级功能的实现方法以及求解器的实现思路.<br />
@@ -541,7 +541,7 @@ pub struct Level {
     E[非 RLE 压缩字符串]
 </pre>
 <h3 id="多个关卡之间的分割"><a class="header" href="#多个关卡之间的分割">多个关卡之间的分割</a></h3>
-<p>定义关联函数 <code>to_groups</code>, 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
+<p>定义关联函数 <code>Level::to_groups</code>, 接受包含多个关卡的字符串, 返回包含单个关卡的字符串切片的迭代器.</p>
 <pre><code class="language-rs">impl Level {
     // ... SKIP ...
 
@@ -594,14 +594,14 @@ pub struct Level {
 </code></pre>
 <p>出于性能方面的考虑, 解析关卡数据时应该<strong>减少不必要的动态内存分配</strong>:</p>
 <ul>
-<li>由于函数 <code>to_groups</code> 仅对输入字符串进行解析, 不涉及修改操作, 因此其参数类型为字符串切片 <code>&amp;str</code>, 类似 C++ 中的 <code>std::string_view</code>.</li>
+<li>由于函数 <code>Level::to_groups</code> 仅对输入字符串进行解析, 不涉及修改操作, 因此其参数类型为字符串切片 <code>&amp;str</code>, 类似 C++ 中的 <code>std::string_view</code>.</li>
 <li>单个关卡的数据是连续的, 因此可以使用字符串切片来表示, 无需再使用 <code>String</code> 来存储地图数据.</li>
 </ul>
 <p>以上方法通过直接引用原始字符串避免了内存分配, 减少内存占用的同时提高了执行效率. 而且还使得对内存的访问更加局部化.</p>
 <p>返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
-<li>支持流式读取并构建关卡. 例如, 通过利用 <code>BufReader</code> <sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中逐步地加载关卡数据, 避免了内存的大量占用和性能瓶颈.</li>
+<li>支持流式读取并构建关卡. 例如, 通过利用 <code>BufReader</code><sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中逐步地加载关卡数据, 避免了内存的大量占用和性能瓶颈.</li>
 <li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
 </ul>
 <pre><code class="language-rs">impl Level {
