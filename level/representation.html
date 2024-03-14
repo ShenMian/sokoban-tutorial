@@ -213,19 +213,27 @@ pub struct Map {
 <p>但这也意味着通过二维坐标访问地图元素需要手动计算一维数组中对应的下标, 可以通过以下方式实现:</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
     type Output = Tiles;
+
     fn index(&amp;self, position: Vector2&lt;i32&gt;) -&gt; &amp;Tiles {
+        assert!(0 &lt;= position.x &amp;&amp; position.x &lt; self.dimensions.x &amp;&amp; 0 &lt;= position.y);
         &amp;self.data[(position.y * self.dimensions.x + position.x) as usize]
     }
 }
 
 impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     fn index_mut(&amp;mut self, position: Vector2&lt;i32&gt;) -&gt; &amp;mut Tiles {
+        assert!(0 &lt;= position.x &amp;&amp; position.x &lt; self.dimensions.x &amp;&amp; 0 &lt;= position.y);
         &amp;mut self.data[(position.y * self.dimensions.x + position.x) as usize]
     }
 }
 </code></pre>
-<p>这样便可以直接通过二维坐标访问地图元素, 例如访问地图 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> 位置的元素: <code>map[Vector2::new(1, 1)]</code>.</p>
-<p>这样的设计不仅可以享受了二维数组访问方式的便捷性, 还能保留了一维数组带来的性能优势.</p>
+<p>这样便可以直接通过二维坐标访问地图元素, 例如访问地图 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> 位置的元素: <code>map[Vector2::new(1, 1)]</code>.<br />
+这样的设计不仅可以享受了二维数组访问方式的便捷性, 还能保留了一维数组带来的性能优势.</p>
+<p>值得注意的是其中的断言, 该函数最终通过下标访问一维数组进行了部分的越界检查, 但越界检查依然不完整. 因为这种越界检查没有涵盖以下无效情况:</p>
+<ol>
+<li><code>x</code> 可以超出地图宽度的情况, 但其一维数组下标依然有效.</li>
+<li><code>x</code>, <code>y</code> 中存在负数, 但其一维数组下标依然可能是正数.</li>
+</ol>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
 元数据是一个键值对的集合, 且键不重复, 因此可以使用哈希表(<code>HashMap</code>)来存储.
