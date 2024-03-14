@@ -253,13 +253,56 @@
     A --&gt;|否| H[返回无解]
     B[取出优先级\n最高的未探索状态] --&gt; C{是目标状态?}
     C --&gt;|是| D[返回解决方案]
-    C --&gt;|否| E[产生其子状态]
+    C --&gt;|否| E[&quot;生成其子状态(邻域)&quot;]
     E --&gt; F{是否已访问过?}
     F --&gt;|是| E
     F --&gt;|否| G[将子状态加入 heap]
     G --&gt; A
 </pre>
-<hr />
+<p>创建一个新的结构体用于存储到状态的代价和启发式函数值:</p>
+<pre><code class="language-rs">struct Node {
+    state: State,
+    cost: i32,
+    heuristic: i32,
+    priority: i32,
+}
+</code></pre>
+<p>其中 <code>priority</code> 的值是根据搜索策略而计算的.</p>
+<p>对于未探索的状态, 可以利用 <code>BinaryHeap</code> 容器来存储. 因为该容器能够高效地取出最大的元素.</p>
+<p>通过重载 <code>Node</code> 的 <code>Ord</code> 特征, 可以将状态通过优先级排序.</p>
+<pre><code class="language-rs">impl Ord for Node {
+    fn cmp(&amp;self, other: &amp;Self) -&gt; Ordering {
+        self.priority.cmp(&amp;other.priority).reverse()
+    }
+}
+
+impl PartialOrd for Node {
+    fn partial_cmp(&amp;self, other: &amp;Self) -&gt; Option&lt;Ordering&gt; {
+        Some(self.cmp(other))
+    }
+}
+</code></pre>
+<p>值得注意的是, Rust 中的 <code>BinaryHeap</code> 的实现方式是最大栈(max-heap), 因此 <code>BinaryHeap::pop</code> 函数返回的是容器中最大的元素. 而优先级的值越小表示优先级越高, 因此比较后还需要调用 <code>Ordering::reverse</code> 函数.<br />
+这样该便可以从容器中取出优先级最高(即最小)的状态.</p>
+<h2 id="标准化玩家位置"><a class="header" href="#标准化玩家位置">标准化玩家位置</a></h2>
+<p>玩家的移动会产生大量新的状态, 然而许多状态仅仅是玩家在固定区域内反复移动而未对箱子位置产生任何影响, 这些状态对于求解问题并无实质性贡献. 例如:</p>
+<pre><code class="language-txt">#####
+#   ###
+#  @$.#
+#######
+</code></pre>
+<p>尽管玩家可以在箱子的左侧区域内活动, 但只有当玩家向右推动箱子时, 才能对求解做出贡献.</p>
+<p>在移动数优先的搜索策略里, 生成仅移动的状态能确保角色以最短路径移动. 但这也可以通过更高效的最优寻路算法来实现.</p>
+<p>因此, 如果玩家只是在一个区域内移动而不推动箱子, 对于推箱子求解是没有意义的. 为了减少这类无用状态的产生, 可以在状态中存储玩家可移动的区域和箱子的位置.</p>
+<p>存储玩家可移动区域的一个简单且高效的实现方法是将玩家的位置标准化.<br />
+即将玩家移动到一个特殊的位置, 比如设置到可移动区域中最左其次最上的位置. 这样在箱子布局一样的情况下, 玩家标准化位置相同就意味着玩家可达区域相同.</p>
+<pre><code class="language-rs">pub fn normalized_area(area: &amp;HashSet&lt;Vector2&lt;i32&gt;&gt;) -&gt; Option&lt;Vector2&lt;i32&gt;&gt; {
+    area.iter()
+        .min_by(|a, b| a.y.cmp(&amp;b.y).then_with(|| a.x.cmp(&amp;b.x)))
+        .copied()
+}
+</code></pre>
+<h2 id="生成邻域"><a class="header" href="#生成邻域">生成邻域</a></h2>
 <p>从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference"><a href="#8">8</a></sup>.</p>
 <p>通过下面函数来生成当前状态的派生状态, 即相邻的状态:</p>
 <pre><code class="language-rs">impl State {
@@ -268,8 +311,8 @@
     }
 }
 </code></pre>
-<p>TODO</p>
-<hr />
+<p>因为只有推动箱子的状态才有价值, 该函数会尝试在当前状态的基础上生成产生推动而不只是产生移动的状态.</p>
+<h2 id="搜索"><a class="header" href="#搜索">搜索</a></h2>
 <pre><code class="language-rs">impl Solver {
     pub fn a_star_search(&amp;self, map: &amp;Map) -&gt; Result&lt;(), SearchError&gt; {
         let mut heap = BinaryHeap::new();

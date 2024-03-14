@@ -234,7 +234,7 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
 </ol>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
-元数据是一个键值对的集合, 且键不重复, 因此可以使用哈希表(<code>HashMap</code>)来存储.
+元数据是一个键值对的集合, 且键不重复, 因此可以使用 <code>HashMap</code> 容器来存储.
 可以使用下面的结构体存储关卡数据:</p>
 <pre><code class="language-rs">use std::collections::HashMap;
 

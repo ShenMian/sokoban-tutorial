@@ -293,7 +293,7 @@ for level in Level::load(&amp;fs::read_to_string(path).unwrap()).filter_map(|x| 
     // ... SKIP ...
 }
 </code></pre>
-<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 中, 同时提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
+<p>关联函数 <code>Level::from_str</code> 需要将元数据存储到 <code>HashMap</code> 容器中, 同时提取地图数据后续交给 <code>Map::from_str</code> 做进一步解析.<br />
 由于地图数据是连续的, 所以也可以使用字符串切片表示.</p>
 <pre><code class="language-rs">impl Level {
     pub fn from_str(str: &amp;str) -&gt; Result&lt;Self, ParseLevelError&gt; {
