@@ -224,11 +224,7 @@ impl IndexMut&lt;Vector2&lt;i32&gt;&gt; for Map {
     }
 }
 </code></pre>
-<p>这样便可以直接通过二维坐标访问地图元素:</p>
-<pre><code class="language-rs">let map = ...;
-let position = Vector2::new(1, 1);
-assert_eq!(map[position], Tiles::Floor | Tiles::Player);
-</code></pre>
+<p>这样便可以直接通过二维坐标访问地图元素, 例如访问地图 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> 位置的元素: <code>map[Vector2::new(1, 1)]</code>.</p>
 <p>这样的设计不仅可以享受了二维数组访问方式的便捷性, 还能保留了一维数组带来的性能优势.</p>
 <h2 id="表示关卡"><a class="header" href="#表示关卡">表示关卡</a></h2>
 <p>关卡数据可分为三个部分: 地图数据, 元数据和注释. 其中注释可以作为元数据.<br />
