@@ -269,7 +269,7 @@
 </code></pre>
 <p>其中 <code>priority</code> 的值是根据搜索策略而计算的.</p>
 <p>对于未探索的状态, 可以利用 <code>BinaryHeap</code> 容器来存储. 因为该容器能够高效地取出最大的元素.</p>
-<p>通过重载 <code>Node</code> 的 <code>Ord</code> 特征, 可以将状态通过优先级排序.</p>
+<p>通过重载 <code>Node</code> 的 <code>Ord</code> trait, 可以将状态通过优先级排序.</p>
 <pre><code class="language-rs">impl Ord for Node {
     fn cmp(&amp;self, other: &amp;Self) -&gt; Ordering {
         self.priority.cmp(&amp;other.priority).reverse()
