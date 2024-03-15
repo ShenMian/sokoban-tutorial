@@ -528,7 +528,7 @@ pub struct Level {
 }
 </code></pre>
 <p>将地图从关卡中拆分是因为地图涉及大量的关联函数, 如果都放在 <code>Level</code> 里会导致其变得过于庞大.<br />
-为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并将 <code>Level</code> 的 Deref 操作指向 <code>Map</code>. 并通过实现 <code>Deref</code> trait, 使得用户能够透明地引用到 <code>Level</code> 内部的 Map.</p>
+为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并通过实现 <code>Deref</code> trait, 使得用户能够透明地引用到 <code>Level</code> 内部的 <code>Map</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
 <h1 id="构造-"><a class="header" href="#构造-">构造 🏗️</a></h1>
 <h2 id="从-xsb-格式字符串构造关卡"><a class="header" href="#从-xsb-格式字符串构造关卡">从 XSB 格式字符串构造关卡</a></h2>
