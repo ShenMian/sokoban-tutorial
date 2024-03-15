@@ -486,7 +486,11 @@ pub struct Map {
     // ... SKIP ...
 }
 </code></pre>
-<p>使用一维数组 <code>Vec&lt;Tiles&gt;</code> 而非二维数组 <code>Vec&lt;Vec&lt;Tiles&gt;&gt;</code> 是因为一维数组更平坦(flatten), 能确保动态数组的元素在内存中是紧密排列的, 根据数据局部性原理, 这通常能提高内存读取效率. 此外, 由于结构更为简单, 使得部分操作的代码更为简洁高效, 比如调整地图尺寸.</p>
+<p>这样设计有以下考量:</p>
+<ol>
+<li>与拥有固定尺寸棋盘的棋类游戏不同, 推箱子关卡的尺寸是可变的, 因此使用动态数组.</li>
+<li>使用一维数组而非二维数组 <code>Vec&lt;Vec&lt;Tiles&gt;&gt;</code> 是因为一维数组更平坦(flatten), 能确保动态数组的元素在内存中是紧密排列的, 根据数据局部性原理, 这通常能提高内存读取效率. 此外, 由于结构更为简单, 使得部分操作的代码更为简洁高效, 比如调整地图尺寸.</li>
+</ol>
 <p>但这也意味着通过二维坐标访问地图元素需要手动计算一维数组中对应的下标, 可以通过以下方式实现:</p>
 <pre><code class="language-rs">impl Index&lt;Vector2&lt;i32&gt;&gt; for Map {
     type Output = Tiles;
