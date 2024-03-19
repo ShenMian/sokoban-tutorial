@@ -5,26 +5,32 @@ var initGiscus = function () {
     }
 
     document.getElementById("theme-list").addEventListener("click", function (e) {
+        console.log("hi");
         var iframe = document.querySelector('.giscus-frame');
         if (!iframe) {
             return;
         }
 
-        var theme;
+        var themeName;
         if (e.target.className === "theme") {
-            theme = e.target.id;
+            themeName = e.target.id;
+            console.log(themeName);
         } else {
             return;
         }
+        console.log(themeName);
 
-        var giscusTheme = "light"
-        if (theme != "light" && theme != "rust") {
-            giscusTheme = "transparent_dark";
+        var theme;
+        if (themeName != "light" && themeName != "rust") {
+            theme = "transparent_dark";
+        } else {
+            theme = "light";
         }
+        console.log(theme);
 
         var msg = {
             setConfig: {
-                theme: giscusTheme
+                theme: theme
             }
         };
         iframe.contentWindow.postMessage({ giscus: msg }, 'https://giscus.app');
