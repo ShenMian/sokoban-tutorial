@@ -5,7 +5,6 @@ var initGiscus = function () {
     }
 
     document.getElementById("theme-list").addEventListener("click", function (e) {
-        console.log("hi");
         var iframe = document.querySelector('.giscus-frame');
         if (!iframe) {
             return;
@@ -14,11 +13,9 @@ var initGiscus = function () {
         var themeName;
         if (e.target.className === "theme") {
             themeName = e.target.id;
-            console.log(themeName);
         } else {
             return;
         }
-        console.log(themeName);
 
         var theme;
         if (themeName != "light" && themeName != "rust") {
@@ -26,7 +23,6 @@ var initGiscus = function () {
         } else {
             theme = "light";
         }
-        console.log(theme);
 
         var msg = {
             setConfig: {
