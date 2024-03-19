@@ -177,7 +177,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写.</p>
 <h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
@@ -232,7 +232,7 @@
 <div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://en.wikipedia.org/wiki/Sokoban#Variants">https://en.wikipedia.org/wiki/Sokoban#Variants</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <h2 id="xsb-格式"><a class="header" href="#xsb-格式">XSB 格式</a></h2>
 <p>推箱子关卡所使用的 XSB 格式因其简洁和直观而受到了广泛的认可和应用, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
@@ -455,7 +455,7 @@ ___HHH__
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="http://www.mf8-china.com/forum.php">http://www.mf8-china.com/forum.php</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图-"><a class="header" href="#表示地图-">表示地图 🗺️</a></h2>
 <h3 id="元素的表示"><a class="header" href="#元素的表示">元素的表示</a></h3>
@@ -529,7 +529,7 @@ pub struct Level {
 </code></pre>
 <p>将地图从关卡中拆分是因为地图涉及大量的关联函数, 如果都放在 <code>Level</code> 里会导致其变得过于庞大.<br />
 为了提升代码的可读性和可维护性, 将相关代码拆分到 <code>Map</code> 中, 并通过实现 <code>Deref</code> trait, 使得用户能够透明地引用到 <code>Level</code> 内部的 <code>Map</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="构造-"><a class="header" href="#构造-">构造 🏗️</a></h1>
 <h2 id="从-xsb-格式字符串构造关卡"><a class="header" href="#从-xsb-格式字符串构造关卡">从 XSB 格式字符串构造关卡</a></h2>
 <p>关卡解析可以分为两部分: 地图解析, 元数据和注释解析.</p>
@@ -982,7 +982,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
 <p><a href="https://docs.rs/thiserror/latest/thiserror/">https://docs.rs/thiserror/latest/thiserror/</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="标准化"><a class="header" href="#标准化">标准化</a></h1>
 <p>有些关卡为了美观会在原关卡的基础上添加一些装饰, 这些装饰性的元素在本质上并<strong>不影响关卡的解法</strong>.<br />
 标准化的目的是移除这些与求解<strong>无关或冗余</strong>的元素.</p>
@@ -1054,7 +1054,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://www.sciencedirect.com/science/article/pii/S0925772199000176">https://www.sciencedirect.com/science/article/pii/S0925772199000176</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="求解器solver"><a class="header" href="#求解器solver">求解器(Solver)</a></h1>
 <p>顾名思义, 求解器是用于自动求解推箱子关卡的程序.</p>
 <p>阅读本文前, 读者需要自行了解搜索算法的工作原理. 因为相比推箱子求解, 一般的寻路算法更适合读者理解搜索算法.</p>
@@ -1249,7 +1249,7 @@ impl PartialOrd for Node {
 <div class="footnote-definition" id="8"><sup class="footnote-definition-label">8</sup>
 <p><a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="搜索策略"><a class="header" href="#搜索策略">搜索策略</a></h1>
 <h2 id="什么是最短路径"><a class="header" href="#什么是最短路径">什么是最短路径?</a></h2>
 <p>在常见的寻路算法中, <strong>最短</strong>可能是指距离最短, 也可能是指时间最短.<br />
@@ -1275,7 +1275,7 @@ impl PartialOrd for Node {
     OptimalMove,
 }
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="启发式函数heuristic-function"><a class="header" href="#启发式函数heuristic-function">启发式函数(Heuristic function)</a></h1>
 <p>启发式函数用于指导搜索算法的搜索方向.</p>
 <p>A* 算法的核心是估价函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span></span>, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>. 其中:</p>
@@ -1376,7 +1376,7 @@ lower_bounds
 <div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a></p>
 </div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="资源"><a class="header" href="#资源">资源</a></h1>
 <ul>
 <li><a href="http://sokobano.de/wiki/">http://sokobano.de/wiki/</a>: 德国推箱子 Wiki.</li>
@@ -1384,7 +1384,7 @@ lower_bounds
 <li><a href="https://sourceforge.net/projects/sokobanyasc/">https://sourceforge.net/projects/sokobanyasc/</a> 推箱子软件 SokobanYASC.</li>
 <li><a href="https://sokoban.cn/">https://sokoban.cn/</a>: 中国推箱子在线平台.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="术语表"><a class="header" href="#术语表">术语表</a></h1>
 <div class="table-wrapper"><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody>
 <tr><td>求解器</td><td>solver</td></tr>
@@ -1428,6 +1428,7 @@ lower_bounds
         <!-- Custom JS scripts -->
         <script src="mermaid.min.js"></script>
         <script src="mermaid-init.js"></script>
+        <script src="giscus.js"></script>
 
         <script>
         window.addEventListener('load', function() {
