@@ -1,4 +1,4 @@
-var initAll = function () {
+var initGiscus = function () {
     var path = window.location.pathname;
     if (path.endsWith("/print.html")) {
         return;
@@ -54,7 +54,7 @@ var initAll = function () {
     script.setAttribute("data-theme", theme);
     script.setAttribute("data-lang", "zh-CN");
     script.setAttribute("data-loading", "lazy");
-    document.getElementById("body-container").appendChild(script);
+    document.getElementById("giscus-container").appendChild(script);
 };
 
-window.addEventListener('load', initAll);
+window.addEventListener('load', initGiscus);
