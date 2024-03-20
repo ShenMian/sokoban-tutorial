@@ -1389,8 +1389,8 @@ lower_bounds
 </div>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="优化"><a class="header" href="#优化">优化</a></h1>
-<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 地图尺寸和箱子数量没有限制.</p>
-<p>因此只靠暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要进行优化.</p>
+<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.</p>
+<p>因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要进行优化.</p>
 <p>本文所描述的求解器将使用以下优化手段:</p>
 <ul>
 <li>启发式搜索(Heuristic search): 使用启发式搜索算法, 如 A*.</li>
