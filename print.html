@@ -1232,7 +1232,8 @@ impl PartialOrd for Node {
 <li>需要记录已探索过的节点, 避免进入环中导致死循环.</li>
 <li>推箱子关卡的状态可以用图表示, 却无法用树(Tree)表示.</li>
 </ol>
-<p>已被探索的节点通常会被存储在一个闭集(Closed set)中, 为了通俗易懂, 使用变量名 <code>visited</code> 表示这个闭集.</p>
+<p>已被探索的节点通常会被存储在一个闭集(Closed set)中, 为了通俗易懂, 使用变量名 <code>visited</code> 表示这个闭集.<br />
+为了节省内存, <code>visited</code> 中只需要存储已访问状态的哈希值, 因为这些状态将不会再被使用.</p>
 <p>复杂推箱子关卡的图非常大, 难以提前生成并存储在内存中. 因此可以在搜索的过程中逐步拓展图.</p>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/State_space_search">https://en.wikipedia.org/wiki/State_space_search</a></p>
@@ -1387,8 +1388,8 @@ lower_bounds
 </div>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="优化"><a class="header" href="#优化">优化</a></h1>
-<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.</p>
-<p>因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要进行优化.</p>
+<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.<br />
+因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要进行优化.</p>
 <p>本文所描述的求解器将使用以下优化手段:</p>
 <ul>
 <li>启发式搜索(Heuristic search): 使用启发式搜索算法, 如 A*.</li>
