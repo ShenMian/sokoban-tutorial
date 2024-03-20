@@ -322,10 +322,10 @@ impl PartialOrd for Node {
 </code></pre>
 <p>因为只有推动箱子的状态才有价值, 该函数会尝试在当前状态的基础上生成产生推动而不只是产生移动的状态.</p>
 <h2 id="搜索"><a class="header" href="#搜索">搜索</a></h2>
+<p>一个只能判断是否有解决方案的简单实现如下:</p>
 <pre><code class="language-rs">impl Solver {
     pub fn a_star_search(&amp;self, map: &amp;Map) -&gt; Result&lt;(), SearchError&gt; {
         let mut heap = BinaryHeap::new();
-        let mut came_from = HashMap::new();
         let mut visited = HashSet::new();
 
         let state: State = map.clone().into();
@@ -339,7 +339,6 @@ impl PartialOrd for Node {
                 if !visited.insert(successor.normalized_hash(map)) {
                     continue;
                 }
-                came_from.insert(successor.clone(), state.clone());
                 heap.push(Node::new(successor, cost + 1, self));
             }
         }
@@ -348,7 +347,6 @@ impl PartialOrd for Node {
     // ... SKIP ...
 }
 </code></pre>
-<p>TODO: 代码需要更新</p>
 <p>复杂推箱子关卡的图可能存在环(Loop), 这意味着:</p>
 <ol>
 <li>需要记录已探索过的节点, 避免进入环中导致死循环.</li>
