@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.</strong> 优化</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 割点</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.2.</strong> 隧道</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.3.</strong> 死锁</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.4.</strong> 双向搜索</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">5.</strong> 资源 🚧</a></li><li class="chapter-item expanded "><a href="glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 🚧</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.</strong> 优化</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 割点</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.2.</strong> 隧道</div></li><li class="chapter-item expanded "><a href="solver/deadlock.html"><strong aria-hidden="true">3.3.3.</strong> 死锁</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.4.</strong> 双向搜索</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">5.</strong> 资源 🚧</a></li><li class="chapter-item expanded "><a href="glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 🚧</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -1385,6 +1385,33 @@ lower_bounds
 <div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
 <p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a></p>
 </div>
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="死锁deadlock"><a class="header" href="#死锁deadlock">死锁(Deadlock)</a></h1>
+<h2 id="什么是死锁"><a class="header" href="#什么是死锁">什么是死锁</a></h2>
+<p>推箱子的通关条件是箱子和目标位置一一对应. 但在一些情况下, 箱子永远不能被推到目标上, 推箱子通关条件永远无法达成.</p>
+<h2 id="为什么要检测死锁"><a class="header" href="#为什么要检测死锁">为什么要检测死锁</a></h2>
+<p>死锁产生后, 该状态及其衍生状态一定无解, 但依然可以控制玩家继续推动其他可推动的箱子, 因此求解器将继续浪费大量的资源去搜索一定无解的状态.
+因此需要有检测死锁产生的方法, 来跳过不必要的搜索.</p>
+<p>死锁检测可以用于可行性剪枝.</p>
+<h2 id="何时检测死锁"><a class="header" href="#何时检测死锁">何时检测死锁</a></h2>
+<p>死锁按照箱子和玩家位置的关系可以分为三类:</p>
+<ol>
+<li>与箱子和玩家位置无关的.</li>
+<li>与箱子位置有关和玩家位置无关的.</li>
+<li>与箱子和玩家位置有关的.</li>
+</ol>
+<p>第 1 类为<strong>静态死锁</strong>, 因为其与箱子和玩家的位置均无关, 可以在只知道关卡地形和目标位置的情况下进行计算, 而目标位置是静态的.<br />
+这类死锁可以在关卡地形变化时计算.<br />
+当箱子被推到目标后死锁了, 此时可以将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.</p>
+<p>第 2 类为<strong>冻结死锁(freeze deadlocks)</strong>, 这类死锁产生的原因是箱子之间的相互阻碍导致多个箱子同时死锁.<br />
+这类死锁的检测时机是箱子推动后.</p>
+<p>第 3 类包括<strong>畜栏死锁(corral deadlocks)</strong>/<strong>闭对角死锁(closed diagonal deadlocks)</strong>. 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.<br />
+畜栏死锁是一种更为高级的冻结死锁, 因为即使在畜栏死锁后, 箱子仍然可以被推动, 但最终一定会形成冻结死锁.<br />
+畜栏死锁的检测时机是箱子推动后, 有玩家不可达的区域面积减小. 这意味着玩家可能无法再回到该不可达区域, 导致区域周边的箱子的移动自由度减少.</p>
+<h2 id="参考-1"><a class="header" href="#参考-1">参考</a></h2>
+<ul>
+<li><a href="http://sokobano.de/wiki/index.php?title=Deadlocks">http://sokobano.de/wiki/index.php?title=Deadlocks</a></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="资源"><a class="header" href="#资源">资源</a></h1>
 <ul>
