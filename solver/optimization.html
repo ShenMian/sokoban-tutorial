@@ -188,13 +188,13 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="优化"><a class="header" href="#优化">优化</a></h1>
 <p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.<br />
-因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要进行优化.</p>
+因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要对求解器进行优化.</p>
 <p>本文所描述的求解器将使用以下优化手段:</p>
 <ul>
-<li>启发式搜索(Heuristic search): 使用启发式搜索算法, 如 A*.</li>
-<li>剪枝(Pruning): 利用<a href="deadlocks.html">死锁</a>检测进行剪枝.</li>
-<li>记忆化搜索(Memoization): 防止重复搜索相同节点, 或陷入图里的环.</li>
-<li>预处理(Preprocessing): 预计算下界.</li>
+<li>启发式搜索(Heuristic search): 使用启发式搜索算法, 通过引入启发式函数来指导搜索方向.</li>
+<li>剪枝(Pruning): 借助<a href="deadlocks.html">死锁</a>检测, 我们能够有效地剪去部分不可能导致解的情况, 减少搜索空间.</li>
+<li>记忆化搜索(Memoization): 防止搜索过程中重复搜索相同节点, 或陷入图里的环.</li>
+<li>预处理(Preprocessing): 预计算下界, 在之后的搜索过程中可以直接取用, 避免反复计算下界.</li>
 </ul>
 
 
