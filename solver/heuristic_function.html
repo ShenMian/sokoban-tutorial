@@ -221,11 +221,10 @@
 <p>启发式函数计算的适合通常会假设地图上只有一个箱子, 因为这样计算出的结果与箱子的位置无关. 在搜索状态的时候箱子的位置会不断发生改变, 但是启发式函数的值不变.<br />
 因此可以提前计启发式函数的值, 供后续搜索时使用.</p>
 <h2 id="下界lower-bounds"><a class="header" href="#下界lower-bounds">下界(Lower bounds)</a></h2>
-<p>下界是一个箱子到任何目标的最短距离.<br />
-根据搜索策略有两种下界:</p>
+<p>根据搜索策略有两种下界:</p>
 <ul>
-<li>推动下界.</li>
-<li>移动下界.</li>
+<li><strong>推动下界</strong>: 将箱子推动到任何目标的最少<strong>推动</strong>数.</li>
+<li><strong>移动下界</strong>: 将箱子推动到任何目标的最少<strong>移动</strong>数.</li>
 </ul>
 <p>其中推动下界可以用于搜索最优移动数解决方案, 反之则不行. 因为推动下界一定小于移动下界.</p>
 <p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#2">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
@@ -273,13 +272,6 @@ lower_bounds
     // ... SKIP ...
 }
 </code></pre>
-<h2 id="特征"><a class="header" href="#特征">特征</a></h2>
-<p>除了通过下界计算得到的启发式函数值, 还有一些特征的值可以附加在启发式函数值上, 在确保启发式函数值保持其容许性的前提下, 优先搜索有相同启发式函数值的状态中选择更接近目标状态的节点.</p>
-<h3 id="连接性特征"><a class="header" href="#连接性特征">连接性特征</a></h3>
-<p>玩家全部可达区域可能会被箱子分割为多个区域. 这些区域的数量越少意味着玩家可以移动的范围越大.</p>
-<p>因为区域是被箱子分割的, 因此只需要检测箱子周围的点所属的区域即可获得独立的区域数.
-通过判断箱子在割点上的情况快速判断独立区域的数量.</p>
-<p>TODO</p>
 <div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
 <p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a></p>
 </div>
