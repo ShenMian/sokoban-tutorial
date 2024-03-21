@@ -203,18 +203,73 @@
 <ol>
 <li>
 <p><strong>静态死锁</strong>: 这种死锁与箱子和玩家的位置无关, 可以在只知道关卡地形和目标位置的情况下进行计算.<br />
-标位置是静态的, 而关卡地形可能发生变化. 比如当箱子被推到目标后死锁了, 此时可以将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.</p>
+标位置是静态的, 而关卡地形可能发生变化. 比如当箱子被推到目标后死锁了, 此时可以将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.<br />
+因为地形变化只能增加墙体, 使死区变多, 所以即使不重新计算也不会产生错误, 但会使静态死锁检测不全面.</p>
 </li>
 <li>
-<p><strong>冻结死锁(freeze deadlocks)</strong>: 这种死锁产生的原因是箱子之间的相互阻碍导致多个箱子同时死锁.<br />
+<p><strong>冻结死锁(freeze deadlocks)</strong>: 这种死锁产生的原因是箱子和墙或箱子之间的相互阻碍导致多个箱子同时死锁.<br />
 这类死锁的检测时机是箱子推动后.</p>
 </li>
 <li>
-<p>包括<strong>畜栏死锁(corral deadlocks)</strong>/<strong>闭对角死锁(closed diagonal deadlocks)</strong>: 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.</p>
+<p>包括<strong>畜栏死锁(corral deadlocks)</strong>/<strong>闭对角死锁(closed diagonal deadlocks)</strong>: FIXME 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.</p>
 <p>畜栏死锁是一种更为高级的冻结死锁, 因为即使在畜栏死锁后, 箱子仍然可以被推动, 但最终一定会形成冻结死锁.<br />
 畜栏死锁的检测时机是箱子推动后, 有玩家不可达的区域面积减小. 这意味着玩家可能无法再回到该不可达区域, 导致区域周边的箱子的移动自由度减少.</p>
 </li>
 </ol>
+<h2 id="如何检测死锁"><a class="header" href="#如何检测死锁">如何检测死锁</a></h2>
+<h3 id="静态死锁"><a class="header" href="#静态死锁">静态死锁</a></h3>
+<p>将箱子放置在目标位置, 然后拉动箱子到所有可能位置. 箱子到达的区域内的箱子一定能被推动到目标, 而箱子不可达区域一定无法被推动到目标, 即静态死区区域.</p>
+<h3 id="冻结死锁"><a class="header" href="#冻结死锁">冻结死锁</a></h3>
+<p>一个箱子只能在垂直和水平方向上移动, 若箱子的两个方向都被箱子遮挡(即上或下被遮挡, 且左或右被遮挡), 则该箱子处于冻结死锁.</p>
+<p>能遮挡箱子的元素有两个:</p>
+<ol>
+<li>墙体.</li>
+<li>其他箱子: 需递归的判断该箱子是否被冻结死锁.</li>
+</ol>
+<pre><code class="language-rs">pub fn is_freeze_deadlock(
+    map: &amp;Map,
+    box_position: Vector2&lt;i32&gt;,
+    box_positions: &amp;HashSet&lt;Vector2&lt;i32&gt;&gt;,
+    visited: &amp;mut HashSet&lt;Vector2&lt;i32&gt;&gt;,
+) -&gt; bool {
+    debug_assert!(box_positions.contains(&amp;box_position));
+
+    if !visited.insert(box_position) {
+        return true;
+    }
+
+    for direction in [
+        Direction::Up,
+        Direction::Down,
+        Direction::Left,
+        Direction::Right,
+    ]
+    .chunks(2)
+    {
+        let neighbors = [
+            box_position + &amp;direction[0].into(),
+            box_position + &amp;direction[1].into(),
+        ];
+
+        // Check if any immovable walls on the axis.
+        if map[neighbors[0]].intersects(Tiles::Wall) || map[neighbors[1]].intersects(Tiles::Wall) {
+            continue;
+        }
+
+        // Check if any immovable boxes on the axis.
+        if (box_positions.contains(&amp;neighbors[0])
+            &amp;&amp; is_freeze_deadlock(map, neighbors[0], box_positions, visited))
+            || (box_positions.contains(&amp;neighbors[1])
+                &amp;&amp; is_freeze_deadlock(map, neighbors[1], box_positions, visited))
+        {
+            continue;
+        }
+
+        return false;
+    }
+    true
+}
+</code></pre>
 <h2 id="参考"><a class="header" href="#参考">参考</a></h2>
 <ul>
 <li><a href="http://sokobano.de/wiki/index.php?title=Deadlocks">http://sokobano.de/wiki/index.php?title=Deadlocks</a></li>
@@ -222,7 +277,12 @@
 
 
                         <!-- Giscus -->
-                        <div id="giscus-container"></div>
+                        <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"
+                            data-repo-id="R_kgDOLaAVUw" data-category="Comments" data-category-id="DIC_kwDOLaAVU84CeEvG"
+                            data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0"
+                            data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN"
+                            data-loading="lazy" crossorigin="anonymous" async>
+                            </script>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -275,7 +335,6 @@
         <!-- Custom JS scripts -->
         <script src="../mermaid.min.js"></script>
         <script src="../mermaid-init.js"></script>
-        <script src="../giscus.js"></script>
 
 
     </div>
