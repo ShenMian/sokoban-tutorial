@@ -205,18 +205,21 @@
 <p><strong>静态死锁</strong>: 这种死锁与箱子和玩家的位置无关, 可以在只知道关卡地形和目标位置的情况下进行计算.<br />
 标位置是静态的, 而关卡地形可能发生变化. 比如当箱子被推到目标后死锁了, 此时可以将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.<br />
 因为地形变化只能增加墙体, 使死区变多, 所以即使不重新计算也不会产生错误, 但会使静态死锁检测不全面.</p>
+<p><img src="assets/static_deadlock.png" alt="Static deadlock - Sokoban Wiki" /></p>
 </li>
 <li>
-<p><strong>冻结死锁(freeze deadlocks)</strong>: 这种死锁产生的原因是箱子和墙或箱子之间的相互阻碍导致多个箱子同时死锁.<br />
+<p><strong>冻结死锁(Freeze deadlocks)</strong>: 这种死锁产生的原因是箱子和墙或箱子之间的相互阻碍导致多个箱子同时死锁.<br />
 这类死锁的检测时机是箱子推动后.</p>
+<p><img src="assets/freeze_deadlock.png" alt="Freeze deadlock - Sokoban Wiki" /></p>
 </li>
 <li>
-<p>包括<strong>畜栏死锁(corral deadlocks)</strong>/<strong>闭对角死锁(closed diagonal deadlocks)</strong>: FIXME 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.</p>
+<p>包括<strong>畜栏死锁(Corral deadlocks)</strong>/<strong>闭对角死锁(Closed diagonal deadlocks)</strong>: FIXME 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.</p>
 <p>畜栏死锁是一种更为高级的冻结死锁, 因为即使在畜栏死锁后, 箱子仍然可以被推动, 但最终一定会形成冻结死锁.<br />
 畜栏死锁的检测时机是箱子推动后, 有玩家不可达的区域面积减小. 这意味着玩家可能无法再回到该不可达区域, 导致区域周边的箱子的移动自由度减少.</p>
+<p><img src="assets/corral_deadlock.png" alt="Corral deadlock - Sokoban Wiki" />
+<img src="assets/closed_diagonal_deadlock.png" alt="Closed diagonal deadlock - Sokoban Wiki" /></p>
 </li>
 </ol>
-<p>TODO: 利用图片直观的展示各类死锁</p>
 <h2 id="how"><a class="header" href="#how">如何检测死锁</a></h2>
 <h3 id="静态死锁"><a class="header" href="#静态死锁">静态死锁</a></h3>
 <p>将箱子放置在目标位置, 然后拉动箱子到所有可能位置. 箱子到达的区域内的箱子一定能被推动到目标, 而箱子不可达区域一定无法被推动到目标, 即死区.</p>
