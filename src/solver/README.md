@@ -233,7 +233,7 @@ impl Solver {
 [^2]: <https://en.wikipedia.org/wiki/Breadth-first_search>
 [^3]: <https://en.wikipedia.org/wiki/A*_search_algorithm>
 [^4]: <https://en.wikipedia.org/wiki/Iterative_deepening_A*>
-[^5]: <https://ieeexplore.ieee.org/document/9231929>
+[^5]: [Y. Shoham and J. Schaeffer, "The FESS Algorithm: A Feature Based Approach to Single-Agent Search," 2020 IEEE Conference on Games (CoG), Osaka, Japan, 2020, pp. 96-103, doi: 10.1109/CoG47356.2020.9231929](https://ieeexplore.ieee.org/document/9231929)
 [^6]: <https://festival-solver.site/>
 [^7]: <http://sokobano.de/wiki/index.php?title=Solver_Statistics>
 [^8]: <https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)>
