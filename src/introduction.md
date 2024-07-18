@@ -8,7 +8,7 @@
 
 ![First Sokoban #15](assets/first_sokoban_15.png)
 
-截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月发行于 PlayStation 4 平台.[^1]
+截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月在 PlayStation 4 平台发行.[^1]
 
 ![The Sokoban](assets/everyones_sokoban.jpg)
 
@@ -52,7 +52,7 @@
 完整的项目代码位于:
 
 - [ShenMian/soukoban](https://github.com/shenmian/soukoban): 推箱子相关算法实现.
-- [ShenMian/sokoban-rs](https://github.com/shenmian/sokoban-rs): 推箱子实现, 使用 Bevy 引擎.
+- [ShenMian/sokoban-rs](https://github.com/shenmian/sokoban-rs): 基于 Bevy 引擎的推箱子实现.
 
 ## 拓展资料
 
