@@ -26,6 +26,48 @@
 
 这类地形变化只会增加墙体, 导致静态死锁区域增加. 因此即使不在地形变化时重新计算也不会导致误报, 但可能导致静态死锁检测不全面.
 
+```rs
+pub fn is_static_deadlock(
+    map: &Map,
+    box_position: Vector2<i32>,
+    box_positions: &HashSet<Vector2<i32>>,
+    visited: &mut HashSet<Vector2<i32>>,
+) -> bool {
+    debug_assert!(box_positions.contains(&box_position));
+
+    if !visited.insert(box_position) {
+        return true;
+    }
+
+    for direction in [
+        Direction::Up,
+        Direction::Right,
+        Direction::Down,
+        Direction::Left,
+    ]
+    .windows(3)
+    {
+        let neighbors = [
+            box_position + &direction[0].into(),
+            box_position + &direction[1].into(),
+            box_position + &direction[3].into(),
+        ];
+        for neighbor in &neighbors {
+            if map[*neighbor].intersects(Tiles::Wall) {
+                continue;
+            }
+            if box_positions.contains(neighbor)
+                && is_static_deadlock(map, *neighbor, box_positions, visited)
+            {
+                continue;
+            }
+            return false;
+        }
+    }
+    true
+}
+```
+
 ## 二分死锁(Bipartite deadlocks)
 
 静态死锁检测的是**指定箱子**能否被推动至目标上, 而二分死锁检测的是箱子能否被推动至**指定目标**上.
@@ -37,6 +79,52 @@
 ## 冻结死锁(Freeze deadlocks)
 
 ![Freeze deadlock - Sokoban Wiki](assets/freeze_deadlock.png)
+
+```rs
+pub fn is_freeze_deadlock(
+    map: &Map,
+    box_position: Vector2<i32>,
+    box_positions: &HashSet<Vector2<i32>>,
+    visited: &mut HashSet<Vector2<i32>>,
+) -> bool {
+    debug_assert!(box_positions.contains(&box_position));
+
+    if !visited.insert(box_position) {
+        return true;
+    }
+
+    for direction in [
+        Direction::Up,
+        Direction::Down,
+        Direction::Left,
+        Direction::Right,
+    ]
+    .chunks(2)
+    {
+        let neighbors = [
+            box_position + &direction[0].into(),
+            box_position + &direction[1].into(),
+        ];
+
+        // Check if any immovable walls on the axis.
+        if map[neighbors[0]].intersects(Tiles::Wall) || map[neighbors[1]].intersects(Tiles::Wall) {
+            continue;
+        }
+
+        // Check if any immovable boxes on the axis.
+        if (box_positions.contains(&neighbors[0])
+            && is_freeze_deadlock(map, neighbors[0], box_positions, visited))
+            || (box_positions.contains(&neighbors[1])
+                && is_freeze_deadlock(map, neighbors[1], box_positions, visited))
+        {
+            continue;
+        }
+
+        return false;
+    }
+    true
+}
+```
 
 ## 畜栏死锁(Corral deadlocks)
 
