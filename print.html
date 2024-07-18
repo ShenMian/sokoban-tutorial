@@ -1115,8 +1115,6 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <p>BSF/A*/IDA* 算法均可以用于搜索最短路径, 即最佳解决方案.<br />
 由于推箱子问题是PSPACE完全(PSPACE-complete)的, 使用 BSF 这种非启发式算法是难以搜索到解决方案的.<br />
 而 IDA* 算法则是基于 A* 算法的改进, 所以本文将描述如何创建一个基于 A* 搜索算法的求解器.</p>
-<h2 id="转置表transposition-table"><a class="header" href="#转置表transposition-table">转置表(Transposition table)</a></h2>
-<p>推箱子状态构成的图是有环图, 因此需要一张转置表. 用于记录已探索过的节点, 防止重复探索相同节点或陷入死循环.</p>
 <h2 id="表示状态"><a class="header" href="#表示状态">表示状态</a></h2>
 <p>状态只需要包含了玩家的位置和箱子的位置, 因为玩家和箱子是关卡中可移动对象. 保存它们的位置足以描述整个关卡的状态.<br />
 其他元素, 如墙壁/目标位置等是静态的，它们的位置不会随状态的改变而改变, 因此只需要从关卡的初始状态中获取它们的位置.</p>
@@ -1226,6 +1224,7 @@ impl PartialOrd for Node {
     // ... SKIP ...
 }
 </code></pre>
+<h2 id="转置表transposition-table"><a class="header" href="#转置表transposition-table">转置表(Transposition table)</a></h2>
 <p>复杂推箱子关卡的图可能存在环(Loop), 这意味着:</p>
 <ol>
 <li>需要记录已探索过的节点, 避免进入环中导致死循环.</li>
