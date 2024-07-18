@@ -4,7 +4,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>优化 - 推箱子教程</title>
+    <title>死锁 2 🚧 - 推箱子教程</title>
 
 
     <!-- Custom HTML head -->
@@ -90,7 +90,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="../solver/optimization.html" class="active"><strong aria-hidden="true">3.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 隧道</div></li><li class="chapter-item expanded "><a href="../solver/deadlocks.html"><strong aria-hidden="true">3.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><a href="../solver/deadlocks_v2.html"><strong aria-hidden="true">3.3.3.</strong> 死锁 2 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.4.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><a href="../solver/bidirectional_search.html"><strong aria-hidden="true">3.4.</strong> 双向搜索 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">5.</strong> 资源 🚧</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 🚧</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">1.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html"><strong aria-hidden="true">1.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">1.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">1.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">2.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">3.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">3.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">3.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="../solver/optimization.html"><strong aria-hidden="true">3.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.1.</strong> 隧道</div></li><li class="chapter-item expanded "><a href="../solver/deadlocks.html"><strong aria-hidden="true">3.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><a href="../solver/deadlocks_v2.html" class="active"><strong aria-hidden="true">3.3.3.</strong> 死锁 2 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.3.4.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><a href="../solver/bidirectional_search.html"><strong aria-hidden="true">3.4.</strong> 双向搜索 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">5.</strong> 资源 🚧</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">6.</strong> 术语表 🚧</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -186,16 +186,121 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="优化"><a class="header" href="#优化">优化</a></h1>
-<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.<br />
-因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要对求解器进行优化.</p>
-<p>本文所描述的求解器将使用以下优化手段:</p>
-<ul>
-<li>启发式搜索(Heuristic search): 使用启发式搜索算法, 通过引入启发式函数来指导搜索方向.</li>
-<li>剪枝(Pruning): 借助<a href="deadlocks.html">死锁</a>检测, 我们能够有效地剪去部分不可能导致解的情况, 减少搜索空间.</li>
-<li>记忆化搜索(Memoization): 防止搜索过程中重复搜索相同节点, 或陷入图里的环.</li>
-<li>预处理(Preprocessing): 预计算下界, 在之后的搜索过程中可以直接取用, 避免反复计算下界.</li>
-</ul>
+<h1 id="死锁deadlock"><a class="header" href="#死锁deadlock">死锁(Deadlock)</a></h1>
+<p>箱子在被推动到某个位置后, 再也无法被推动. 这种情况被称之为死锁. 如果此时被死锁的箱子不在目标上, 意味着该箱子后续无法被推动至目标上, 导致无法通关.</p>
+<h2 id="为什么要检测死锁"><a class="header" href="#为什么要检测死锁">为什么要检测死锁</a></h2>
+<ol>
+<li>
+<p>优化求解器: 可以在搜索时进行可行性剪枝.</p>
+<p>若被死锁的箱子不在目标上, 那么该状态及其衍生状态一定无解. 求解器可以跳过这些无意义的搜索.</p>
+</li>
+<li>
+<p>提升玩家体验: 可以警告或防止玩家产生死锁状态.</p>
+<p>比如在显示箱子可达位置时不显示会产生死锁的箱子位置.</p>
+</li>
+</ol>
+<h2 id="静态死锁"><a class="header" href="#静态死锁">静态死锁</a></h2>
+<p><img src="assets/static_deadlock_1.png" alt="Static deadlock - Sokoban Wiki" /></p>
+<p>以上图为例, 暗色格子属于静态死锁区域. 若箱子被推动到这些区域则会导致该箱子永远无法再被推到目标上.</p>
+<p>这种死锁与箱子和玩家的位置无关, 可以在只知道关卡地形和目标位置的情况下进行计算. 但关卡地形也可能发生变化:</p>
+<p><img src="assets/static_deadlock_2.png" alt="Static deadlock - Sokoban Wiki" /></p>
+<p>以上图为例, 箱子向右被推入死角, 导致冻结死锁. 此时该箱子无法再被移动, 可以视作墙体, 进而导致关卡地形发生变化, 需要重新计算静态死锁区域.</p>
+<p>这类地形变化只会增加墙体, 导致静态死锁区域增加. 因此即使不在地形变化时重新计算也不会导致误报, 但可能导致静态死锁检测不全面.</p>
+<pre><code class="language-rs">pub fn is_static_deadlock(
+    map: &amp;Map,
+    box_position: Vector2&lt;i32&gt;,
+    box_positions: &amp;HashSet&lt;Vector2&lt;i32&gt;&gt;,
+    visited: &amp;mut HashSet&lt;Vector2&lt;i32&gt;&gt;,
+) -&gt; bool {
+    debug_assert!(box_positions.contains(&amp;box_position));
+
+    if !visited.insert(box_position) {
+        return true;
+    }
+
+    for direction in [
+        Direction::Up,
+        Direction::Right,
+        Direction::Down,
+        Direction::Left,
+    ]
+    .windows(3)
+    {
+        let neighbors = [
+            box_position + &amp;direction[0].into(),
+            box_position + &amp;direction[1].into(),
+            box_position + &amp;direction[3].into(),
+        ];
+        for neighbor in &amp;neighbors {
+            if map[*neighbor].intersects(Tiles::Wall) {
+                continue;
+            }
+            if box_positions.contains(neighbor)
+                &amp;&amp; is_static_deadlock(map, *neighbor, box_positions, visited)
+            {
+                continue;
+            }
+            return false;
+        }
+    }
+    true
+}
+</code></pre>
+<h2 id="二分死锁bipartite-deadlocks"><a class="header" href="#二分死锁bipartite-deadlocks">二分死锁(Bipartite deadlocks)</a></h2>
+<p>静态死锁检测的是<strong>指定箱子</strong>能否被推动至目标上, 而二分死锁检测的是箱子能否被推动至<strong>指定目标</strong>上.</p>
+<p><img src="assets/bipartite_deadlock.png" alt="Bipartite deadlocks - Sokoban Wiki" /></p>
+<p>以上图为例, 箱子被推动至右侧, 但不属于静态死锁区域, 因为箱子看似可以继续向下推动至目标. 但将导致没有箱子能被推动至位于 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span> 的目标.</p>
+<h2 id="冻结死锁freeze-deadlocks"><a class="header" href="#冻结死锁freeze-deadlocks">冻结死锁(Freeze deadlocks)</a></h2>
+<p><img src="assets/freeze_deadlock.png" alt="Freeze deadlock - Sokoban Wiki" /></p>
+<pre><code class="language-rs">pub fn is_freeze_deadlock(
+    map: &amp;Map,
+    box_position: Vector2&lt;i32&gt;,
+    box_positions: &amp;HashSet&lt;Vector2&lt;i32&gt;&gt;,
+    visited: &amp;mut HashSet&lt;Vector2&lt;i32&gt;&gt;,
+) -&gt; bool {
+    debug_assert!(box_positions.contains(&amp;box_position));
+
+    if !visited.insert(box_position) {
+        return true;
+    }
+
+    for direction in [
+        Direction::Up,
+        Direction::Down,
+        Direction::Left,
+        Direction::Right,
+    ]
+    .chunks(2)
+    {
+        let neighbors = [
+            box_position + &amp;direction[0].into(),
+            box_position + &amp;direction[1].into(),
+        ];
+
+        // Check if any immovable walls on the axis.
+        if map[neighbors[0]].intersects(Tiles::Wall) || map[neighbors[1]].intersects(Tiles::Wall) {
+            continue;
+        }
+
+        // Check if any immovable boxes on the axis.
+        if (box_positions.contains(&amp;neighbors[0])
+            &amp;&amp; is_freeze_deadlock(map, neighbors[0], box_positions, visited))
+            || (box_positions.contains(&amp;neighbors[1])
+                &amp;&amp; is_freeze_deadlock(map, neighbors[1], box_positions, visited))
+        {
+            continue;
+        }
+
+        return false;
+    }
+    true
+}
+</code></pre>
+<h2 id="畜栏死锁corral-deadlocks"><a class="header" href="#畜栏死锁corral-deadlocks">畜栏死锁(Corral deadlocks)</a></h2>
+<p><img src="assets/corral_deadlock.png" alt="Corral deadlock - Sokoban Wiki" /></p>
+<h2 id="闭对角死锁closed-diagonal-deadlocks"><a class="header" href="#闭对角死锁closed-diagonal-deadlocks">闭对角死锁(Closed diagonal deadlocks)</a></h2>
+<p><img src="assets/closed_diagonal_deadlock.png" alt="Closed diagonal deadlock - Sokoban Wiki" /></p>
+<p>其中畜栏死锁和闭对角死锁是更高级的冻结死锁, 因为这类死锁最终会转变为冻结死锁.</p>
 
 
                         <!-- Giscus -->
@@ -209,12 +314,12 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        <a rel="prev" href="../solver/heuristic_function.html" class="mobile-nav-chapters previous"
+                        <a rel="prev" href="../solver/deadlocks.html" class="mobile-nav-chapters previous"
                             title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                             <i class="fa fa-angle-left"></i>
                         </a>
 
-                        <a rel="next prefetch" href="../solver/deadlocks.html" class="mobile-nav-chapters next"
+                        <a rel="next prefetch" href="../solver/bidirectional_search.html" class="mobile-nav-chapters next"
                             title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                             <i class="fa fa-angle-right"></i>
                         </a>
@@ -225,12 +330,12 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                <a rel="prev" href="../solver/heuristic_function.html" class="nav-chapters previous" title="Previous chapter"
+                <a rel="prev" href="../solver/deadlocks.html" class="nav-chapters previous" title="Previous chapter"
                     aria-label="Previous chapter" aria-keyshortcuts="Left">
                     <i class="fa fa-angle-left"></i>
                 </a>
 
-                <a rel="next prefetch" href="../solver/deadlocks.html" class="nav-chapters next" title="Next chapter"
+                <a rel="next prefetch" href="../solver/bidirectional_search.html" class="nav-chapters next" title="Next chapter"
                     aria-label="Next chapter" aria-keyshortcuts="Right">
                     <i class="fa fa-angle-right"></i>
                 </a>
