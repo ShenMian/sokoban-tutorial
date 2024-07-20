@@ -1146,14 +1146,13 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     G --&gt; A
 </pre>
 <p>创建一个新的结构体用于存储到状态的代价和启发式函数值:</p>
-<pre><code class="language-rs">struct Node {
-    state: State,
-    cost: i32,
-    heuristic: i32,
+<pre><code class="language-rs">pub struct Node {
+    pub state: State,
+    pub pushes: i32,
+    pub moves: i32,
     priority: i32,
 }
 </code></pre>
-<p>其中 <code>priority</code> 的值是根据搜索策略而计算的.</p>
 <p>对于未探索的状态, 可以利用 <code>BinaryHeap</code> 容器来存储. 因为该容器能够高效地取出最大的元素.</p>
 <p>通过重载 <code>Node</code> 的 <code>Ord</code> trait, 可以将状态通过优先级排序.</p>
 <pre><code class="language-rs">impl Ord for Node {
@@ -1168,6 +1167,7 @@ impl PartialOrd for Node {
     }
 }
 </code></pre>
+<p>其中 <code>priority</code> 的值是根据搜索策略而计算的.</p>
 <p>值得注意的是, Rust 中的 <code>BinaryHeap</code> 的实现方式是最大栈(max-heap), 因此 <code>BinaryHeap::pop</code> 函数返回的是容器中最大的元素. 而优先级的值越小表示优先级越高, 因此比较后还需要调用 <code>Ordering::reverse</code> 函数.<br />
 这样该便可以从容器中取出优先级最高(即最小)的状态.</p>
 <h2 id="标准化玩家位置"><a class="header" href="#标准化玩家位置">标准化玩家位置</a></h2>
