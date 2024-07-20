@@ -13,10 +13,10 @@
 flowchart LR
     A[包含多个关卡的字符串] -->|Level::to_group| B
     B[包含单个关卡的字符串] --> C{是否经过\n RLE 压缩?}
-    C -->|是| D[RLE 压缩字符串]
+    C -->|是| D[使用 RLE 解压字符串]
     C -->|否| E
     D -->|rle_decode| E
-    E[非 RLE 压缩字符串]
+    E[XSB 压缩字符串]
 ```
 
 ### 多个关卡之间的分割
