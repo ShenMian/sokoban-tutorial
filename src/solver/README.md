@@ -79,6 +79,8 @@ pub struct State {
 }
 ```
 
+其中 `box_positions` 使用容器 `HashSet` 存储是因为箱子位置没有顺序关系, 且不会重复. 相较于常用的 `Vec` 容器, 它能更快的进行比较和查找.
+
 实现从 `Map` 到 `State` 的转换:
 
 ```rs
