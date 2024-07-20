@@ -1123,6 +1123,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     pub box_positions: HashSet&lt;Vector2&lt;i32&gt;&gt;,
 }
 </code></pre>
+<p>其中 <code>box_positions</code> 使用容器 <code>HashSet</code> 存储是因为箱子位置没有顺序关系, 且不会重复. 相较于常用的 <code>Vec</code> 容器, 它能更快的进行比较和查找.</p>
 <p>实现从 <code>Map</code> 到 <code>State</code> 的转换:</p>
 <pre><code class="language-rs">impl From&lt;Map&gt; for State {
     fn from(map: Map) -&gt; Self {
@@ -1622,8 +1623,13 @@ lower_bounds
 <tr><td>求解器</td><td>solver</td></tr>
 <tr><td>解决方案/解</td><td>solution</td></tr>
 <tr><td>动作</td><td>action</td></tr>
+<tr><td>容器<sup class="footnote-reference"><a href="#1">1</a></sup></td><td>collection</td></tr>
 </tbody></table>
 </div>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p><code>collection</code> 被翻译为 "容器", 延用了 C++ 中的叫法. 不译为 "集合" 是为了防止与集合 "set" 混淆.</p>
+</div>
+
 
                         <!-- Giscus -->
                         <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"
