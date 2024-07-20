@@ -110,15 +110,13 @@ flowchart LR
 创建一个新的结构体用于存储到状态的代价和启发式函数值:
 
 ```rs
-struct Node {
-    state: State,
-    cost: i32,
-    heuristic: i32,
+pub struct Node {
+    pub state: State,
+    pub pushes: i32,
+    pub moves: i32,
     priority: i32,
 }
 ```
-
-其中 `priority` 的值是根据搜索策略而计算的.
 
 对于未探索的状态, 可以利用 `BinaryHeap` 容器来存储. 因为该容器能够高效地取出最大的元素.
 
@@ -137,6 +135,8 @@ impl PartialOrd for Node {
     }
 }
 ```
+
+其中 `priority` 的值是根据搜索策略而计算的.
 
 值得注意的是, Rust 中的 `BinaryHeap` 的实现方式是最大栈(max-heap), 因此 `BinaryHeap::pop` 函数返回的是容器中最大的元素. 而优先级的值越小表示优先级越高, 因此比较后还需要调用 `Ordering::reverse` 函数.  
 这样该便可以从容器中取出优先级最高(即最小)的状态.
