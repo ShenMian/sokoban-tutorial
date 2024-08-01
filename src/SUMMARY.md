@@ -3,7 +3,7 @@
 [介绍](introduction.md)
 
 - [关卡](level/README.md)
-  - [数据结构设计 🚧](level/data_structure_design.md)
+  - [数据结构设计 🚧](level/design.md)
   - [表示](level/representation.md)
   - [构造](level/construction.md)
   - [标准化 🚧](level/normalization.md)
