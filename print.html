@@ -468,7 +468,7 @@ ___HHH__
 </div>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="数据结构设计"><a class="header" href="#数据结构设计">数据结构设计</a></h1>
-<p>结构体:</p>
+<h2 id="结构体设计"><a class="header" href="#结构体设计">结构体设计</a></h2>
 <ul>
 <li><code>Map</code>: 存储地图数据.
 <ul>
@@ -479,6 +479,7 @@ ___HHH__
 <li><code>Actions</code>: 存储玩家的动作, 包括动作的类型(移动或推动), 以及方向(上下左右).</li>
 <li><code>Level</code>: 关卡, 包含地图和玩家动作. 可以执行或撤销动作.</li>
 </ul>
+<p>将 <code>Level</code> 中与地图相关的内容分离到 <code>Map</code> 中, 是为了将地图数据与关卡功能分离. 许多涉及地图的操作(例如计算两个地图之间的相似度)与关卡功能无关.</p>
 <blockquote>
 <p><code>Map</code> 的数组是否应该包含玩家和箱子元素?</p>
 <ul>
@@ -494,9 +495,9 @@ ___HHH__
 </blockquote>
 <blockquote>
 <p><code>Map</code> 的数组应该是一维的还是二维的?</p>
-<p>由于该数组是动态数组, 二维动态数组的分配与释放需要更大的开销. 而使用一维动态数组, 内存布局会更加紧凑, 且可以通过一个简单的函数封装来直接使用二维坐标读取地图内容. 因此使用一维数组更为合适.</p>
+<p>由于该数组是动态数组, 二维动态数组的分配与释放需要更大的开销. 而使用一维动态数组, 内存布局会更加紧凑, 且可以提供使用二维坐标读取地图内容的关联函数. 因此使用一维数组更为合适.</p>
 </blockquote>
-<p>它们之间的转换关系如下:</p>
+<h2 id="转换关系"><a class="header" href="#转换关系">转换关系</a></h2>
 <pre class="mermaid">flowchart LR
     A[String] --&gt;|XSB 格式| B[Map]
     A --&gt;|LURD 格式| C[Actions]
