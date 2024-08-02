@@ -489,7 +489,7 @@ ___HHH__
 <li>存在数据冗余, 但是冗余的数据量很小, 不至于造成显著的内存占用率变化.</li>
 </ul>
 </li>
-<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 可能使调用者感到意外.</li>
+<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 违背了 POLA<sup class="footnote-reference"><a href="#POLA">1</a></sup>.</li>
 </ul>
 <p>综上所述, 本文倾向于在数组里包含这些元素.</p>
 </blockquote>
@@ -504,6 +504,9 @@ ___HHH__
     B --&gt; D[Level]
     C --&gt; B
 </pre>
+<div class="footnote-definition" id="POLA"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">https://en.wikipedia.org/wiki/Principle_of_least_astonishment</a></p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图-"><a class="header" href="#表示地图-">表示地图 🗺️</a></h2>
