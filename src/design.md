@@ -29,8 +29,8 @@
 flowchart LR
     A[String] -->|XSB 格式| B[Map]
     A -->|LURD 格式| C[Actions]
+    C -->|重建| B
     B --> D[Level]
-    C --> B
 ```
 
 [^POLA]: <https://en.wikipedia.org/wiki/Principle_of_least_astonishment>
