@@ -1,5 +1,5 @@
 [book]
-title = "推箱子教程"
+title = "现代推箱子教程"
 description = "本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写."
 authors = ["ShenMian <sms_school@outlook.com>"]
 language = "zh-Hans-CN"
