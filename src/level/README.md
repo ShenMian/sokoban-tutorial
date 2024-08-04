@@ -41,7 +41,7 @@ Author: Thinking Rabbit
 | `+`               | 位于目标上的玩家 |
 | `*`               | 位于目标上的箱子 |
 
-其中地板一共使用了三种符号表示, 是因为连续的空格在某些在线论坛或邮件中可能被截断, 因此使用连字符(`-`)和下划线(`_`)来替代.
+其中地板一共使用了三种符号表示, 是因为连续的空格在某些在线论坛或邮件中可能被截断, 因此使用连字符(`-`)和下划线(`_`)来替代[^1].
 
 ### 元数据
 
@@ -191,7 +191,7 @@ Author: Thinking Rabbit
 
 ### MF8
 
-中文论坛魔方吧[^1]使用 MF8 格式:
+中文论坛魔方吧[^2]使用 MF8 格式:
 
 ```txt
 [soko=8,8]
@@ -276,4 +276,5 @@ ___HHH__
 
 - <http://sokobano.de/wiki/index.php?title=Level_format>.
 
-[^1]: <http://www.mf8-china.com/forum.php>
+[^1]: <http://sokobano.de/wiki/index.php?title=Level_format>
+[^2]: <http://www.mf8-china.com/forum.php>
