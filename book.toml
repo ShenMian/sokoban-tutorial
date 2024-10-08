@@ -7,7 +7,7 @@ multilingual = false
 src = "src"
 
 [output.html]
-additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-js = ["assets/mermaid.min.js", "assets/mermaid-init.js"]
 git-repository-url = "https://github.com/ShenMian/sokoban-tutorial"
 git-repository-icon = "fa-github"
 
