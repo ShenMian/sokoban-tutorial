@@ -1,7 +1,6 @@
 # 死锁(Deadlock)
 
-!!! info
-    本文中的死锁示例图片来源于 <http://sokobano.de/wiki>.
+> 本文中的死锁示例图片来源于 <http://sokobano.de/wiki>.
 
 ## 什么是死锁 {#what}
 
