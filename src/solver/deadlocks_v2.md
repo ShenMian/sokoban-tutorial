@@ -135,3 +135,7 @@ pub fn is_freeze_deadlock(
 ![Closed diagonal deadlock - Sokoban Wiki](assets/closed_diagonal_deadlock.png)
 
 其中畜栏死锁和闭对角死锁是更高级的冻结死锁, 因为这类死锁最终会转变为冻结死锁.
+
+## 参考
+
+- <http://sokobano.de/wiki/index.php?title=Deadlocks>.
