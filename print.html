@@ -1559,6 +1559,22 @@ lower_bounds
 <p><img src="solver/assets/bipartite_deadlock.png" alt="Bipartite deadlocks - Sokoban Wiki" /></p>
 <p>以上图为例, 箱子被推动至右侧, 但不属于静态死锁区域, 因为箱子看似可以继续向下推动至目标. 但将导致没有箱子能被推动至位于 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span> 的目标.</p>
 <h2 id="冻结死锁freeze-deadlocks"><a class="header" href="#冻结死锁freeze-deadlocks">冻结死锁(Freeze deadlocks)</a></h2>
+<p>若一个箱子在水平和垂直方向均不可能移动且不位于目标上, 则出现冻结死锁.</p>
+<p>判断指定箱子是否处于冻结死锁还需要<strong>递归</strong>的判断相邻箱子是否也处于死锁状态.<br />
+为避免循环检查, 可以将已检查的箱子视为被死锁的, 原因如下:</p>
+<p>如下 XSB 关卡所示, 有箱子 A, B, C. 其中 B 的左侧和下方是空地:</p>
+<pre><code class="language-txt"> A
+_BC
+ _
+</code></pre>
+<p>此时需要判断箱子 B 是否处于冻结死锁.</p>
+<ul>
+<li>假设 B 被死锁时 A 也被死锁, 则 A 是否被死锁, 取决于 B 是否能在水平方向上移动, 即 C 是否被死锁. 需要继续检测 C 是否被死锁.</li>
+<li>假设 B 被死锁时 C 也被死锁, 则 C 是否被死锁, 取决于 B 是否能在垂直方向上移动, 即 A 是否被死锁. 需要继续检测 A 是否被死锁.</li>
+</ul>
+<p>如果在 B 被假设死锁时, A, C 均被死锁, 则 <strong>B 一定被死锁</strong>. 因为 A 被死锁意味着 B 不能在垂直方向上移动, 而 C 被死锁意味着 B 不能在水平方向上移动, 因此 B 处于冻结死锁状态.</p>
+<p>综上所述, 将已被检测的箱子视为被死锁可以确保程序的行为正确.</p>
+<p>如下图所示, 冻结死锁可能产生<strong>连锁反应</strong>, 即单个箱子被死锁后, 可能导致相连的箱子也被死锁.</p>
 <p><img src="solver/assets/freeze_deadlock.png" alt="Freeze deadlock - Sokoban Wiki" /></p>
 <pre><code class="language-rs">pub fn is_freeze_deadlock(
     map: &amp;Map,
