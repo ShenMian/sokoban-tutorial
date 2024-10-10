@@ -1,5 +1,8 @@
 # 死锁(Deadlock)
 
+!!! info
+    本文中的死锁示例图片来源于 <http://sokobano.de/wiki>.
+
 ## 什么是死锁 {#what}
 
 推箱子的通关条件是每个箱子都被推至一个目标位置. 但在一些情况下, 箱子永远不能再被推到目标上(比如箱子被推入不是目标的死角), 导致无法通关. 这种情况称之为死锁.
@@ -23,7 +26,7 @@
     标位置是静态的, 而关卡地形可能发生变化. 比如当箱子被推到目标后死锁了, 此时可已将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.  
     因为地形变化只能增加墙体, 使死区变多, 所以即使不重新计算也不会产生错误, 但会使静态死锁检测不全面.
 
-    ![Static deadlock - Sokoban Wiki](assets/static_deadlock.png)
+    ![Static deadlock - Sokoban Wiki](assets/static_deadlock_1.png)
 
 2. **冻结死锁(Freeze deadlocks)**: 这种死锁产生的原因是箱子和墙或箱子之间的相互阻碍导致多个箱子同时死锁.  
     这类死锁的检测时机是箱子推动后.
@@ -101,4 +104,4 @@ pub fn is_freeze_deadlock(
 
 ## 参考
 
-- <http://sokobano.de/wiki/index.php?title=Deadlocks>
+- <http://sokobano.de/wiki/index.php?title=Deadlocks>.
