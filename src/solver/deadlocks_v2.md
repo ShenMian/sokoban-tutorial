@@ -166,3 +166,4 @@ pub fn is_freeze_deadlock(
 ## 参考
 
 - <http://sokobano.de/wiki/index.php?title=Deadlocks>.
+- <http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks>.
