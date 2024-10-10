@@ -1398,103 +1398,6 @@ lower_bounds
 <blockquote>
 <p>本文中的死锁示例图片来源于 <a href="http://sokobano.de/wiki">http://sokobano.de/wiki</a>.</p>
 </blockquote>
-<h2 id="what"><a class="header" href="#what">什么是死锁</a></h2>
-<p>推箱子的通关条件是每个箱子都被推至一个目标位置. 但在一些情况下, 箱子永远不能再被推到目标上(比如箱子被推入不是目标的死角), 导致无法通关. 这种情况称之为死锁.</p>
-<h2 id="why"><a class="header" href="#why">为什么要检测死锁</a></h2>
-<p>死锁检测可以用于可行性剪枝.<br />
-死锁产生后, 该状态及其衍生状态一定无解, 求解器将浪费大量的资源去搜索一定无解的状态. 因此需要对死锁进行检测, 从而跳过这些无意义的搜索.</p>
-<h2 id="when"><a class="header" href="#when">何时检测死锁</a></h2>
-<p>死锁按照箱子和玩家位置的关系可以分为三类:</p>
-<ol>
-<li>与箱子和玩家位置无关的.</li>
-<li>与箱子位置有关和玩家位置无关的.</li>
-<li>与箱子和玩家位置有关的.</li>
-</ol>
-<p>分别为:</p>
-<ol>
-<li>
-<p><strong>静态死锁</strong>: 这种死锁与箱子和玩家的位置无关, 可以在只知道关卡地形和目标位置的情况下进行计算.<br />
-标位置是静态的, 而关卡地形可能发生变化. 比如当箱子被推到目标后死锁了, 此时可已将死锁的箱子视为不可移动的墙, 关卡地形发生变化, 需要重新计算.<br />
-因为地形变化只能增加墙体, 使死区变多, 所以即使不重新计算也不会产生错误, 但会使静态死锁检测不全面.</p>
-<p><img src="solver/assets/static_deadlock_1.png" alt="Static deadlock - Sokoban Wiki" /></p>
-</li>
-<li>
-<p><strong>冻结死锁(Freeze deadlocks)</strong>: 这种死锁产生的原因是箱子和墙或箱子之间的相互阻碍导致多个箱子同时死锁.<br />
-这类死锁的检测时机是箱子推动后.</p>
-<p><img src="solver/assets/freeze_deadlock.png" alt="Freeze deadlock - Sokoban Wiki" /></p>
-</li>
-<li>
-<p>包括<strong>畜栏死锁(Corral deadlocks)</strong>/<strong>闭对角死锁(Closed diagonal deadlocks)</strong>: FIXME 这类死锁和冻结死锁的区别是前者只要在箱子推动后变成了一定的模式就会产生, 而后者是否产生死锁还需要看玩家在箱子推动后的位置, 即箱子推动方向.</p>
-<p>畜栏死锁是一种更为高级的冻结死锁, 因为即使在畜栏死锁后, 箱子仍然可以被推动, 但最终一定会形成冻结死锁.<br />
-畜栏死锁的检测时机是箱子推动后, 有玩家不可达的区域面积减小. 这意味着玩家可能无法再回到该不可达区域, 导致区域周边的箱子的移动自由度减少.</p>
-<p><img src="solver/assets/corral_deadlock.png" alt="Corral deadlock - Sokoban Wiki" />
-<img src="solver/assets/closed_diagonal_deadlock.png" alt="Closed diagonal deadlock - Sokoban Wiki" /></p>
-</li>
-</ol>
-<h2 id="how"><a class="header" href="#how">如何检测死锁</a></h2>
-<h3 id="静态死锁"><a class="header" href="#静态死锁">静态死锁</a></h3>
-<p>将箱子放置在目标位置, 然后拉动箱子到所有可能位置. 箱子到达的区域内的箱子一定能被推动到目标, 而箱子不可达区域一定无法被推动到目标, 即死区.</p>
-<h3 id="冻结死锁"><a class="header" href="#冻结死锁">冻结死锁</a></h3>
-<p>一个箱子只能在垂直和水平方向上移动, 若箱子的两个方向都被箱子遮挡(即上或下被遮挡, 且左或右被遮挡), 则该箱子处于冻结死锁.</p>
-<p>能遮挡箱子的元素有两个:</p>
-<ol>
-<li>墙体.</li>
-<li>其他箱子: 需递归的判断该箱子是否被冻结死锁.</li>
-</ol>
-<pre><code class="language-rs">pub fn is_freeze_deadlock(
-    map: &amp;Map,
-    box_position: Vector2&lt;i32&gt;,
-    box_positions: &amp;HashSet&lt;Vector2&lt;i32&gt;&gt;,
-    visited: &amp;mut HashSet&lt;Vector2&lt;i32&gt;&gt;,
-) -&gt; bool {
-    debug_assert!(box_positions.contains(&amp;box_position));
-
-    if !visited.insert(box_position) {
-        return true;
-    }
-
-    for direction in [
-        Direction::Up,
-        Direction::Down,
-        Direction::Left,
-        Direction::Right,
-    ]
-    .chunks(2)
-    {
-        let neighbors = [
-            box_position + &amp;direction[0].into(),
-            box_position + &amp;direction[1].into(),
-        ];
-
-        // Check if any immovable walls on the axis.
-        if map[neighbors[0]].intersects(Tiles::Wall) || map[neighbors[1]].intersects(Tiles::Wall) {
-            continue;
-        }
-
-        // Check if any immovable boxes on the axis.
-        if (box_positions.contains(&amp;neighbors[0])
-            &amp;&amp; is_freeze_deadlock(map, neighbors[0], box_positions, visited))
-            || (box_positions.contains(&amp;neighbors[1])
-                &amp;&amp; is_freeze_deadlock(map, neighbors[1], box_positions, visited))
-        {
-            continue;
-        }
-
-        return false;
-    }
-    true
-}
-</code></pre>
-<h2 id="参考-1"><a class="header" href="#参考-1">参考</a></h2>
-<ul>
-<li><a href="http://sokobano.de/wiki/index.php?title=Deadlocks">http://sokobano.de/wiki/index.php?title=Deadlocks</a>.</li>
-<li><a href="http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks">http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks</a>.</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="死锁deadlock-1"><a class="header" href="#死锁deadlock-1">死锁(Deadlock)</a></h1>
-<blockquote>
-<p>本文中的死锁示例图片来源于 <a href="http://sokobano.de/wiki">http://sokobano.de/wiki</a>.</p>
-</blockquote>
 <p>箱子在被推动到某个位置后, 再也无法被推动. 这种情况被称之为死锁. 如果此时被死锁的箱子不在目标上, 意味着该箱子后续无法被推动至目标上, 导致无法通关.</p>
 <h2 id="为什么要检测死锁"><a class="header" href="#为什么要检测死锁">为什么要检测死锁</a></h2>
 <ol>
@@ -1508,7 +1411,7 @@ lower_bounds
 <p>比如在显示箱子可达位置时不显示会产生死锁的箱子位置.</p>
 </li>
 </ol>
-<h2 id="静态死锁-1"><a class="header" href="#静态死锁-1">静态死锁</a></h2>
+<h2 id="静态死锁"><a class="header" href="#静态死锁">静态死锁</a></h2>
 <p><strong>检测时机</strong>: 因为该类型的死锁只与关卡的地形有关, 因此可以在<strong>最开始进行计算</strong>, 之后在<strong>箱子被死锁时进行更新</strong>. 被死锁的箱子可以被当成墙体, 进而导致关卡地形发生变化.</p>
 <p><img src="solver/assets/static_deadlock_1.png" alt="Static deadlock - Sokoban Wiki" /></p>
 <p>以上图为例, 暗色格子属于静态死锁区域. 若箱子被推动到这些区域则会导致该箱子永远无法再被推到目标上.</p>
@@ -1634,11 +1537,13 @@ _BC
 <h2 id="闭对角死锁closed-diagonal-deadlocks"><a class="header" href="#闭对角死锁closed-diagonal-deadlocks">闭对角死锁(Closed diagonal deadlocks)</a></h2>
 <p><img src="solver/assets/closed_diagonal_deadlock.png" alt="Closed diagonal deadlock - Sokoban Wiki" /></p>
 <p>其中畜栏死锁和闭对角死锁是更高级的冻结死锁, 因为这类死锁最终会转变为冻结死锁.</p>
-<h2 id="参考-2"><a class="header" href="#参考-2">参考</a></h2>
+<h2 id="参考-1"><a class="header" href="#参考-1">参考</a></h2>
 <ul>
 <li><a href="http://sokobano.de/wiki/index.php?title=Deadlocks">http://sokobano.de/wiki/index.php?title=Deadlocks</a>.</li>
 <li><a href="http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks">http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks</a>.</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="死锁-2-"><a class="header" href="#死锁-2-">死锁 2 🚧</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="双向搜索bidirectional-search"><a class="header" href="#双向搜索bidirectional-search">双向搜索(Bidirectional search)</a></h1>
 <p>双向搜索同时从两个方向搜索:</p>
