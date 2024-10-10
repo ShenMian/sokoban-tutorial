@@ -14,7 +14,6 @@
   - [优化](solver/optimization.md)
     - [隧道]()
     - [死锁 🚧](solver/deadlocks.md)
-    - [死锁 2 🚧](solver/deadlocks_v2.md)
     - [割点]()
   - [双向搜索 🚧](solver/bidirectional_search.md)
   - [特征]()
