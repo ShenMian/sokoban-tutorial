@@ -18,5 +18,5 @@
   - [双向搜索 🚧](solver/bidirectional_search.md)
   - [特征]()
 - [优化器]()
-- [资源 🚧](resources.md)
-- [术语表 🚧](glossary_of_terms.md)
+- [资源](resources.md)
+- [术语表](glossary_of_terms.md)
