@@ -19,7 +19,76 @@ TODO: 是否满足容许性?
 ###########
 ```
 
+TODO: 说明隧道中可以停放一个箱子, 在隧道的入口处, 或出口前. 但应该只停靠在入口处, 因为这样更高效. 说明为何更高效.
+
+若推动后产生了如下的模式, 包括旋转和镜像.
+
 ```txt
-#@    #@#
-# #   # #
+#$    #$#
+#@#   #@#
+```
+
+```rs
+impl Solver {
+    fn calculate_tunnels(&self) -> HashSet<(Vector2<i32>, Direction)> {
+        let mut tunnels = HashSet::new();
+        for x in 1..self.map.dimensions().x - 1 {
+            for y in 1..self.map.dimensions().y - 1 {
+                let box_position = Vector2::new(x, y);
+                if !self.map[box_position].intersects(Tiles::Floor) {
+                    continue;
+                }
+
+                for (up, right, down, left) in [
+                    Direction::Up,
+                    Direction::Right,
+                    Direction::Down,
+                    Direction::Left,
+                ]
+                .into_iter()
+                .circular_tuple_windows()
+                {
+                    let player_position = box_position + &down.into();
+
+                    //  .
+                    // #$#
+                    // #@#
+                    if self.map[player_position + &left.into()].intersects(Tiles::Wall)
+                        && self.map[player_position + &right.into()].intersects(Tiles::Wall)
+                        && self.map[box_position + &left.into()].intersects(Tiles::Wall)
+                        && self.map[box_position + &right.into()].intersects(Tiles::Wall)
+                        && self.map[box_position].intersects(Tiles::Floor)
+                        && self
+                            .lower_bounds()
+                            .contains_key(&(box_position + &up.into()))
+                        && !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+
+                    //  .      .
+                    // #$_ or _$#
+                    // #@#    #@#
+                    if self.map[player_position + &left.into()].intersects(Tiles::Wall)
+                        && self.map[player_position + &right.into()].intersects(Tiles::Wall)
+                        && (self.map[box_position + &right.into()].intersects(Tiles::Wall)
+                            && self.map[box_position + &left.into()].intersects(Tiles::Floor)
+                            || self.map[box_position + &right.into()].intersects(Tiles::Floor)
+                                && self.map[box_position + &left.into()].intersects(Tiles::Wall))
+                        && self.map[box_position].intersects(Tiles::Floor)
+                        && self
+                            .lower_bounds()
+                            .contains_key(&(box_position + &up.into()))
+                        && !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+                }
+            }
+        }
+        tunnels
+    }
+
+    // ... SKIP...
+}
 ```
