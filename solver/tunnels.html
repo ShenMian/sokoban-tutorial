@@ -187,14 +187,14 @@
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="隧道tunnels"><a class="header" href="#隧道tunnels">隧道(Tunnels)</a></h1>
-<p>一般情况下, 箱子的移动将产生一个新的状态, 该状态还会包含其他箱子移动所产生的子状态, 这是因为箱子之间可能存在相互影响.<br />
-但在部分关卡中, 存在一种被称为<strong>隧道</strong>的结构, 可以将位于隧道内的箱子与隧道外的箱子<strong>隔绝</strong>, 使它们之间互不影响.</p>
+<p>一般情况下, 箱子的移动会产生一个新的状态, 该状态可能包含其他箱子移动所生成的子状态, 这是因为箱子之间可能存在相互影响.<br />
+然而, 在部分关卡中, 存在一种被称为<strong>隧道</strong>的结构, 它可以将位于隧道内的箱子与隧道外的箱子<strong>隔绝</strong>, 使它们之间互不影响.</p>
 <p><img src="assets/tunnel.png" alt="隧道" /></p>
 <p>如上图所示, 当上方的箱子位于隧道时, 两个箱子之间不会产生影响. 此时推动隧道内的箱子被视作<strong>无影响力推动</strong>(No influence pushes).</p>
-<p>在有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个箱子的关卡中, 每一个状态最多有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个子状态. 但如果当前状态是无影响力推动, 则无需产生子状态, 应该继续推动箱子, 直到产生有影响力的推动(一般是该箱子离开隧道), 并产生 1 个子状态.</p>
+<p>在有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个箱子的关卡中, 每一个状态最多有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个子状态. 但如是无影响力推动, 则无需产生对应的子状态, 应该继续推动箱子, 直到产生有影响力的推动(即该箱子离开隧道), 并产生 1 个子状态.</p>
 <h2 id="停放"><a class="header" href="#停放">停放</a></h2>
 <p>将箱子推入隧道内的推动是有影响力的, 这意味这将该箱子停放到隧道内, 并为玩家和其他箱子的移动腾出空间.</p>
-<p>单个隧道内<strong>最多能停放一个箱子</strong>. 因为隧道中是不存在目标的, 停放多个箱子会产生<a href="deadlocks.html#%E7%95%9C%E6%A0%8F%E6%AD%BB%E9%94%81corral-deadlocks">畜栏死锁</a>, 进而导致关卡无解.</p>
+<p>单个隧道内<strong>最多能停放一个箱子</strong>. 因为隧道中不存在目标, 停放多个箱子会产生<a href="deadlocks.html#%E7%95%9C%E6%A0%8F%E6%AD%BB%E9%94%81corral-deadlocks">畜栏死锁</a>, 进而导致关卡无解.</p>
 <p>隧道内<strong>停放箱子的最佳位置是隧道入口</strong>, 此处的隧道入口指的是距离箱子最近的隧道口.<br />
 因为如果停放在隧道的其他位置, 玩家还需要重新返回隧道入口才能离开封闭的隧道, 这意味着玩家需要原路返回, 增加了不必要的移动步数.</p>
 <h2 id="识别"><a class="header" href="#识别">识别</a></h2>
