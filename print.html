@@ -91,7 +91,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/design.html"><strong aria-hidden="true">1.</strong> 设计 🚧</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">2.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">2.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">2.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">2.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">4.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/solving_strategy.html"><strong aria-hidden="true">4.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="solver/heuristic_function.html"><strong aria-hidden="true">4.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="solver/optimization.html"><strong aria-hidden="true">4.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.1.</strong> 隧道</div></li><li class="chapter-item expanded "><a href="solver/deadlocks.html"><strong aria-hidden="true">4.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.3.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.4.</strong> 双向搜索</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">6.</strong> 资源</a></li><li class="chapter-item expanded "><a href="glossary_of_terms.html"><strong aria-hidden="true">7.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="level/design.html"><strong aria-hidden="true">1.</strong> 设计 🚧</a></li><li class="chapter-item expanded "><a href="level/index.html"><strong aria-hidden="true">2.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="level/representation.html"><strong aria-hidden="true">2.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="level/construction.html"><strong aria-hidden="true">2.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="level/normalization.html"><strong aria-hidden="true">2.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 动作</div></li><li class="chapter-item expanded "><a href="solver/index.html"><strong aria-hidden="true">4.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/solving_strategy.html"><strong aria-hidden="true">4.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="solver/heuristic_function.html"><strong aria-hidden="true">4.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="solver/optimization.html"><strong aria-hidden="true">4.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="solver/tunnels.html"><strong aria-hidden="true">4.3.1.</strong> 隧道</a></li><li class="chapter-item expanded "><a href="solver/deadlocks.html"><strong aria-hidden="true">4.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.3.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.4.</strong> 双向搜索</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="resources.html"><strong aria-hidden="true">6.</strong> 资源</a></li><li class="chapter-item expanded "><a href="glossary_of_terms.html"><strong aria-hidden="true">7.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -1394,6 +1394,90 @@ lower_bounds
 <li><strong>预处理(Preprocessing)</strong>: 预计算下界, 在之后的搜索过程中可以直接取用, 避免反复计算下界.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="隧道tunnels"><a class="header" href="#隧道tunnels">隧道(Tunnels)</a></h1>
+<p>一般情况下, 箱子的移动将产生一个新的状态, 该状态还会包含其他箱子移动所产生的子状态, 这是因为箱子之间可能存在相互影响.<br />
+但在部分关卡中, 存在一种被称为<strong>隧道</strong>的结构, 可以将位于隧道内的箱子与隧道外的箱子<strong>隔绝</strong>, 使它们之间互不影响.</p>
+<p><img src="solver/assets/tunnel.png" alt="隧道" /></p>
+<p>如上图所示, 当上方的箱子位于隧道时, 两个箱子之间不会产生影响. 此时推动隧道内的箱子被视作<strong>无影响力推动</strong>(No influence pushes).</p>
+<p>在有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个箱子的关卡中, 每一个状态最多有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个子状态. 但如果当前状态是无影响力推动, 则无需产生子状态, 应该继续推动箱子, 直到产生有影响力的推动(一般是该箱子离开隧道), 并产生 1 个子状态.</p>
+<h2 id="停放"><a class="header" href="#停放">停放</a></h2>
+<p>将箱子推入隧道内的推动是有影响力的, 这意味这将该箱子停放到隧道内, 并为玩家和其他箱子的移动腾出空间.</p>
+<p>单个隧道内<strong>最多能停放一个箱子</strong>. 因为隧道中是不存在目标的, 停放多个箱子会产生<a href="solver/deadlocks.html#%E7%95%9C%E6%A0%8F%E6%AD%BB%E9%94%81corral-deadlocks">畜栏死锁</a>, 进而导致关卡无解.</p>
+<p>隧道内<strong>停放箱子的最佳位置是隧道入口</strong>, 此处的隧道入口指的是距离箱子最近的隧道口.<br />
+因为如果停放在隧道的其他位置, 玩家还需要重新返回隧道入口才能离开封闭的隧道, 这意味着玩家需要原路返回, 增加了不必要的移动步数.</p>
+<h2 id="识别"><a class="header" href="#识别">识别</a></h2>
+<p>若推动后产生了如下的模式(包括旋转和镜像), 则表示箱子已经被推入隧道, 属于无效推动. 此时应该继续推动箱子, 直到箱子离开隧道, 产生具有有效推动的子状态.</p>
+<p><img src="solver/assets/tunnel_pattern_1.png" alt="隧道模式 1" />
+<img src="solver/assets/tunnel_pattern_2.png" alt="隧道模式 2" /></p>
+<p>下面是计算隧道的实现, 通过遍历地图, 识别符合 2 种隧道模式(包括镜像和旋转)的位置并进行标记. 计算结果可以被缓存, 以便在后续求解过程中快速判断隧道.</p>
+<pre><code class="language-rs">impl Solver {
+    fn calculate_tunnels(&amp;self) -&gt; HashSet&lt;(Vector2&lt;i32&gt;, Direction)&gt; {
+        let mut tunnels = HashSet::new();
+        for x in 1..self.map.dimensions().x - 1 {
+            for y in 1..self.map.dimensions().y - 1 {
+                let box_position = Vector2::new(x, y);
+                if !self.map[box_position].intersects(Tiles::Floor) {
+                    continue;
+                }
+
+                for (up, right, down, left) in [
+                    Direction::Up,
+                    Direction::Right,
+                    Direction::Down,
+                    Direction::Left,
+                ]
+                .into_iter()
+                .circular_tuple_windows()
+                {
+                    let player_position = box_position + &amp;down.into();
+
+                    //  .
+                    // #$#
+                    // #@#
+                    if self.map[player_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[player_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position].intersects(Tiles::Floor)
+                        &amp;&amp; self
+                            .lower_bounds()
+                            .contains_key(&amp;(box_position + &amp;up.into()))
+                        &amp;&amp; !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+
+                    //  .      .
+                    // #$_ or _$#
+                    // #@#    #@#
+                    if self.map[player_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[player_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; (self.map[box_position + &amp;right.into()].intersects(Tiles::Wall)
+                            &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Floor)
+                            || self.map[box_position + &amp;right.into()].intersects(Tiles::Floor)
+                                &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Wall))
+                        &amp;&amp; self.map[box_position].intersects(Tiles::Floor)
+                        &amp;&amp; self
+                            .lower_bounds()
+                            .contains_key(&amp;(box_position + &amp;up.into()))
+                        &amp;&amp; !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+                }
+            }
+        }
+        tunnels
+    }
+
+    // ... SKIP...
+}
+</code></pre>
+<h2 id="参考-1"><a class="header" href="#参考-1">参考</a></h2>
+<ul>
+<li><a href="http://sokobano.de/wiki/index.php?title=Solver#Tunnels">http://sokobano.de/wiki/index.php?title=Solver#Tunnels</a>.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="死锁deadlock"><a class="header" href="#死锁deadlock">死锁(Deadlock)</a></h1>
 <blockquote>
 <p>本文中的死锁示例图片来源于 <a href="http://sokobano.de/wiki">http://sokobano.de/wiki</a>.</p>
@@ -1537,7 +1621,7 @@ _BC
 <h2 id="闭对角死锁closed-diagonal-deadlocks"><a class="header" href="#闭对角死锁closed-diagonal-deadlocks">闭对角死锁(Closed diagonal deadlocks)</a></h2>
 <p><img src="solver/assets/closed_diagonal_deadlock.png" alt="Closed diagonal deadlock - Sokoban Wiki" /></p>
 <p>其中畜栏死锁和闭对角死锁是更高级的冻结死锁, 因为这类死锁最终会转变为冻结死锁.</p>
-<h2 id="参考-1"><a class="header" href="#参考-1">参考</a></h2>
+<h2 id="参考-2"><a class="header" href="#参考-2">参考</a></h2>
 <ul>
 <li><a href="http://sokobano.de/wiki/index.php?title=Deadlocks">http://sokobano.de/wiki/index.php?title=Deadlocks</a>.</li>
 <li><a href="http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks">http://sokobano.de/wiki/index.php?title=How_to_detect_deadlocks</a>.</li>

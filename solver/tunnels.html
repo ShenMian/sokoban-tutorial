@@ -4,7 +4,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>优化 - 现代推箱子教程</title>
+    <title>隧道 - 现代推箱子教程</title>
 
 
     <!-- Custom HTML head -->
@@ -90,7 +90,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/design.html"><strong aria-hidden="true">1.</strong> 设计 🚧</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">2.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html"><strong aria-hidden="true">2.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">2.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">2.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">4.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">4.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">4.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="../solver/optimization.html" class="active"><strong aria-hidden="true">4.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/tunnels.html"><strong aria-hidden="true">4.3.1.</strong> 隧道</a></li><li class="chapter-item expanded "><a href="../solver/deadlocks.html"><strong aria-hidden="true">4.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.3.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.4.</strong> 双向搜索</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">6.</strong> 资源</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">7.</strong> 术语表</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">介绍</a></li><li class="chapter-item expanded "><a href="../level/design.html"><strong aria-hidden="true">1.</strong> 设计 🚧</a></li><li class="chapter-item expanded "><a href="../level/index.html"><strong aria-hidden="true">2.</strong> 关卡</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../level/representation.html"><strong aria-hidden="true">2.1.</strong> 表示</a></li><li class="chapter-item expanded "><a href="../level/construction.html"><strong aria-hidden="true">2.2.</strong> 构造</a></li><li class="chapter-item expanded "><a href="../level/normalization.html"><strong aria-hidden="true">2.3.</strong> 标准化 🚧</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">3.</strong> 动作</div></li><li class="chapter-item expanded "><a href="../solver/index.html"><strong aria-hidden="true">4.</strong> 求解器 🚧</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/solving_strategy.html"><strong aria-hidden="true">4.1.</strong> 搜索策略 🚧</a></li><li class="chapter-item expanded "><a href="../solver/heuristic_function.html"><strong aria-hidden="true">4.2.</strong> 启发式函数 🚧</a></li><li class="chapter-item expanded "><a href="../solver/optimization.html"><strong aria-hidden="true">4.3.</strong> 优化</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../solver/tunnels.html" class="active"><strong aria-hidden="true">4.3.1.</strong> 隧道</a></li><li class="chapter-item expanded "><a href="../solver/deadlocks.html"><strong aria-hidden="true">4.3.2.</strong> 死锁 🚧</a></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.3.3.</strong> 割点</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.4.</strong> 双向搜索</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.5.</strong> 特征</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> 优化器</div></li><li class="chapter-item expanded "><a href="../resources.html"><strong aria-hidden="true">6.</strong> 资源</a></li><li class="chapter-item expanded "><a href="../glossary_of_terms.html"><strong aria-hidden="true">7.</strong> 术语表</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -186,15 +186,88 @@
                 <div id="content" class="content">
                     <main>
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="优化"><a class="header" href="#优化">优化</a></h1>
-<p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.<br />
-因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要对求解器进行优化.</p>
-<p>本文所描述的求解器将使用以下优化手段:</p>
+<h1 id="隧道tunnels"><a class="header" href="#隧道tunnels">隧道(Tunnels)</a></h1>
+<p>一般情况下, 箱子的移动将产生一个新的状态, 该状态还会包含其他箱子移动所产生的子状态, 这是因为箱子之间可能存在相互影响.<br />
+但在部分关卡中, 存在一种被称为<strong>隧道</strong>的结构, 可以将位于隧道内的箱子与隧道外的箱子<strong>隔绝</strong>, 使它们之间互不影响.</p>
+<p><img src="assets/tunnel.png" alt="隧道" /></p>
+<p>如上图所示, 当上方的箱子位于隧道时, 两个箱子之间不会产生影响. 此时推动隧道内的箱子被视作<strong>无影响力推动</strong>(No influence pushes).</p>
+<p>在有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个箱子的关卡中, 每一个状态最多有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个子状态. 但如果当前状态是无影响力推动, 则无需产生子状态, 应该继续推动箱子, 直到产生有影响力的推动(一般是该箱子离开隧道), 并产生 1 个子状态.</p>
+<h2 id="停放"><a class="header" href="#停放">停放</a></h2>
+<p>将箱子推入隧道内的推动是有影响力的, 这意味这将该箱子停放到隧道内, 并为玩家和其他箱子的移动腾出空间.</p>
+<p>单个隧道内<strong>最多能停放一个箱子</strong>. 因为隧道中是不存在目标的, 停放多个箱子会产生<a href="deadlocks.html#%E7%95%9C%E6%A0%8F%E6%AD%BB%E9%94%81corral-deadlocks">畜栏死锁</a>, 进而导致关卡无解.</p>
+<p>隧道内<strong>停放箱子的最佳位置是隧道入口</strong>, 此处的隧道入口指的是距离箱子最近的隧道口.<br />
+因为如果停放在隧道的其他位置, 玩家还需要重新返回隧道入口才能离开封闭的隧道, 这意味着玩家需要原路返回, 增加了不必要的移动步数.</p>
+<h2 id="识别"><a class="header" href="#识别">识别</a></h2>
+<p>若推动后产生了如下的模式(包括旋转和镜像), 则表示箱子已经被推入隧道, 属于无效推动. 此时应该继续推动箱子, 直到箱子离开隧道, 产生具有有效推动的子状态.</p>
+<p><img src="assets/tunnel_pattern_1.png" alt="隧道模式 1" />
+<img src="assets/tunnel_pattern_2.png" alt="隧道模式 2" /></p>
+<p>下面是计算隧道的实现, 通过遍历地图, 识别符合 2 种隧道模式(包括镜像和旋转)的位置并进行标记. 计算结果可以被缓存, 以便在后续求解过程中快速判断隧道.</p>
+<pre><code class="language-rs">impl Solver {
+    fn calculate_tunnels(&amp;self) -&gt; HashSet&lt;(Vector2&lt;i32&gt;, Direction)&gt; {
+        let mut tunnels = HashSet::new();
+        for x in 1..self.map.dimensions().x - 1 {
+            for y in 1..self.map.dimensions().y - 1 {
+                let box_position = Vector2::new(x, y);
+                if !self.map[box_position].intersects(Tiles::Floor) {
+                    continue;
+                }
+
+                for (up, right, down, left) in [
+                    Direction::Up,
+                    Direction::Right,
+                    Direction::Down,
+                    Direction::Left,
+                ]
+                .into_iter()
+                .circular_tuple_windows()
+                {
+                    let player_position = box_position + &amp;down.into();
+
+                    //  .
+                    // #$#
+                    // #@#
+                    if self.map[player_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[player_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[box_position].intersects(Tiles::Floor)
+                        &amp;&amp; self
+                            .lower_bounds()
+                            .contains_key(&amp;(box_position + &amp;up.into()))
+                        &amp;&amp; !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+
+                    //  .      .
+                    // #$_ or _$#
+                    // #@#    #@#
+                    if self.map[player_position + &amp;left.into()].intersects(Tiles::Wall)
+                        &amp;&amp; self.map[player_position + &amp;right.into()].intersects(Tiles::Wall)
+                        &amp;&amp; (self.map[box_position + &amp;right.into()].intersects(Tiles::Wall)
+                            &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Floor)
+                            || self.map[box_position + &amp;right.into()].intersects(Tiles::Floor)
+                                &amp;&amp; self.map[box_position + &amp;left.into()].intersects(Tiles::Wall))
+                        &amp;&amp; self.map[box_position].intersects(Tiles::Floor)
+                        &amp;&amp; self
+                            .lower_bounds()
+                            .contains_key(&amp;(box_position + &amp;up.into()))
+                        &amp;&amp; !self.map[box_position].intersects(Tiles::Goal)
+                    {
+                        tunnels.insert((player_position, up));
+                    }
+                }
+            }
+        }
+        tunnels
+    }
+
+    // ... SKIP...
+}
+</code></pre>
+<h2 id="参考"><a class="header" href="#参考">参考</a></h2>
 <ul>
-<li><strong>启发式搜索(Heuristic search)</strong>: 使用启发式搜索算法, 通过引入启发式函数来指导搜索方向.</li>
-<li><strong>剪枝(Pruning)</strong>: 借助<a href="deadlocks.html">死锁</a>检测, 我们能够有效地剪去部分不可能导致解的情况, 减少搜索空间.</li>
-<li><strong>记忆化搜索(Memoization)</strong>: 防止搜索过程中重复搜索相同节点, 或陷入图里的环.</li>
-<li><strong>预处理(Preprocessing)</strong>: 预计算下界, 在之后的搜索过程中可以直接取用, 避免反复计算下界.</li>
+<li><a href="http://sokobano.de/wiki/index.php?title=Solver#Tunnels">http://sokobano.de/wiki/index.php?title=Solver#Tunnels</a>.</li>
 </ul>
 
 
@@ -209,12 +282,12 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        <a rel="prev" href="../solver/heuristic_function.html" class="mobile-nav-chapters previous"
+                        <a rel="prev" href="../solver/optimization.html" class="mobile-nav-chapters previous"
                             title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                             <i class="fa fa-angle-left"></i>
                         </a>
 
-                        <a rel="next prefetch" href="../solver/tunnels.html" class="mobile-nav-chapters next"
+                        <a rel="next prefetch" href="../solver/deadlocks.html" class="mobile-nav-chapters next"
                             title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                             <i class="fa fa-angle-right"></i>
                         </a>
@@ -225,12 +298,12 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                <a rel="prev" href="../solver/heuristic_function.html" class="nav-chapters previous" title="Previous chapter"
+                <a rel="prev" href="../solver/optimization.html" class="nav-chapters previous" title="Previous chapter"
                     aria-label="Previous chapter" aria-keyshortcuts="Left">
                     <i class="fa fa-angle-left"></i>
                 </a>
 
-                <a rel="next prefetch" href="../solver/tunnels.html" class="nav-chapters next" title="Next chapter"
+                <a rel="next prefetch" href="../solver/deadlocks.html" class="nav-chapters next" title="Next chapter"
                     aria-label="Next chapter" aria-keyshortcuts="Right">
                     <i class="fa fa-angle-right"></i>
                 </a>
