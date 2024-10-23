@@ -1437,7 +1437,7 @@ lower_bounds
 <p>一般情况下, 箱子的移动会产生一个新的状态, 该状态可能包含其他箱子移动所生成的子状态, 这是因为箱子之间可能存在相互影响.<br />
 然而, 在部分关卡中, 存在一种被称为<strong>隧道</strong>的结构, 它可以将位于隧道内的箱子与隧道外的箱子<strong>隔绝</strong>, 使它们之间互不影响.</p>
 <p>如下图所示, 其中蓝色矩形描边区域为隧道:</p>
-<p><img src="solver/assets/tunnel.png" alt="隧道" /></p>
+<img alt="隧道" src="solver/assets/tunnel.png" width="50%" style="display: block; margin: 0 auto">
 <p>当上方的箱子位于隧道时, 两个箱子之间不会产生影响. 此时推动隧道内的箱子被视作<strong>无影响力推动</strong>(No influence pushes).</p>
 <p>在有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个箱子的关卡中, 每一个状态最多有 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个子状态. 但如是无影响力推动, 则无需产生对应的子状态, 应该继续推动箱子, 直到产生有影响力的推动(即该箱子离开隧道), 并产生 1 个子状态.</p>
 <h2 id="停放"><a class="header" href="#停放">停放</a></h2>
