@@ -1,0 +1,18 @@
+[book]
+title = "现代推箱子教程"
+description = "本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写."
+authors = ["ShenMian <sms_school@outlook.com>"]
+language = "zh-Hans-CN"
+multilingual = false
+src = "src"
+
+[output.html]
+additional-js = ["assets/mermaid.min.js", "assets/mermaid-init.js"]
+git-repository-url = "https://github.com/ShenMian/sokoban-tutorial"
+git-repository-icon = "fa-github"
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[preprocessor.katex]
+after = ["links"]
