@@ -5,7 +5,7 @@
 推箱子关卡所使用的 XSB 格式因其简洁和直观而受到了广泛的认可和应用, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.  
 以关卡 `Boxworld #1` 为例:
 
-![Boxworld #1](../assets/boxworld_1.png)
+![Boxworld #1](assets/boxworld_1.png)
 
 其 XSB 格式关卡的数据如下:
 
@@ -210,7 +210,7 @@ ___HHH__
 
 ### 玩家不可达区域存在箱子
 
-![Sasquatch #41 by David W. Skinner](../assets/sasquatch_41.png)
+![Sasquatch #41 by David W. Skinner](assets/sasquatch_41.png)
 
 ```txt
    #####
@@ -231,7 +231,7 @@ ___HHH__
 
 ### 存在只有空元素的行
 
-!["Steaming Hot" by David Buchweitz](../assets/steaming_hot.png)
+!["Steaming Hot" by David Buchweitz](assets/steaming_hot.png)
 
 ```txt
   #      #
@@ -258,7 +258,7 @@ ___HHH__
 部分推箱子程序支持无完整外墙的关卡.  
 在本文中, 这种关卡属于无效关卡. 但可以通过为其添加外墙的方式来转换为有效关卡.
 
-!["No walls" by Rincewind](../assets/no_walls_level.png)
+!["No walls" by Rincewind](assets/no_walls_level.png)
 
 ```txt
 * ** *
