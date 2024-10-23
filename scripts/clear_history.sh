@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd "$( cd "$( dirname "$0"  )" && pwd  )" || exit
-cd .. || exit
+cd "$( cd "$( dirname "$0"  )" && pwd  )/.." || exit
 
 git checkout --orphan empty        || exit 1
 git branch -D main                 || exit 1

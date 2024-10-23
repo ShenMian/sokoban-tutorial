@@ -1,6 +1,6 @@
 @echo off
 
-cd %~dp0\.. || exit /b 1
+cd %~dp0/.. || exit /b 1
 
 git checkout --orphan empty        || exit /b 1
 git branch -D main                 || exit /b 1
