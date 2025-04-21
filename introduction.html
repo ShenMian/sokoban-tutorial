@@ -189,9 +189,9 @@
 <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写.</p>
 <h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
-<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员" 👷.<sup class="footnote-reference"><a href="#1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
+<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员" 👷.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
 <img alt="First Sokoban #15" src="assets/first_sokoban_15.png" width="50%" style="display: block; margin: 0 auto">
-<p>截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月在 PlayStation 4 平台发行.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
+<p>截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月在 PlayStation 4 平台发行.<sup class="footnote-reference" id="fr-1-2"><a href="#footnote-1">1</a></sup></p>
 <img alt="The Sokoban" src="assets/everyones_sokoban.jpg" width="70%" style="display: block; margin: 0 auto">
 <p>最新版本的推箱子在角色控制方面相较于其最初的版本并未见明显改进, 本文后续将介绍一种纯鼠标控制的角色控制方法 🖱️.</p>
 <h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
@@ -221,7 +221,7 @@
 <ul>
 <li>Rust 语言本身: 本文中出现的算法适用于其他编程语言, 但依然会涉及部分 Rust 相关内容的讲解, 如错误处理 (Rust 在这方面和其他语言不太一样), 不感兴趣的读者可以直接跳过这部分内容.</li>
 <li>游戏引擎: 本文中的推箱子实现并不依赖游戏引擎, 比如有的推箱子实现需要用到射线检测.</li>
-<li>其他推箱子变体<sup class="footnote-reference"><a href="#2">2</a></sup>.</li>
+<li>其他推箱子变体<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>.</li>
 </ul>
 <h2 id="项目代码"><a class="header" href="#项目代码">项目代码</a></h2>
 <p>完整的项目代码位于:</p>
@@ -236,13 +236,14 @@
 </ul>
 <h2 id="版权"><a class="header" href="#版权">版权</a></h2>
 <p>本文遵循 <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> 协议发布. 部分图片来源于互联网, 版权归原作者所有.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://en.wikipedia.org/wiki/Sokoban#Variants">https://en.wikipedia.org/wiki/Sokoban#Variants</a></p>
-</div>
-
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a> <a href="#fr-1-1">↩</a> <a href="#fr-1-2">↩2</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="https://en.wikipedia.org/wiki/Sokoban#Variants">https://en.wikipedia.org/wiki/Sokoban#Variants</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
 
                         <!-- Giscus -->
                         <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"

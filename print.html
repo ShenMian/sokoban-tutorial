@@ -190,9 +190,9 @@
 <h1 id="介绍"><a class="header" href="#介绍">介绍</a></h1>
 <p>本文将描述如何实现一个推箱子 📦, 示例代码使用 Rust 语言 🦀 编写.</p>
 <h2 id="推箱子的起源"><a class="header" href="#推箱子的起源">推箱子的起源</a></h2>
-<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员" 👷.<sup class="footnote-reference"><a href="#1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
+<p>推箱子在 1981 年由日本人今林宏行(いまばやし ひろゆき)所创造, 第一个版本于 1982 年 12 月发行, 名为<em>仓库番</em>, 字面意思为 "仓库管理员" 👷.<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup> 英文名为: Sokoban 或 Soukoban.</p>
 <img alt="First Sokoban #15" src="assets/first_sokoban_15.png" width="50%" style="display: block; margin: 0 auto">
-<p>截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月在 PlayStation 4 平台发行.<sup class="footnote-reference"><a href="#1">1</a></sup></p>
+<p>截至 2024 年, 最新版本推箱子(みんなの倉庫番)于 2019 年 8 月在 PlayStation 4 平台发行.<sup class="footnote-reference" id="fr-1-2"><a href="#footnote-1">1</a></sup></p>
 <img alt="The Sokoban" src="assets/everyones_sokoban.jpg" width="70%" style="display: block; margin: 0 auto">
 <p>最新版本的推箱子在角色控制方面相较于其最初的版本并未见明显改进, 本文后续将介绍一种纯鼠标控制的角色控制方法 🖱️.</p>
 <h2 id="为什么通过案例来讲解"><a class="header" href="#为什么通过案例来讲解">为什么通过案例来讲解</a></h2>
@@ -222,7 +222,7 @@
 <ul>
 <li>Rust 语言本身: 本文中出现的算法适用于其他编程语言, 但依然会涉及部分 Rust 相关内容的讲解, 如错误处理 (Rust 在这方面和其他语言不太一样), 不感兴趣的读者可以直接跳过这部分内容.</li>
 <li>游戏引擎: 本文中的推箱子实现并不依赖游戏引擎, 比如有的推箱子实现需要用到射线检测.</li>
-<li>其他推箱子变体<sup class="footnote-reference"><a href="#2">2</a></sup>.</li>
+<li>其他推箱子变体<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>.</li>
 </ul>
 <h2 id="项目代码"><a class="header" href="#项目代码">项目代码</a></h2>
 <p>完整的项目代码位于:</p>
@@ -237,13 +237,14 @@
 </ul>
 <h2 id="版权"><a class="header" href="#版权">版权</a></h2>
 <p>本文遵循 <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY 4.0</a> 协议发布. 部分图片来源于互联网, 版权归原作者所有.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://en.wikipedia.org/wiki/Sokoban#Variants">https://en.wikipedia.org/wiki/Sokoban#Variants</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://www.sokoban.jp/history.html">https://www.sokoban.jp/history.html</a> <a href="#fr-1-1">↩</a> <a href="#fr-1-2">↩2</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="https://en.wikipedia.org/wiki/Sokoban#Variants">https://en.wikipedia.org/wiki/Sokoban#Variants</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="设计"><a class="header" href="#设计">设计</a></h1>
 <h2 id="结构体设计"><a class="header" href="#结构体设计">结构体设计</a></h2>
 <ul>
@@ -266,7 +267,7 @@
 <li>存在数据冗余, 但是冗余的数据量很小, 不至于造成显著的内存占用率变化.</li>
 </ul>
 </li>
-<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 违背了 POLA<sup class="footnote-reference"><a href="#POLA">1</a></sup>.</li>
+<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 违背了 POLA<sup class="footnote-reference" id="fr-POLA-1"><a href="#footnote-POLA">1</a></sup>.</li>
 </ul>
 <p>综上所述, 本文倾向于在数组里包含这些元素.</p>
 </blockquote>
@@ -281,10 +282,11 @@
     C --&gt;|重建| B
     B --&gt; D[Level]
 </pre>
-<div class="footnote-definition" id="POLA"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">https://en.wikipedia.org/wiki/Principle_of_least_astonishment</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-POLA">
+<p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">https://en.wikipedia.org/wiki/Principle_of_least_astonishment</a> <a href="#fr-POLA-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="关卡"><a class="header" href="#关卡">关卡</a></h1>
 <h2 id="xsb-格式"><a class="header" href="#xsb-格式">XSB 格式</a></h2>
 <p>推箱子关卡所使用的 XSB 格式因其简洁和直观而受到了广泛的认可和应用, 最初由 XSokoban 所使用. 该格式使用 ASCII 字符来表示地图元素, 并支持注释和附加元数据.<br />
@@ -320,7 +322,7 @@ Author: Thinking Rabbit
 <tr><td><code>*</code></td><td>位于目标上的箱子</td></tr>
 </tbody></table>
 </div>
-<p>其中地板一共使用了三种符号表示, 是因为连续的空格在某些在线论坛或邮件中可能被截断, 因此使用连字符(<code>-</code>)和下划线(<code>_</code>)来替代<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+<p>其中地板一共使用了三种符号表示, 是因为连续的空格在某些在线论坛或邮件中可能被截断, 因此使用连字符(<code>-</code>)和下划线(<code>_</code>)来替代<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup>.</p>
 <h3 id="元数据"><a class="header" href="#元数据">元数据</a></h3>
 <p>第 10 行的 <code>Title: Boxworld 1</code> 可以解释为键为 <code>title</code> (不区分大小写), 值为 <code>Boxworld 1</code> 的元数据.<br />
 还有一种用于多行注释的特殊元数据. 内容通过 <code>comment:</code> 和 <code>comment-end:</code> 包裹. 这也是唯一支持值有多行的元数据.</p>
@@ -436,7 +438,7 @@ Author: Thinking Rabbit
 </code></pre>
 <p>请参见 <a href="http://sokobano.de/wiki/index.php?title=Sok_format">Sok format · Sokoban Wiki</a>.</p>
 <h3 id="mf8"><a class="header" href="#mf8">MF8</a></h3>
-<p>中文论坛魔方吧<sup class="footnote-reference"><a href="#2">2</a></sup>使用 MF8 格式:</p>
+<p>中文论坛魔方吧<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>使用 MF8 格式:</p>
 <pre><code class="language-txt">[soko=8,8]
 __HHH___
 __H.H___
@@ -504,13 +506,14 @@ ___HHH__
 <ul>
 <li><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a>.</li>
 </ul>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="http://www.mf8-china.com/forum.php">http://www.mf8-china.com/forum.php</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="http://sokobano.de/wiki/index.php?title=Level_format">http://sokobano.de/wiki/index.php?title=Level_format</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="http://www.mf8-china.com/forum.php">http://www.mf8-china.com/forum.php</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="表示"><a class="header" href="#表示">表示</a></h1>
 <h2 id="表示地图-"><a class="header" href="#表示地图-">表示地图 🗺️</a></h2>
 <h3 id="元素的表示"><a class="header" href="#元素的表示">元素的表示</a></h3>
@@ -662,7 +665,7 @@ pub struct Level {
 <p>返回迭代器是因为可以利用迭代器的<strong>惰性求值</strong>, 来惰性的分割关卡.</p>
 <p>这种实现方式有以下优点:</p>
 <ul>
-<li>支持流式读取并构造关卡. 例如, 通过利用 <code>BufReader</code><sup class="footnote-reference"><a href="#2">1</a></sup> 支持从大文件中逐步地加载关卡数据, 避免了内存的大量占用和性能瓶颈.</li>
+<li>支持流式读取并构造关卡. 例如, 通过利用 <code>BufReader</code><sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">1</a></sup> 支持从大文件中逐步地加载关卡数据, 避免了内存的大量占用和性能瓶颈.</li>
 <li>读取第 n 个关卡. 跳过前 n-1 个关卡, 只对第 n 个关卡的数据进行解析. 可以加快从多个关卡中加载单个关卡的速度.</li>
 </ul>
 <pre><code class="language-rs">impl Level {
@@ -927,7 +930,7 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 }
 </code></pre>
 <p>重载 <code>ParseMapError</code> 到 <code>ParseLevelError</code> 的转换, 以便 <code>Level::from_str</code> 直接返回 <code>Map::from_str</code> 中的错误.<br />
-遵循 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference"><a href="#1">2</a></sup> 的建议, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 trait. 本文使用库 <code>thiserror</code><sup class="footnote-reference"><a href="#3">3</a></sup> 来自动完成这一步骤.</p>
+遵循 Rust API Guidelines (C-GOOD-ERR)<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">2</a></sup> 的建议, 应该为错误类型实现 <code>Debug</code> / <code>Error</code> 和 <code>Display</code> 等 trait. 本文使用库 <code>thiserror</code><sup class="footnote-reference" id="fr-3-1"><a href="#footnote-3">3</a></sup> 来自动完成这一步骤.</p>
 <h2 id="从解决方案构造关卡"><a class="header" href="#从解决方案构造关卡">从解决方案构造关卡</a></h2>
 <p>从解决方案构造关卡可以分为以下几个部分:</p>
 <ol>
@@ -1028,16 +1031,17 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
     }
 }
 </code></pre>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err">https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://doc.rust-lang.org/std/io/struct.BufReader.html">https://doc.rust-lang.org/std/io/struct.BufReader.html</a></p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a href="https://docs.rs/thiserror/latest/thiserror/">https://docs.rs/thiserror/latest/thiserror/</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-2">
+<p><a href="https://doc.rust-lang.org/std/io/struct.BufReader.html">https://doc.rust-lang.org/std/io/struct.BufReader.html</a> <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="footnote-1">
+<p><a href="https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err">https://rust-lang.github.io/api-guidelines/interoperability.html#error-types-are-meaningful-and-well-behaved-c-good-err</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-3">
+<p><a href="https://docs.rs/thiserror/latest/thiserror/">https://docs.rs/thiserror/latest/thiserror/</a> <a href="#fr-3-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="标准化"><a class="header" href="#标准化">标准化</a></h1>
 <p>在关卡设计中, 有时会为了美观在原关卡基础上添加一些装饰性元素, 但这些装饰性的元素本质上并不会影响关卡的解法.<br />
 标准化的目的是移除这些与求解无关或冗余的元素.</p>
@@ -1132,27 +1136,27 @@ impl From&lt;ParseMapError&gt; for ParseLevelError {
 <p>这是一个以状态(State)为节点(Vertex), 动作(Action)为边(Edge)的有向图(Directed graph).<br />
 其中 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 为初始状态(Initial state, IS), <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 为目标状态(Goal state, GS), <code>l</code> 和 <code>r</code> 分别表示玩家向左和向右移动, <code>R</code> 和 <code>L</code> 分别表示玩家向右推动和向左拉动.</p>
 <p>理论上, 状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 还可以衍生出更多子状态, 但因为其是目标状态, 搜索算法无需继续搜索, 因此这里不再展开.</p>
-<p>求解器的工作是进行空间状态搜索<sup class="footnote-reference"><a href="#1">1</a></sup>, 即首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 到状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 的路径, 即 <code>R</code>.</p>
+<p>求解器的工作是进行空间状态搜索<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup>, 即首先根据初始状态生成推箱子关卡的图, 然后在这个图中寻找从初始状态到目标状态的路径. 以上图为例, 就是寻找从状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span></span></span></span> 到状态 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> 的路径, 即 <code>R</code>.</p>
 <p>寻路算法是在<strong>路径点</strong>组成的图中寻找一条从<strong>初始位置</strong>到<strong>目标位置</strong>的路径.<br />
 求解器则是在<strong>状态</strong>组成的图中寻找一条从<strong>初始状态</strong>到<strong>目标状态</strong>的路径, 即移动箱子的顺序.</p>
 <p>下面将详细探讨如何利用搜索算法来找到这条路径.</p>
 <h2 id="搜索算法"><a class="header" href="#搜索算法">搜索算法</a></h2>
 <ul>
 <li>
-<p>广度优先搜索算法(Breadth-first search, BFS)<sup class="footnote-reference"><a href="#2">2</a></sup>.</p>
+<p>广度优先搜索算法(Breadth-first search, BFS)<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>.</p>
 </li>
 <li>
-<p>A* 搜索算法<sup class="footnote-reference"><a href="#3">3</a></sup></p>
+<p>A* 搜索算法<sup class="footnote-reference" id="fr-3-1"><a href="#footnote-3">3</a></sup></p>
 <p>A* 与 BFS 在最坏情况下的时间复杂度均为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>. 但 A* 算法是一种最佳优先搜索(Best-first search)算法, 会优先探索最有希望的节点.</p>
 </li>
 <li>
-<p>IDA* 搜索算法<sup class="footnote-reference"><a href="#4">4</a></sup></p>
+<p>IDA* 搜索算法<sup class="footnote-reference" id="fr-4-1"><a href="#footnote-4">4</a></sup></p>
 <p>相比空间复杂度为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0991em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">d</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> 的 A* 算法, IDA* 算法的空间复杂度为 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mclose">)</span></span></span></span>.</p>
 </li>
 <li>
-<p>FESS 搜索算法<sup class="footnote-reference"><a href="#5">5</a></sup></p>
+<p>FESS 搜索算法<sup class="footnote-reference" id="fr-5-1"><a href="#footnote-5">5</a></sup></p>
 <p>A* 和 IDA* 算法只通过单个启发式函数值值来选择下一个探索的节点.<br />
-虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 该论文的第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference"><a href="#6">6</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference"><a href="#7">7</a></sup>.</p>
+虽然可以通过计算出多个启发式函数值, 将它们融合为单个启发式函数值, 以同时利用多种启发式函数, 但由于多个启发式函数值被融合为了一个, 因此无法区分单个启发式函数值的变化趋势. FESS 算法则在这方面做出了改进. 该论文的第一作者 Yaron Shoham 还将该算法应用在了求解器 Festival<sup class="footnote-reference" id="fr-6-1"><a href="#footnote-6">6</a></sup> 上, 并取得了极佳的效果<sup class="footnote-reference" id="fr-7-1"><a href="#footnote-7">7</a></sup>.</p>
 </li>
 </ul>
 <p>本文不会进一步探讨 FESS 算法, 感兴趣的读者可以阅读相关论文.</p>
@@ -1234,7 +1238,7 @@ impl PartialOrd for Node {
 }
 </code></pre>
 <h2 id="生成邻域"><a class="header" href="#生成邻域">生成邻域</a></h2>
-<p>从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference"><a href="#8">8</a></sup>.</p>
+<p>从初始状态开始探索其相邻的节点, 即邻域<sup class="footnote-reference" id="fr-8-1"><a href="#footnote-8">8</a></sup>.</p>
 <p>通过下面函数来生成当前状态的派生状态, 即相邻的状态:</p>
 <pre><code class="language-rs">impl State {
     pub fn successors(&amp;self, solver: &amp;Solver) -&gt; Vec&lt;State&gt; {
@@ -1278,31 +1282,32 @@ impl PartialOrd for Node {
 <p>已被探索的节点通常会被存储在一个闭集(Closed set)中, 为了通俗易懂, 使用变量名 <code>visited</code> 表示这个闭集.<br />
 为了节省内存, <code>visited</code> 中只需要存储已访问状态的哈希值, 因为这些状态将不会再被使用.</p>
 <p>复杂推箱子关卡的图非常大, 难以提前生成并存储在内存中. 因此可以在搜索的过程中逐步拓展图.</p>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/State_space_search">https://en.wikipedia.org/wiki/State_space_search</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://en.wikipedia.org/wiki/Breadth-first_search">https://en.wikipedia.org/wiki/Breadth-first_search</a></p>
-</div>
-<div class="footnote-definition" id="3"><sup class="footnote-definition-label">3</sup>
-<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">https://en.wikipedia.org/wiki/A*_search_algorithm</a></p>
-</div>
-<div class="footnote-definition" id="4"><sup class="footnote-definition-label">4</sup>
-<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A*">https://en.wikipedia.org/wiki/Iterative_deepening_A*</a></p>
-</div>
-<div class="footnote-definition" id="5"><sup class="footnote-definition-label">5</sup>
-<p><a href="https://ieeexplore.ieee.org/document/9231929">Y. Shoham and J. Schaeffer, "The FESS Algorithm: A Feature Based Approach to Single-Agent Search," 2020 IEEE Conference on Games (CoG), Osaka, Japan, 2020, pp. 96-103, doi: 10.1109/CoG47356.2020.9231929</a></p>
-</div>
-<div class="footnote-definition" id="6"><sup class="footnote-definition-label">6</sup>
-<p><a href="https://festival-solver.site/">https://festival-solver.site/</a></p>
-</div>
-<div class="footnote-definition" id="7"><sup class="footnote-definition-label">7</sup>
-<p><a href="http://sokobano.de/wiki/index.php?title=Solver_Statistics">http://sokobano.de/wiki/index.php?title=Solver_Statistics</a></p>
-</div>
-<div class="footnote-definition" id="8"><sup class="footnote-definition-label">8</sup>
-<p><a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://en.wikipedia.org/wiki/State_space_search">https://en.wikipedia.org/wiki/State_space_search</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="https://en.wikipedia.org/wiki/Breadth-first_search">https://en.wikipedia.org/wiki/Breadth-first_search</a> <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="footnote-3">
+<p><a href="https://en.wikipedia.org/wiki/A*_search_algorithm">https://en.wikipedia.org/wiki/A*_search_algorithm</a> <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="footnote-4">
+<p><a href="https://en.wikipedia.org/wiki/Iterative_deepening_A*">https://en.wikipedia.org/wiki/Iterative_deepening_A*</a> <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="footnote-5">
+<p><a href="https://ieeexplore.ieee.org/document/9231929">Y. Shoham and J. Schaeffer, "The FESS Algorithm: A Feature Based Approach to Single-Agent Search," 2020 IEEE Conference on Games (CoG), Osaka, Japan, 2020, pp. 96-103, doi: 10.1109/CoG47356.2020.9231929</a> <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="footnote-6">
+<p><a href="https://festival-solver.site/">https://festival-solver.site/</a> <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="footnote-7">
+<p><a href="http://sokobano.de/wiki/index.php?title=Solver_Statistics">http://sokobano.de/wiki/index.php?title=Solver_Statistics</a> <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="footnote-8">
+<p><a href="https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)">https://en.wikipedia.org/wiki/Neighbourhood_(graph_theory)</a> <a href="#fr-8-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="搜索策略"><a class="header" href="#搜索策略">搜索策略</a></h1>
 <h2 id="什么是最短路径"><a class="header" href="#什么是最短路径">什么是最短路径?</a></h2>
 <p>在常见的寻路算法中, <strong>最短</strong>可能是指距离最短, 也可能是指时间最短.<br />
@@ -1342,7 +1347,7 @@ impl PartialOrd for Node {
 <li>代价可能指玩家移动数, 也可能指箱子推动数, 这取决于求解器的搜索策略. 因此针对不同的搜索策略, 于代价相关的函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span> 和 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 的实现不同.</li>
 <li>路径就是解决方案.</li>
 </ul>
-<p>该算法总是能搜索到最优路径, 前提是启发式函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足容许性 (admissible)<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+<p>该算法总是能搜索到最优路径, 前提是启发式函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足容许性 (admissible)<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup>.</p>
 <h2 id="容许性-admissible"><a class="header" href="#容许性-admissible">容许性 (Admissible)</a></h2>
 <p>启发式函数满足容许性, 才能确保结果是最优的. 若函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足以下条件则满足容许性:</p>
 <p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∀</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7387em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></p>
@@ -1370,7 +1375,7 @@ impl PartialOrd for Node {
 <li><strong>移动下界</strong>: 将箱子推动到任何目标的最少<strong>移动</strong>数.</li>
 </ul>
 <p>其中推动下界可以用于搜索最优移动数解决方案, 反之则不行. 因为推动下界一定小于移动下界.</p>
-<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#2">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
+<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
 <p>TODO: 使用二维数组而非 HashMap 来存储下界.</p>
 <pre><code class="language-rs">fn manhattan_distance(a: Vector2&lt;i32&gt;, b: Vector2&lt;i32&gt;) -&gt; u32 {
     (a.x - b.x).abs() + (a.y - b.y).abs()
@@ -1415,13 +1420,14 @@ lower_bounds
     // ... SKIP ...
 }
 </code></pre>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a></p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol><div style="break-before: page; page-break-before: always;"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="优化"><a class="header" href="#优化">优化</a></h1>
 <p>在计算复杂性理论中, 推箱子属于 PSPACE-complete 问题, 是 PSPACE 中最难的一类问题. 推箱子的地图尺寸和箱子数量没有限制. 这类问题目前只能在<strong>超多项式时间</strong>(superpoly-nomial)内解决.<br />
 因此没有任何优化的暴力搜索只能解决非常简单(地图尺寸小, 箱子数量少)的关卡, 如果希望解决更复杂的关卡则需要对求解器进行优化.</p>
@@ -1671,7 +1677,7 @@ _BC
 <ul>
 <li><a href="http://sokobano.de/wiki/">http://sokobano.de/wiki/</a>: 推箱子 Wiki, 德国.</li>
 <li><a href="https://sourceforge.net/projects/sokobanyasc/">https://sourceforge.net/projects/sokobanyasc/</a> 推箱子软件 SokobanYASC.</li>
-<li><a href="https://www.sokoban-online.de/">https://www.sokoban-online.de/</a>: 推箱子软件 JSoko.</li>
+<li><a href="https://jsokoapplet.sourceforge.io/">https://jsokoapplet.sourceforge.io/</a>: 推箱子软件 JSoko.</li>
 <li><a href="https://ygp.orgfree.com/">https://ygp.orgfree.com/</a> 推箱子软件 YSokoban.</li>
 <li><a href="https://sokoban.cn/">https://sokoban.cn/</a>: 推箱子平台, 魔方吧推箱子比赛, 中国.</li>
 <li><a href="https://sokoban.jp/">https://sokoban.jp/</a> 推箱子官网, 日本.</li>
@@ -1682,13 +1688,13 @@ _BC
 <tr><td>求解器</td><td>solver</td></tr>
 <tr><td>解决方案/解</td><td>solution</td></tr>
 <tr><td>动作</td><td>action</td></tr>
-<tr><td>容器<sup class="footnote-reference"><a href="#1">1</a></sup></td><td>collection</td></tr>
+<tr><td>容器<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup></td><td>collection</td></tr>
 </tbody></table>
-</div>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><code>collection</code> 被翻译为 "容器", 延用了 C++ 中的叫法. 不译为 "集合" 是为了防止与集合 "set" 混淆.</p>
-</div>
-
+</div><hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><code>collection</code> 被翻译为 "容器", 延用了 C++ 中的叫法. 不译为 "集合" 是为了防止与集合 "set" 混淆. <a href="#fr-1-1">↩</a></p>
+</li>
+</ol>
 
                         <!-- Giscus -->
                         <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"

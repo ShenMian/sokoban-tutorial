@@ -208,7 +208,7 @@
 <li>存在数据冗余, 但是冗余的数据量很小, 不至于造成显著的内存占用率变化.</li>
 </ul>
 </li>
-<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 违背了 POLA<sup class="footnote-reference"><a href="#POLA">1</a></sup>.</li>
+<li>不包含: 读取时需要判断是否与玩家或任意箱子的位置相同, 如果有就追加相关元素的枚举值. 导致读取比写入有更大的开销. 取比写入开销大违反直觉, 违背了 POLA<sup class="footnote-reference" id="fr-POLA-1"><a href="#footnote-POLA">1</a></sup>.</li>
 </ul>
 <p>综上所述, 本文倾向于在数组里包含这些元素.</p>
 </blockquote>
@@ -223,10 +223,11 @@
     C --&gt;|重建| B
     B --&gt; D[Level]
 </pre>
-<div class="footnote-definition" id="POLA"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">https://en.wikipedia.org/wiki/Principle_of_least_astonishment</a></p>
-</div>
-
+<hr>
+<ol class="footnote-definition"><li id="footnote-POLA">
+<p><a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">https://en.wikipedia.org/wiki/Principle_of_least_astonishment</a> <a href="#fr-POLA-1">↩</a></p>
+</li>
+</ol>
 
                         <!-- Giscus -->
                         <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"

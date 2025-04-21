@@ -199,7 +199,7 @@
 <li>代价可能指玩家移动数, 也可能指箱子推动数, 这取决于求解器的搜索策略. 因此针对不同的搜索策略, 于代价相关的函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span> 和 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 的实现不同.</li>
 <li>路径就是解决方案.</li>
 </ul>
-<p>该算法总是能搜索到最优路径, 前提是启发式函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足容许性 (admissible)<sup class="footnote-reference"><a href="#1">1</a></sup>.</p>
+<p>该算法总是能搜索到最优路径, 前提是启发式函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足容许性 (admissible)<sup class="footnote-reference" id="fr-1-1"><a href="#footnote-1">1</a></sup>.</p>
 <h2 id="容许性-admissible"><a class="header" href="#容许性-admissible">容许性 (Admissible)</a></h2>
 <p>启发式函数满足容许性, 才能确保结果是最优的. 若函数 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 满足以下条件则满足容许性:</p>
 <p><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∀</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7387em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></p>
@@ -227,7 +227,7 @@
 <li><strong>移动下界</strong>: 将箱子推动到任何目标的最少<strong>移动</strong>数.</li>
 </ul>
 <p>其中推动下界可以用于搜索最优移动数解决方案, 反之则不行. 因为推动下界一定小于移动下界.</p>
-<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference"><a href="#2">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
+<p>最简单的推动下界计算方法是计算每个箱子到最近目标的曼哈顿距离<sup class="footnote-reference" id="fr-2-1"><a href="#footnote-2">2</a></sup>. 曼哈顿距离也是网格中寻路常用的启发式函数的计算方法.</p>
 <p>TODO: 使用二维数组而非 HashMap 来存储下界.</p>
 <pre><code class="language-rs">fn manhattan_distance(a: Vector2&lt;i32&gt;, b: Vector2&lt;i32&gt;) -&gt; u32 {
     (a.x - b.x).abs() + (a.y - b.y).abs()
@@ -272,13 +272,14 @@ lower_bounds
     // ... SKIP ...
 }
 </code></pre>
-<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a></p>
-</div>
-<div class="footnote-definition" id="2"><sup class="footnote-definition-label">2</sup>
-<p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a></p>
-</div>
-
+<hr>
+<ol class="footnote-definition"><li id="footnote-1">
+<p><a href="https://en.wikipedia.org/wiki/Admissible_heuristic">https://en.wikipedia.org/wiki/Admissible_heuristic</a> <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="footnote-2">
+<p><a href="https://simple.wikipedia.org/wiki/Manhattan_distance">https://simple.wikipedia.org/wiki/Manhattan_distance</a> <a href="#fr-2-1">↩</a></p>
+</li>
+</ol>
 
                         <!-- Giscus -->
                         <script src="https://giscus.app/client.js" data-repo="ShenMian/sokoban-tutorial"
